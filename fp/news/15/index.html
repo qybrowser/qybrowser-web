@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>影刀中使用启元指纹浏览器 - 启元指纹浏览器</title>
+  <meta name="description" content="影刀中使用启元指纹浏览器" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://usefullc.com/fp/news/15" />
+  <meta property="og:title" content="影刀中使用启元指纹浏览器" />
+  <meta property="og:description" content="" />
+  
+  <meta property="og:image" content="https://res.usefullc.com/article/images/20260607/header_1780835074617.webp" />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#eff6ff', 100:'#dbeafe', 400:'#60a5fa', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 900:'#1e3a8a' },
+          },
+          fontFamily: { sans: ['"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .article-content { color: #475569; line-height: 1.8; font-size: 1rem; }
+    .article-content h1,.article-content h2,.article-content h3 { color:#0f172a; font-weight:700; margin:1.6em 0 0.6em; }
+    .article-content h1 { font-size:1.6em; }
+    .article-content h2 { font-size:1.4em; }
+    .article-content h3 { font-size:1.2em; }
+    .article-content p  { margin:0.8em 0; }
+    .article-content a  { color:#2563eb; text-decoration:underline; }
+    .article-content ul,.article-content ol { padding-left:1.5em; margin:0.8em 0; }
+    .article-content li { margin:0.3em 0; }
+    .article-content blockquote { border-left:4px solid #2563eb; padding:0.5em 1em; margin:1em 0; color:#64748b; background:#eff6ff; border-radius:0 8px 8px 0; }
+    .article-content pre  { background:#f1f5f9; padding:1em; border-radius:8px; overflow-x:auto; margin:1em 0; border:1px solid #e2e8f0; }
+    .article-content code { background:#f1f5f9; color:#1e40af; padding:0.15em 0.4em; border-radius:4px; font-size:0.9em; }
+    .article-content img  { max-width:100%; border-radius:8px; margin:1em auto; display:block; }
+    .article-content table { width:100%; border-collapse:collapse; margin:1em 0; }
+    .article-content th,.article-content td { border:1px solid #e2e8f0; padding:0.5em 0.8em; }
+    .article-content th { background:#f8faff; color:#1e293b; font-weight:600; }
+  </style>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased">
+
+<!-- 导航栏 -->
+<header x-data="{ open: false }" class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between" style="height:72px">
+      <a href="/" class="flex items-center gap-2.5 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <span class="text-lg font-bold text-slate-900">启元<span class="text-primary-600">指纹浏览器</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="/" class="text-[15px] text-slate-600 hover:text-slate-900 transition-colors">首页</a>
+        <a href="/#features" class="text-[15px] text-slate-600 hover:text-slate-900 transition-colors">功能特性</a>
+        <a href="/#pricing" class="text-[15px] text-slate-600 hover:text-slate-900 transition-colors">价格方案</a>
+        <a href="/fp/news" class="text-[15px] text-slate-900 font-semibold border-b-2 border-primary-600 pb-0.5">新闻资讯</a>
+        <a href="/fp/help" target="_blank" class="text-[15px] text-slate-600 hover:text-slate-900 transition-colors">帮助中心</a>
+      </div>
+      <div class="hidden md:flex items-center gap-3">
+        <a href="/fp/register" class="text-[15px] text-white px-5 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 transition-colors font-medium">免费注册</a>
+      </div>
+      <button @click="open=!open" class="md:hidden p-2 rounded-lg text-slate-500 hover:text-slate-800">
+        <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg x-show="open" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div x-show="open" x-cloak class="md:hidden border-t border-slate-200 py-4 space-y-2">
+      <a href="/" @click="open=false" class="block px-3 py-2 text-[15px] text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg">首页</a>
+      <a href="/fp/news" @click="open=false" class="block px-3 py-2 text-[15px] text-slate-900 font-medium hover:bg-slate-50 rounded-lg">新闻资讯</a>
+      <a href="/fp/help" class="block px-3 py-2 text-[15px] text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg">帮助中心</a>
+      <div class="flex gap-3 pt-2 px-3">
+        <a href="/fp/register" class="flex-1 text-center text-[15px] py-2 rounded-lg bg-primary-600 text-white font-medium">免费注册</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- 面包屑 -->
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+  <nav class="flex items-center gap-2 text-sm text-slate-400">
+    <a href="/" class="hover:text-slate-700 transition-colors">首页</a>
+    <span>/</span>
+    <a href="/fp/news" class="hover:text-slate-700 transition-colors">新闻资讯</a>
+    <span>/</span>
+    <span class="text-slate-600 truncate max-w-xs">影刀中使用启元指纹浏览器</span>
+  </nav>
+</div>
+
+<!-- 文章主体 -->
+<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <article>
+    
+    <img src="https://res.usefullc.com/article/images/20260607/header_1780835074617.webp" alt="影刀中使用启元指纹浏览器"
+      class="w-full rounded-2xl mb-8 object-cover max-h-96 shadow-sm" />
+    
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4 leading-tight">影刀中使用启元指纹浏览器</h1>
+
+    <div class="flex flex-wrap items-center gap-3 mb-6 pb-6 border-b border-slate-200">
+      <span class="text-xs px-2.5 py-1 rounded-full bg-primary-50 text-primary-600 font-medium">知识中心</span>
+      
+      <span class="text-sm text-slate-500">启元科技</span>
+      
+      <span class="text-sm text-slate-400">2026-06-07</span>
+      <span class="text-sm text-slate-400 ml-auto">134 次阅读</span>
+    </div>
+
+    
+
+    <div class="article-content">
+      <p>用影刀做自动化的朋友，有时候需要直接接入第三方的指纹浏览器，需要灵活定制自己的指纹，做防关联操作，现在以启元浏览器为例，启元浏览器是真内核，经过多方指纹检测表现不错的一款指纹浏览器。这篇文章把对接流程整理了一遍，分四步，跟着走一遍就能跑起来。</p>
+
+<h2>第一步：在启元浏览器中准备好窗口环境</h2>
+
+<p>先进启元浏览器的环境管理，把要用到的窗口建好，后面影刀调用的就是这些环境。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831098504.webp" alt="启元浏览器环境管理界面"></p>
+
+<p>然后给窗口装上影刀扩展插件，这个插件是影刀连通浏览器的桥梁，少了它后面步骤都跑不通。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831243651.webp" alt="在启元浏览器中添加影刀扩展插件"></p>
+
+<p>选择要安装插件的窗口，我这里直接选了全部，省得一个个来。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831279391.webp" alt="选择要安装影刀插件的浏览器窗口"></p>
+
+<h2>第二步：在影刀中添加启元浏览器插件</h2>
+
+<p>打开影刀，进自动化插件管理，准备把启元浏览器注册进来。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831385382.webp" alt="影刀自动化插件管理页面"></p>
+
+<p>点击"添加自定义浏览器自动化"。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831395511.webp" alt="影刀中添加自定义浏览器自动化入口"></p>
+
+<p>接下来需要填浏览器的安装路径，回到启元浏览器里找一下路径入口。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831479086.webp" alt="在启元浏览器中获取浏览器路径"></p>
+
+<p>复制完整路径。这里有个细节要注意：不同内核的路径不一样，默认拿到的是最新版内核的路径。如果你的窗口混用了多个内核版本，建议统一成同一个，后面省不少麻烦。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831580612.webp" alt="复制启元浏览器完整安装路径"></p>
+
+<p>回到影刀，手动粘贴刚才复制的路径。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831641098.webp" alt="在影刀中粘贴启元浏览器路径"></p>
+
+<p>点安装。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831671081.webp" alt="点击安装浏览器插件"></p>
+
+<p>装好后插件列表里就能看到启元浏览器了，这步完成。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831691472.webp" alt="启元浏览器出现在影刀插件列表中"></p>
+
+<h2>第三步：在影刀中创建启元浏览器 API 模块</h2>
+
+<p>影刀不直接暴露浏览器控制接口，需要自己写一个 Python 模块来调用启元浏览器的 Open API。先新建一个 Python 模块。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831760541.webp" alt="影刀中新建Python模块"></p>
+
+<p>模块源码如下，封装了三个常用方法：获取环境列表、打开浏览器、关闭浏览器，日常用够了。</p>
+
+<div style="color: rgb(0, 0, 0); font-family: Consolas, &quot;Courier New&quot;, monospace; line-height: 19px; white-space: pre;"><div><span style="color: #00b418;"># 使用提醒:</span></div><div><span style="color: #00b418;"># 1. xbot包提供软件自动化、数据表格、Excel、日志、AI等功能</span></div><div><span style="color: #00b418;"># 2. package包提供访问当前应用数据的功能，如获取元素、访问全局变量、获取资源文件等功能</span></div><div><span style="color: #00b418;"># 3. 当此模块作为流程独立运行时执行main函数</span></div><div><span style="color: #00b418;"># 4. 可视化流程中可以通过"调用模块"的指令使用此模块</span></div><br><div><span style="color: #0100b6;font-weight: bold;">import</span> xbot</div><div><span style="color: #0100b6;font-weight: bold;">from</span> xbot <span style="color: #0100b6;font-weight: bold;">import</span> <span style="color: #0100b6;font-weight: bold;">print</span>, sleep</div><div><span style="color: #0100b6;font-weight: bold;">from</span> .<span style="color: #0100b6;font-weight: bold;">import</span> package</div><div><span style="color: #0100b6;font-weight: bold;">from</span> .package <span style="color: #0100b6;font-weight: bold;">import</span> variables <span style="color: #0100b6;font-weight: bold;">as</span> glv</div><br><div><span style="color: #00b418;"># 影刀 Python 模块标准格式：所有代码必须放在 main 函数内</span></div><div><span style="color: #0100b6;font-weight: bold;">import</span> requests</div><br><div>BASE = <span style="color: #d80800;">"http://127.0.0.1:9001"</span></div><br><br><div><span style="color: #0100b6;font-weight: bold;">def</span> get(path, **params):</div><div>&nbsp; &nbsp; r = requests.get(BASE + path, params=params)</div><div>&nbsp; &nbsp; r.raise_for_status()</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">return</span> r.json()</div><br><div><span style="color: #0100b6;font-weight: bold;">def</span> post(path, **body):</div><div>&nbsp; &nbsp; r = requests.post(BASE + path, json=body)</div><div>&nbsp; &nbsp; r.raise_for_status()</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">return</span> r.json()</div><br><div><span style="color: #0100b6;font-weight: bold;">def</span> open_browser(env_code):</div><div>&nbsp; &nbsp; res = post(<span style="color: #d80800;">"/open/env/open"</span>, code=env_code, headless=<span style="color: #0100b6;font-weight: bold;">False</span>)</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">print</span>(<span style="color: #d80800;">"[浏览器] 结果:"</span>, res)</div><div>&nbsp; &nbsp; debug_port = res[<span style="color: #d80800;">"data"</span>][<span style="color: #d80800;">"debug_port"</span>]</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">print</span>(f<span style="color: #d80800;">"[浏览器] 调试端口={debug_port}"</span>)</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">return</span> res</div><br><div><span style="color: #0100b6;font-weight: bold;">def</span> close_browser(env_code):</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">print</span>(<span style="color: #d80800;">"[关闭] 正在执行兜底关闭..."</span>)</div><div>&nbsp; &nbsp; res = post(<span style="color: #d80800;">"/open/env/close"</span>, code=env_code)</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">print</span>(<span style="color: #d80800;">"[关闭] 完成,结果："</span>,res)</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">return</span> res</div><br><div><span style="color: #0100b6;font-weight: bold;">def</span> browser_list():</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">print</span>(<span style="color: #d80800;">"[批量] 查询环境列表..."</span>)</div><div>&nbsp; &nbsp; res = get(<span style="color: #d80800;">"/open/env/list"</span>, page=<span style="color: #098658;">1</span>, page_size=<span style="color: #098658;">3</span>)</div><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">for</span> env <span style="color: #0100b6;font-weight: bold;">in</span> res[<span style="color: #d80800;">"data"</span>][<span style="color: #d80800;">"items"</span>]:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">print</span>(f<span style="color: #d80800;">"环境结果={env}"</span>)</div><br><div>&nbsp; &nbsp; <span style="color: #0100b6;font-weight: bold;">return</span> [item[<span style="color: #d80800;">'code'</span>] <span style="color: #0100b6;font-weight: bold;">for</span> item <span style="color: #0100b6;font-weight: bold;">in</span> &nbsp;res[<span style="color: #d80800;">'data'</span>][<span style="color: #d80800;">'items'</span>]]</div></div>
+
+<p>代码粘进去之后，还需要安装 <code>requests</code> 依赖库，否则代码跑不起来。进依赖管理，搜索 requests。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831821566.webp" alt="影刀Python模块添加依赖库入口"></p>
+
+<p>输入 requests，点安装，装完就好了。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831856862.webp" alt="搜索并安装requests依赖库"></p>
+
+<h2>第四步：在影刀中创建应用并运行</h2>
+
+<p>模块准备好了，在影刀里建应用就顺了。流程大致是：先调模块里的 <code>browser_list</code> 获取环境列表，遍历列表逐个调 <code>open_browser</code> 打开浏览器，执行完业务操作后，再调 <code>close_browser</code> 关掉。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831889176.webp" alt="影刀自动化应用流程配置示例"></p>
+
+<p>在"打开网页"这个节点，浏览器选项要切换成刚才添加的启元浏览器，默认是系统浏览器，连不上的。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780833938737.webp" alt="影刀打开网页节点中选择启元浏览器"></p>
+
+<p>跑一遍，执行日志如下，每步都有输出说明对接正常。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780831914260.webp" alt="影刀自动化执行日志输出"></p>
+
+<h2>常见问题</h2>
+
+<p>如果运行时浏览器连不上，报类似连接拒绝的错误，大概率是没开开发者模式，看一下这张图里的提示。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780834011345.webp" alt="启元浏览器与影刀对接常见报错问题"></p>
+
+<p>进启元浏览器设置，把开发者模式打开，重新跑一次就行了。</p>
+
+<p><img src="https://res.usefullc.com/article/images/20260607/detail_1780834041382.webp" alt="启元浏览器开启开发者模式设置界面"></p>
+    </div>
+
+    
+  </article>
+
+  <div class="mt-12">
+    <a href="/fp/news" class="inline-flex items-center gap-2 text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      返回资讯列表
+    </a>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-slate-900 border-t border-slate-800 py-8 mt-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500">
+    <p>© 2026 启元指纹浏览器. All rights reserved. ·
+      <a href="/privacy" class="hover:text-slate-300 transition-colors ml-1">隐私政策</a> ·
+      <a href="/terms" class="hover:text-slate-300 transition-colors ml-1">用户协议</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebRTC为什么会泄露你的真实IP？一次实测 + 防护设置说明 - 启元指纹浏览器</title>
+  <meta name="description" content="WebRTC为什么会泄露你的真实IP？一次实测 + 防护设置说明" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://usefullc.com/fp/news/17" />
+  <meta property="og:title" content="WebRTC为什么会泄露你的真实IP？一次实测 + 防护设置说明" />
+  <meta property="og:description" content="" />
+  
+  <meta property="og:image" content="https://res.usefullc.com/article/images/20260716/header_1784190689757.webp" />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#eff6ff', 100:'#dbeafe', 400:'#60a5fa', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 900:'#1e3a8a' },
+          },
+          fontFamily: { sans: ['"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .article-content { color: #475569; line-height: 1.8; font-size: 1rem; }
+    .article-content h1,.article-content h2,.article-content h3 { color:#0f172a; font-weight:700; margin:1.6em 0 0.6em; }
+    .article-content h1 { font-size:1.6em; }
+    .article-content h2 { font-size:1.4em; }
+    .article-content h3 { font-size:1.2em; }
+    .article-content p  { margin:0.8em 0; }
+    .article-content a  { color:#2563eb; text-decoration:underline; }
+    .article-content ul,.article-content ol { padding-left:1.5em; margin:0.8em 0; }
+    .article-content li { margin:0.3em 0; }
+    .article-content blockquote { border-left:4px solid #2563eb; padding:0.5em 1em; margin:1em 0; color:#64748b; background:#eff6ff; border-radius:0 8px 8px 0; }
+    .article-content pre  { background:#f1f5f9; padding:1em; border-radius:8px; overflow-x:auto; margin:1em 0; border:1px solid #e2e8f0; }
+    .article-content code { background:#f1f5f9; color:#1e40af; padding:0.15em 0.4em; border-radius:4px; font-size:0.9em; }
+    .article-content img  { max-width:100%; border-radius:8px; margin:1em auto; display:block; }
+    .article-content table { width:100%; border-collapse:collapse; margin:1em 0; }
+    .article-content th,.article-content td { border:1px solid #e2e8f0; padding:0.5em 0.8em; }
+    .article-content th { background:#f8faff; color:#1e293b; font-weight:600; }
+  </style>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased">
+
+<!-- 导航栏 -->
+<header x-data="{ open: false }" class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between" style="height:72px">
+      <a href="/" class="flex items-center gap-2.5 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <span class="text-lg font-bold text-slate-900">启元<span class="text-primary-600">指纹浏览器</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="/" class="text-[15px] text-slate-600 hover:text-slate-900 transition-colors">首页</a>
+        <a href="/#features" class="text-[15px] text-slate-600 hover:text-slate-900 transition-colors">功能特性</a>
+        <a href="/#pricing" class="text-[15px] text-slate-600 hover:text-slate-900 transition-colors">价格方案</a>
+        <a href="/fp/news" class="text-[15px] text-slate-900 font-semibold border-b-2 border-primary-600 pb-0.5">新闻资讯</a>
+        <a href="/fp/help" target="_blank" class="text-[15px] text-slate-600 hover:text-slate-900 transition-colors">帮助中心</a>
+      </div>
+      <div class="hidden md:flex items-center gap-3">
+        <a href="/fp/register" class="text-[15px] text-white px-5 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 transition-colors font-medium">免费注册</a>
+      </div>
+      <button @click="open=!open" class="md:hidden p-2 rounded-lg text-slate-500 hover:text-slate-800">
+        <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg x-show="open" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div x-show="open" x-cloak class="md:hidden border-t border-slate-200 py-4 space-y-2">
+      <a href="/" @click="open=false" class="block px-3 py-2 text-[15px] text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg">首页</a>
+      <a href="/fp/news" @click="open=false" class="block px-3 py-2 text-[15px] text-slate-900 font-medium hover:bg-slate-50 rounded-lg">新闻资讯</a>
+      <a href="/fp/help" class="block px-3 py-2 text-[15px] text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg">帮助中心</a>
+      <div class="flex gap-3 pt-2 px-3">
+        <a href="/fp/register" class="flex-1 text-center text-[15px] py-2 rounded-lg bg-primary-600 text-white font-medium">免费注册</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- 面包屑 -->
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+  <nav class="flex items-center gap-2 text-sm text-slate-400">
+    <a href="/" class="hover:text-slate-700 transition-colors">首页</a>
+    <span>/</span>
+    <a href="/fp/news" class="hover:text-slate-700 transition-colors">新闻资讯</a>
+    <span>/</span>
+    <span class="text-slate-600 truncate max-w-xs">WebRTC为什么会泄露你的真实IP？一次实测 + 防护设置说明</span>
+  </nav>
+</div>
+
+<!-- 文章主体 -->
+<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <article>
+    
+    <img src="https://res.usefullc.com/article/images/20260716/header_1784190689757.webp" alt="WebRTC为什么会泄露你的真实IP？一次实测 + 防护设置说明"
+      class="w-full rounded-2xl mb-8 object-cover max-h-96 shadow-sm" />
+    
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4 leading-tight">WebRTC为什么会泄露你的真实IP？一次实测 + 防护设置说明</h1>
+
+    <div class="flex flex-wrap items-center gap-3 mb-6 pb-6 border-b border-slate-200">
+      <span class="text-xs px-2.5 py-1 rounded-full bg-primary-50 text-primary-600 font-medium">知识中心</span>
+      
+      <span class="text-sm text-slate-500">启元科技</span>
+      
+      <span class="text-sm text-slate-400">2026-07-16</span>
+      <span class="text-sm text-slate-400 ml-auto">131 次阅读</span>
+    </div>
+
+    
+
+    <div class="article-content">
+      <article>
+  <p>代理明明已经连上，网页里显示的也是代理 IP，为什么做浏览器检测时还能看到另一个地址？碰到这种情况，先别急着换代理，问题很可能出在 WebRTC。它是浏览器自带的实时通信功能，在特定网络和代理配置下，可能暴露本地网络地址，甚至让网站发现 WebRTC 使用的出口 IP 与网页出口 IP 不一致。</p>
+
+  <p>下面结合实际检测结果，聊清楚 WebRTC 为什么会暴露 IP、怎么判断当前浏览器有没有泄露，以及在启元指纹浏览器中该选哪种设置。</p>
+
+  <h2>WebRTC 是什么，为什么可能泄露 IP？</h2>
+
+  <p>WebRTC 的全称是 Web Real-Time Communication，主要用于浏览器里的视频通话、语音聊天、屏幕共享和点对点传输。很多在线会议、网页客服和直播连麦功能都离不开它。</p>
+
+  <p>为了建立实时连接，WebRTC 会通过 ICE 机制寻找可用的网络路径。这个过程中，浏览器可能收集几类候选地址：</p>
+
+  <ul>
+    <li>本机的局域网地址；</li>
+    <li>STUN 服务器探测到的公网出口地址；</li>
+    <li>通过 TURN 中继服务器使用的地址。</li>
+  </ul>
+
+  <p>麻烦往往出在这里：普通 HTTP 或 SOCKS 代理主要接管网页请求，不一定会正确处理 WebRTC 的 UDP 流量。如果两边走的网络路径不同，网站看到的网页出口 IP 和 WebRTC 候选地址就可能对不上。这种不一致不一定等于真实 IP 已经完全暴露，但足以成为判断网络环境异常的一项依据。</p>
+
+  <p>现在的 Chromium 浏览器通常会用 mDNS 隐藏部分本地局域网地址，所以检测页面显示随机主机名并不奇怪。真正需要留意的是：WebRTC 检测出的公网地址，是否和当前代理出口一致。</p>
+
+  <h2>如何检测 WebRTC 是否泄露 IP？</h2>
+
+  <p>检测并不复杂。先连接准备使用的代理，再打开 WebRTC 检测页面，例如 BrowserLeaks 的 WebRTC Test。页面加载后，重点看下面两项：</p>
+
+  <ul>
+    <li><strong>Public IP Address：</strong>是否与代理出口 IP 一致；</li>
+    <li><strong>Local IP Address：</strong>是否显示真实局域网地址，或已经被 mDNS 主机名替代。</li>
+  </ul>
+
+  <figure>
+    <img src="https://res.usefullc.com/article/images/20260716/detail_1784190397456.webp" alt="WebRTC IP 泄露检测页面与公网地址检测结果" loading="lazy">
+    <figcaption>检测时应对照网页出口 IP 与 WebRTC 显示的公网地址</figcaption>
+  </figure>
+
+  <p>如果网页查询到的是代理 IP，而 WebRTC 的 Public IP Address 显示了另一个公网 IP，说明两类流量没有走同一条线路，需要调整 WebRTC 策略或检查代理配置。修改后最好关闭当前页面，用新标签页重新检测一次；如果浏览器环境已经启动，也可以重启环境后再测，避免旧连接影响结果。</p>
+
+  <h2>启元指纹浏览器的 WebRTC 怎么设置？</h2>
+
+  <p>在启元指纹浏览器中新建或编辑浏览器环境，可以看到 WebRTC 设置。目前有基于 IP、真实、禁用和转发四种模式。它们没有绝对的好坏，主要看网站是否需要实时音视频功能。</p>
+
+  <figure>
+    <img src="https://res.usefullc.com/article/images/20260716/detail_1784190429278.webp" alt="启元指纹浏览器 WebRTC 设置中的基于IP、真实、禁用和转发选项" loading="lazy">
+    <figcaption>启元指纹浏览器中的 WebRTC 模式设置</figcaption>
+  </figure>
+
+  <h3>基于 IP</h3>
+
+  <p>这个模式会根据当前代理网络处理 WebRTC 地址，让检测结果尽量与代理出口保持一致。日常运营既要控制 IP 一致性，又可能用到网页语音、视频等功能时，可以优先选它。设置完成后仍建议实际检测一次，因为最终结果还会受到代理协议和网络环境影响。</p>
+
+  <h3>真实</h3>
+
+  <p>浏览器不额外干预 WebRTC，网站按当前真实网络环境获取候选地址。正常单账号使用、无需隐藏网络信息，或者专门调试 WebRTC 功能时可以选择；使用代理管理多个独立环境时，一般不建议这样设置。</p>
+
+  <h3>禁用</h3>
+
+  <p>关闭 WebRTC 相关能力，操作简单，也能避免 WebRTC 地址与代理 IP 不一致。不过，依赖 WebRTC 的视频会议、网页通话、语音客服和屏幕共享可能无法正常使用。如果平时只是登录后台、发布内容或处理订单，不需要这些功能，禁用通常更省事。</p>
+
+  <h3>转发</h3>
+
+  <p>转发模式适合需要 WebRTC 功能、同时又有特定网络线路要求的场景。它会通过指定方式处理相关连接，对网络配置要求更高。没有这类需求时，不必为了“更安全”特意选择转发。</p>
+
+  <h2>WebRTC 模式应该怎么选？</h2>
+
+  <ul>
+    <li>只做网页浏览、电商后台或内容运营，不用语音和视频：选择<strong>禁用</strong>；</li>
+    <li>需要网页通话、视频会议，同时希望地址与代理 IP 保持一致：选择<strong>基于 IP</strong>；</li>
+    <li>不使用代理，希望保留浏览器默认通信能力：选择<strong>真实</strong>；</li>
+    <li>有明确的 WebRTC 网络转发需求：选择<strong>转发</strong>。</li>
+  </ul>
+
+  <p>我自己的习惯是，先按使用场景选模式，再打开检测页面核对结果。不要只看设置项已经保存，就默认不会泄露。代理类型、系统网络、IPv6 和浏览器版本都可能影响最终表现，实测结果才最可靠。</p>
+
+  <h2>WebRTC IP 泄露常见问题</h2>
+
+  <h3>关闭 WebRTC 会被网站识别成异常浏览器吗？</h3>
+
+  <p>网站可以知道 WebRTC 是否可用，但通常不会只凭这一项就认定浏览器异常。真正影响环境判断的，往往是 IP、时区、语言、系统信息等多项数据之间是否矛盾。不过，如果目标网站本身依赖 WebRTC，直接禁用就会影响功能，这时更适合使用基于 IP 模式。</p>
+
+  <h3>用了 VPN，还需要检查 WebRTC 吗？</h3>
+
+  <p>需要。配置完整的 VPN 通常会接管系统流量，WebRTC 未必会泄露真实公网 IP，但不同 VPN、分流规则和 IPv6 设置的表现并不一样。最稳妥的做法还是连接 VPN 后跑一次 WebRTC 检测，确认页面出口与检测结果一致。</p>
+
+  <h3>只隐藏本地 IP 就够了吗？</h3>
+
+  <p>不够。本地 IP 被 mDNS 隐藏，只能说明局域网地址没有直接显示。还要检查 Public IP Address，确认它没有绕开代理走其他出口。对于代理环境来说，公网地址是否一致更值得关注。</p>
+
+  <h3>手机浏览器也会有 WebRTC 泄露吗？</h3>
+
+  <p>手机浏览器同样支持 WebRTC，也可能出现地址或线路不一致。不过移动网络通常经过运营商 NAT，检测结果会和电脑宽带不同。不要照搬电脑端的判断，直接在手机当前网络和代理状态下测试即可。</p>
+
+  <h2>最后说两句</h2>
+
+  <p>WebRTC 本身不是漏洞，它只是实时通信所需的一套浏览器能力。真正需要处理的是：开启代理后，网页流量和 WebRTC 流量是否走了不同出口。把模式选对，再用检测网站复查公网地址，基本就能避开这类问题。</p>
+</article>
+    </div>
+
+    
+  </article>
+
+  <div class="mt-12">
+    <a href="/fp/news" class="inline-flex items-center gap-2 text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      返回资讯列表
+    </a>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-slate-900 border-t border-slate-800 py-8 mt-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500">
+    <p>© 2026 启元指纹浏览器. All rights reserved. ·
+      <a href="/privacy" class="hover:text-slate-300 transition-colors ml-1">隐私政策</a> ·
+      <a href="/terms" class="hover:text-slate-300 transition-colors ml-1">用户协议</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
