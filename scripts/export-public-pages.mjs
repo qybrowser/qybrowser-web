@@ -48,6 +48,7 @@ for (const article of articles) {
 await mkdir(join(root, 'fp', 'register'), { recursive: true });
 await writeFile(join(root, 'fp', 'register', 'index.html'), await get('/fp/register'), 'utf8');
 const snapshots = {
+  '/': 'index.html',
   '/fp/help': 'fp/help/index.html',
   '/fp/privacy': 'fp/privacy/index.html',
   '/fp/reset-password': 'fp/reset-password/index.html',
