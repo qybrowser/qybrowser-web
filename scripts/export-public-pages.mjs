@@ -1,5 +1,5 @@
-import { mkdir, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 
 const origin = process.env.SOURCE_ORIGIN || 'https://usefullc.com';
 const root = process.cwd();
@@ -32,7 +32,30 @@ const page = `<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><met
 await mkdir(join(root, 'fp', 'news'), { recursive: true });
 await writeFile(join(root, 'fp', 'news', 'index.html'), page, 'utf8');
 await writeFile(join(root, 'fp', 'news', 'data.json'), JSON.stringify(articles, null, 2), 'utf8');
-for (const article of articles) { await mkdir(join(root, 'fp', 'news', article.id), { recursive: true }); await writeFile(join(root, 'fp', 'news', article.id, 'index.html'), await get(`/fp/news/${article.id}`), 'utf8'); }
+for (const article of articles) {
+  await mkdir(join(root, 'fp', 'news', article.id), { recursive: true });
+  const detailPath = join(root, 'fp', 'news', article.id, 'index.html');
+  if (process.env.REFRESH_DETAILS === '1') {
+    await writeFile(detailPath, await get(`/fp/news/${article.id}`), 'utf8');
+  } else {
+    try { await readFile(detailPath, 'utf8'); } catch { await writeFile(detailPath, await get(`/fp/news/${article.id}`), 'utf8'); }
+  }
+}
 await mkdir(join(root, 'fp', 'register'), { recursive: true });
 await writeFile(join(root, 'fp', 'register', 'index.html'), await get('/fp/register'), 'utf8');
+const snapshots = {
+  '/': 'index.html',
+  '/fp/help': 'fp/help/index.html',
+  '/fp/privacy': 'fp/privacy/index.html',
+  '/fp/reset-password': 'fp/reset-password/index.html',
+  '/fp/terms': 'fp/terms/index.html',
+  '/fp/docs/api': 'fp/docs/api/index.html',
+  '/fp/docs/qiyuan-sdk': 'fp/docs/qiyuan-sdk/index.html',
+  '/s.js': 's.js',
+};
+for (const [source, target] of Object.entries(snapshots)) {
+  const targetPath = join(root, target);
+  await mkdir(dirname(targetPath), { recursive: true });
+  await writeFile(targetPath, await get(source), 'utf8');
+}
 console.log(`Exported ${articles.length} news articles and the register page from ${origin}`);

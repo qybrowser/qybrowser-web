@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Qiyuan SDK 接口文档 - 指纹浏览器</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; color: #303133; }
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 24px 80px; display: flex; gap: 32px; align-items: flex-start; }
+  .sidebar { width: 300px; flex-shrink: 0; position: sticky; top: 24px; }
+  .content { flex: 1; min-width: 0; }
+  h1 { font-size: 26px; color: #1a1a2e; margin-bottom: 4px; font-weight: 700; letter-spacing: -.3px; }
+  .subtitle { color: #909399; font-size: 13px; margin-bottom: 32px; }
+  h2 { font-size: 17px; color: #1a1a2e; margin: 36px 0 14px; border-left: 4px solid #409eff; padding-left: 12px; scroll-margin-top: 20px; }
+  h3 { font-size: 13px; color: #303133; margin: 16px 0 6px; font-weight: 600; }
+  p, li { font-size: 13px; line-height: 1.8; color: #606266; }
+  ol, ul { padding-left: 20px; }
+  code { background: #f0f4ff; border-radius: 4px; padding: 1px 6px; font-family: 'Courier New', monospace; font-size: 12px; color: #c0392b; }
+  pre { background: #1e1e2e; color: #cdd6f4; border-radius: 8px; padding: 14px 18px; font-size: 12.5px; overflow-x: auto; line-height: 1.75; margin: 8px 0; }
+  pre .key { color: #89b4fa; }
+  pre .str { color: #a6e3a1; }
+  pre .num { color: #fab387; }
+  pre .cmt { color: #6c7086; font-style: italic; }
+  pre .kw { color: #cba6f7; }
+  pre .fn { color: #89dceb; }
+  .event-card { background: #fff; border-radius: 10px; border: 1px solid #e4e7ed; margin-bottom: 16px; overflow: hidden; scroll-margin-top: 20px; }
+  .event-header { padding: 13px 18px; background: #f8f9fc; border-bottom: 1px solid #e4e7ed; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .event-name { font-family: 'Courier New', monospace; font-size: 14px; font-weight: 700; color: #303133; }
+  .event-cn { font-size: 13px; color: #606266; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .badge-get  { background: #f0f9eb; color: #67c23a; }
+  .badge-post { background: #ecf5ff; color: #409eff; }
+  .badge-local { background: #fdf6ec; color: #e6a23c; margin-left: auto; }
+  .badge-store { background: #f4ecff; color: #8957e6; margin-left: auto; }
+  .event-body { padding: 14px 18px; }
+  .param-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 6px 0; }
+  .param-table th { background: #f5f7fa; text-align: left; padding: 7px 10px; font-weight: 600; color: #606266; border-bottom: 1px solid #e4e7ed; }
+  .param-table td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; color: #606266; vertical-align: top; }
+  .param-table td:first-child { font-family: 'Courier New', monospace; color: #303133; white-space: nowrap; }
+  .required { color: #f56c6c; font-size: 11px; font-weight: 600; }
+  .optional { color: #909399; font-size: 11px; }
+  .section-tag { font-size: 11px; color: #fff; background: #606266; border-radius: 4px; padding: 2px 7px; margin-left: 6px; vertical-align: middle; }
+  .auth-box { background: #fff7e6; border: 1px solid #ffd591; border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; }
+  .auth-box p { color: #7a4f00; font-size: 13px; line-height: 1.8; }
+  .nav-box { background: #fff; border-radius: 12px; border: 1px solid #e4e7ed; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+  .nav-header { padding: 14px 18px 12px; border-bottom: 1px solid #f0f2f5; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+  .nav-header h4 { font-size: 14px; color: #fff; font-weight: 700; letter-spacing: .5px; }
+  .nav-header p { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+  .nav-body { padding: 12px 0 8px; max-height: calc(100vh - 130px); overflow-y: auto; overflow-x: hidden; }
+  .nav-body::-webkit-scrollbar { width: 4px; }
+  .nav-body::-webkit-scrollbar-thumb { background: #dde1e7; border-radius: 4px; }
+  .nav-group { margin-bottom: 4px; }
+  .nav-group-title { font-size: 11px; color: #909399; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 8px 20px 4px; display: flex; align-items: center; gap: 6px; }
+  .nav-group-title::after { content: ''; flex: 1; height: 1px; background: #f0f0f0; }
+  .nav-box a.nav-endpoint { display:grid; grid-template-columns:40px minmax(0,1fr); column-gap:6px; padding:9px 14px; text-decoration:none; border-radius:8px; border-left:3px solid transparent; transition:all .15s; line-height:1.25; }
+  .nav-box a .nav-method { grid-row:1 / span 2; padding-top:2px; font:700 11px 'Courier New',monospace; }.nav-box a .nav-method.get{color:#27a269}.nav-box a .nav-method.post{color:#347de3}
+  .nav-box a .nav-cn { font-size:13px; font-weight:400; color:#30405c; }.nav-box a .nav-path { margin-top:2px; color:#8b98ad; font:11px 'Courier New',monospace; overflow-wrap:anywhere; }
+  .nav-service-badge { display:inline-block; margin-left:8px; padding:1px 6px; border-radius:9px; background:#f4ecff; color:#8957e6; font-size:10px; line-height:1.4; vertical-align:1px; }
+  .nav-local-badge { display:inline-block; margin-left:8px; padding:1px 6px; border-radius:9px; background:#fdf6ec; color:#e6a23c; font-size:10px; line-height:1.4; vertical-align:1px; }
+  .nav-server-icon { color:#4379d1; font-size:12px; margin-right:5px; vertical-align:1px; }
+  .nav-box a:hover { background:#f5f8ff; }
+  .nav-box a.active { background:#eaf3ff; border-left-color:#409eff; }
+  .nav-box a.active .nav-cn, .nav-box a.active .nav-path { color:#2f7fe8; }
+  .nav-plain { font-size: 13px; color: #606266; text-decoration: none; padding: 7px 20px; display: block; border-left: 3px solid transparent; transition: all .15s; }
+  .nav-plain:hover { background: #f5f7ff; border-left-color: #79bbff; color: #409eff; }
+  .nav-plain.active { background:#ecf5ff; border-left-color:#409eff; color:#409eff; font-weight:400; }
+  .kefu-popover { display:inline-block; position:relative; vertical-align:baseline; }
+  .kefu-popover input { position:absolute; opacity:0; width:0; height:0; }
+  .kefu-popover label { color:#409eff; cursor:pointer; text-decoration:underline; }
+  .kefu-popover-panel { display:none; position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%); width:260px; padding:8px; background:#fff; border:1px solid #e4e7ed; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,.16); z-index:10; }
+  .kefu-popover input:checked ~ .kefu-popover-panel { display:block; }
+  .kefu-popover-panel img { display:block; width:100%; height:auto; }
+  .integration-map { margin:12px 0 16px; padding:18px; background:#fff; border:1px solid #dce7f6; border-radius:10px; }
+  .integration-flow { display:grid; grid-template-columns:minmax(0,1fr) 86px minmax(0,1fr) 86px minmax(0,1fr); align-items:center; gap:8px; }
+  .integration-node { min-height:130px; padding:14px; border:1px solid #bcd7fa; border-radius:8px; background:#f5f9ff; }
+  .integration-node.product { border-color:#f4d5a4; background:#fffbf3; }
+  .integration-node strong { display:block; margin-bottom:8px; font-size:14px; color:#26364d; }
+  .integration-node span { display:block; font-size:12px; line-height:1.7; color:#606f83; }
+  .integration-arrow { text-align:center; color:#4379d1; font-size:24px; }
+  .integration-arrow small { display:block; font-size:11px; line-height:1.4; color:#68798f; }
+  .integration-planned { margin-top:14px; padding:10px 12px; border:1px dashed #d9a852; border-radius:7px; background:#fffaf0; font-size:12px; line-height:1.7; color:#765721; }
+  .integration-caption { margin-top:10px; font-size:12px; color:#718096; }
+  .architecture-map { margin:14px 0 18px; padding:18px; background:#fff; border:1px solid #dce7f6; border-radius:10px; }
+  .architecture-flow { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  .architecture-node { padding:14px; border:1px solid #bcd7fa; border-radius:8px; background:#f5f9ff; }
+  .architecture-node h4 { margin:0 0 8px; color:#26364d; font-size:14px; }
+  .architecture-node p { font-size:12px; line-height:1.7; }
+  .architecture-link { margin-top:12px; padding:10px; text-align:center; border-top:1px dashed #aac5e6; color:#526b88; font-size:12px; }
+  .response-type { margin:14px 0 5px; font-size:12px; color:#7b8798; font-weight:500; }
+  .response-label { margin-top:10px; font-size:12px; color:#53657d; font-weight:600; }
+  @media (max-width:900px) { .integration-flow { grid-template-columns:1fr; } .integration-arrow { transform:rotate(90deg); } .integration-node { min-height:0; } }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- 侧边导航 -->
+  <div class="sidebar">
+    <div class="nav-box">
+      <div class="nav-header">
+        <h4>Qiyuan SDK</h4>
+        <p>指纹浏览器 · 本地 SDK + 管理后台</p>
+      </div>
+      <div class="nav-body">
+        <div class="nav-group">
+          <div class="nav-group-title">基础</div>
+          <a class="nav-plain" href="#overview">概述与架构</a>
+          <a class="nav-plain" href="#connect">接入方式</a>
+          <a class="nav-plain" href="#response">接口规格</a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">环境接口</div>
+          <a href="#env-list"><span class="nav-api">GET /open/env/list</span><span class="nav-cn">环境列表</span></a>
+          <a href="#env-detail"><span class="nav-api">GET /open/env/detail</span><span class="nav-cn">环境详情</span></a>
+          <a href="#env-create"><span class="nav-api">POST /open/env/create</span><span class="nav-cn">新增环境</span></a>
+          <a href="#env-update"><span class="nav-api">POST /open/env/update</span><span class="nav-cn">修改环境</span></a>
+          <a href="#env-randomize"><span class="nav-api">POST /open/env/randomize_fingerprint</span><span class="nav-cn">刷新指纹</span></a>
+          <a href="#env-delete"><span class="nav-api">POST /open/env/delete</span><span class="nav-cn">删除环境</span></a>
+          <a href="#env-open"><span class="nav-api">POST /open/env/open</span><span class="nav-cn">打开浏览器</span></a>
+          <a href="#env-close"><span class="nav-api">POST /open/env/close</span><span class="nav-cn">关闭浏览器</span></a>
+          <a href="#env-status"><span class="nav-api">GET /open/env/status</span><span class="nav-cn">运行状态</span></a>
+          <a href="#env-clear"><span class="nav-api">POST /open/env/clear_cache</span><span class="nav-cn">清空缓存</span></a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">代理接口</div>
+          <a href="#proxy-list"><span class="nav-api">GET /open/proxy/list</span><span class="nav-cn">代理列表</span></a>
+          <a href="#proxy-create"><span class="nav-api">POST /open/proxy/create</span><span class="nav-cn">新增代理</span></a>
+          <a href="#proxy-update"><span class="nav-api">POST /open/proxy/update</span><span class="nav-cn">修改代理</span></a>
+          <a href="#proxy-delete"><span class="nav-api">POST /open/proxy/delete</span><span class="nav-cn">删除代理</span></a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">扩展接口</div>
+          <a href="#extension-list"><span class="nav-api">GET /open/extension/list</span><span class="nav-cn">扩展列表</span></a>
+          <a href="#extension-detail"><span class="nav-api">GET /open/extension/detail</span><span class="nav-cn">扩展详情</span></a>
+          <a href="#extension-create"><span class="nav-api">POST /open/extension/create</span><span class="nav-cn">新增扩展</span></a>
+          <a href="#extension-update"><span class="nav-api">POST /open/extension/update</span><span class="nav-cn">修改扩展</span></a>
+          <a href="#extension-delete"><span class="nav-api">POST /open/extension/delete</span><span class="nav-cn">删除扩展</span></a>
+          <a href="#extension-bindings"><span class="nav-api">POST /open/extension/bindings</span><span class="nav-cn">绑定环境</span></a>
+          <a href="#extension-sync"><span class="nav-api">POST /open/extension/sync</span><span class="nav-cn">扩展同步</span></a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">客户端回调</div>
+          <a href="#cb-md5"><span class="nav-api">GET /api/v1/browser/md5/{uuid}</span><span class="nav-cn">拉取指纹</span></a>
+          <a href="#cb-error"><span class="nav-api">POST /api/v1/browser/error/report</span><span class="nav-cn">错误上报</span></a>
+          <a href="#cb-tabs"><span class="nav-api">POST /api/v1/client/browser/tabs</span><span class="nav-cn">标签上报</span></a>
+          <a href="#cb-checkproxy"><span class="nav-api">POST /api/check-proxy</span><span class="nav-cn">代理检测</span></a>
+          <a href="#cb-ipgeo"><span class="nav-api">GET /api/ip-geo</span><span class="nav-cn">IP 地理</span></a>
+          <a href="#cb-status"><span class="nav-api">POST /api/browser/status</span><span class="nav-cn">开关状态</span></a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">起始页 / 错误页</div>
+          <a href="#pg-home"><span class="nav-api">GET /pages/home.html</span><span class="nav-cn">起始页</span></a>
+          <a href="#pg-error"><span class="nav-api">GET /pages/error.html</span><span class="nav-cn">错误页</span></a>
+          <a href="#pg-homedata"><span class="nav-api">GET /api/v1/browser/home-data/{md5}</span><span class="nav-cn">起始页数据</span></a>
+          <a href="#pg-errordata"><span class="nav-api">GET /api/v1/browser/error-data/{code}</span><span class="nav-cn">错误页数据</span></a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">其他</div>
+          <a class="nav-plain" href="#schema">数据表结构</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="content">
+    <h1>Qiyuan SDK 接口文档</h1>
+    <p class="subtitle">指纹浏览器 · 自包含 Python SDK + 管理后台 · v2.1</p>
+
+    <!-- 概述 -->
+    <h2 id="overview">概述与架构</h2>
+    <p>本 SDK 将<strong>服务端接口</strong>与<strong>本地客户端接口</strong>拆分维护。根目录 <code>browser-config.json</code> 配置内核、启动模式和服务端地址；客户端启动时会生成 <code>browser/config/config.json</code>。独立部署时，服务端与本地客户端通过 <code>base_api_path</code> 通信。</p>
+    <p><code>base_api_path</code> 承载服务端接口，<code>base_local_api_path</code> 承载本地客户端接口，生成的 <code>browser_base_path</code> 使用 <code>base_api_path</code> 的值。导航中的 <span class="nav-server-icon" title="服务端接口">☁</span> 标识服务端接口。</p>
+    <ul style="margin: 8px 0 0 20px;">
+      <li><strong>环境 / 代理管理 / 插件</strong>：由服务端接口承载；自包含运行时数据由服务端持久化，<a href="#schema">查看具体数据表结构</a>。</li>
+      <li><strong>本地浏览器控制</strong>：<code>open</code> / <code>close</code> / <code>status</code> / <code>clear_cache</code> 直接拉起 / 终止本机真实浏览器进程。</li>
+    </ul>
+    <p style="margin-top:8px">每个接口都有对应的 HTTP 路由，二者共享同一份逻辑。标签说明：<span class="badge badge-store">服务</span> 为服务端操作，<span class="badge badge-local">本地</span> 为本机进程操作。</p>
+    <div class="architecture-map" role="img" aria-label="Qiyuan SDK 由自研产品、服务端、客户端和浏览器内核组成">
+      <div class="architecture-flow">
+        <div class="architecture-node"><h4>自研产品 / 调用方</h4><p>用户界面、业务流程和用户体系。通过 HTTP 调用 SDK 接口。</p></div>
+        <div class="architecture-node"><h4>SDK 服务端</h4><p>环境、代理、扩展管理接口；服务端数据库；向客户端提供共享数据。</p></div>
+        <div class="architecture-node"><h4>SDK 客户端 + 浏览器内核</h4><p>本地打开、关闭和管理浏览器进程；运行 Chromium 或 Firefox 内核。</p></div>
+      </div>
+      <div class="architecture-link">调用方 → SDK 接口 → 服务端数据；客户端 ⇄ 服务端同步环境与扩展 → 启动本地内核并接收浏览器回调</div>
+    </div>
+
+    <!-- 接入方式 -->
+    <h2 id="connect">接入方式</h2>
+    <p>管理后台基于 <strong>HTTP</strong> 协议，默认监听 <code>http://127.0.0.1:9003</code>。部署方式由根目录 <code>browser-config.json</code> 的 <code>startup_mode</code> 控制。本 SDK 提供以下两种接入方式：</p>
+    <ol>
+      <li><strong>单机部署（<code>startup_mode=all</code>）</strong>：服务端、客户端和浏览器内核在同一台机器，适合开发调试、演示和单机使用。</li>
+      <li><strong>客户端与服务端分离部署（<code>startup_mode=server</code> + <code>client</code>）</strong>：服务端集中管理环境、代理和扩展，客户端在用户电脑上启动本地浏览器，适合自研产品、多用户或多终端场景。</li>
+    </ol>
+
+    <h3>准备工作</h3>
+    <p>首先联系<span class="kefu-popover"><input type="checkbox" id="kefu-popover-toggle"><label for="kefu-popover-toggle">平台客服</label><span class="kefu-popover-panel"><img src="https://res.usefullc.com/fingerprint/qiyuan_kefu.jpg" alt="平台客服联系方式" loading="lazy"></span></span>拿到 SDK 源码和浏览器内核。源码目录应包含 <code>admin</code>、<code>sdk</code> 和 <code>browser-config.json</code>。</p>
+    <p>单机部署和分离部署的客户端需要内核；分离部署的服务端<strong>不需要复制内核</strong>。内核版本目录放在 <code>browser/client/&lt;版本&gt;</code>，Chromium 与 Firefox 目录并列：</p>
+    <p>内核目录相对于 SDK 源码根目录；以下以 <code>qiyuanbrowser/browser/client</code> 为例，Chromium 与 Firefox 的版本目录并列放置：</p>
+    <pre>qiyuanbrowser/
+├── admin/
+├── sdk/
+├── browser-config.json
+└── browser/
+    └── client/
+        ├── 150.0.7871.115/       # Chromium
+        │   ├── QyBrowser.exe
+        │   ├── chrome.dll
+        │   ├── 150.0.7871.115.manifest
+        │   └── ...
+        └── 153.0.4/              # Firefox
+            ├── QyBrowser.exe
+            ├── application.ini
+            ├── browser-brand.json
+            └── ...</pre>
+    <p>两种内核的版本号均需与 <code>browser-config.json</code> 中配置的一致。</p>
+
+    <h3>单机部署接入操作步骤</h3>
+    <ol>
+      <li>将对应 Chromium / Firefox 内核复制到 <code>browser/client/&lt;版本&gt;</code>。</li>
+      <li>设置 <code>browser-config.json</code> 的 <code>startup_mode=all</code>。</li>
+      <li>在 SDK 根目录安装 Python 依赖并启动：</li>
+    </ol>
+    <pre>cd qiyuanbrowser
+pip install -r requirements.txt
+python -m admin.server</pre>
+
+    <h3>分离部署接入操作步骤</h3>
+    <p>适合将用户体系与业务界面放在自研产品中，由 SDK 服务端集中管理环境、代理和扩展，由安装在用户电脑上的 SDK 客户端启动浏览器。终端用户先登录自研产品，再通过产品操作自己的浏览器环境。</p>
+    <div class="integration-map" role="img" aria-label="自研产品调用本地 SDK 客户端，客户端访问 SDK 服务端并启动浏览器内核；用户资源绑定和 API 治理需由接入方设计实现">
+      <div class="integration-flow">
+        <div class="integration-node product"><strong>自研产品</strong><span>终端用户登录、业务界面</span><span>产品后端维护用户与套餐</span></div>
+        <div class="integration-arrow">→<small>调用本地接口<br>打开/关闭窗口</small></div>
+        <div class="integration-node"><strong>SDK 客户端</strong><span>本地接口与浏览器进程管理</span><span>Chromium / Firefox 内核</span></div>
+        <div class="integration-arrow">⇄<small>环境数据、扩展同步<br>状态与内核回调</small></div>
+        <div class="integration-node"><strong>SDK 服务端</strong><span>环境、代理、扩展接口</span><span>集中存储数据与扩展文件</span></div>
+      </div>
+      <div class="integration-planned"><strong>产品接入层（需自行设计实现）</strong>：将产品用户/租户与 SDK 的环境、代理、扩展建立归属关系；在服务端 API 前加入身份鉴权、按用户/租户限流，并记录窗口打开成功次数。产品后端也可通过服务端 API 管理这些资源。当前 SDK 不提供完整的用户体系、资源隔离、API 限流或用量统计。</div>
+      <div class="integration-caption">实线部分为当前 SDK 的主要调用路径；虚线框为自研产品接入时建议补齐的能力，并非现成功能。</div>
+    </div>
+    <h4>1. 服务端</h4>
+    <p>服务端只保存和管理数据，<strong>不需要复制浏览器内核</strong>。设置 <code>startup_mode=server</code> 后执行：</p>
+    <pre>cd qiyuanbrowser
+pip install -r requirements.txt
+python -m admin.server</pre>
+    <h4>2. 客户端</h4>
+    <p>客户端需要复制浏览器内核，并将 <code>base_api_path</code> 设置为服务端地址，例如 <code>http://服务端IP:9003</code>；设置 <code>startup_mode=client</code> 后执行：</p>
+    <pre>cd qiyuanbrowser
+pip install -r requirements.txt
+python -m admin.server</pre>
+    <p>如果开发自研产品，可以将客户端 SDK 打包为 EXE，随产品附带并独立启动本地服务。当前打包仍需包含配置文件和对应内核；后续可考虑由客户端从服务端获取内核，以缩小安装包并支持版本升级。</p>
+
+    <h3>请求说明</h3>
+    <ul style="margin: 8px 0 0 20px;">
+      <li>GET 接口：参数通过 URL Query String 传递</li>
+      <li>POST 接口：参数通过 JSON Body 传递，请求头需包含 <code>Content-Type: application/json</code></li>
+    </ul>
+
+    <h3 style="margin-top:14px">测试与验证</h3>
+    <p>直接测试接口：进入 SDK 源码目录的 <code>tests</code> 目录运行测试脚本。UI 测试：使用 <code>all</code> 或 <code>server</code> 模式启动后，访问 <code>http://127.0.0.1:9003/</code>；分离部署时客户端的浏览器操作由本地服务执行，服务端页面仍从服务端地址打开。</p>
+    <figure style="margin: 16px 0 24px;">
+      <img src="/help-images/qiyuan-sdk-admin.png" alt="打开本地管理界面后的环境管理演示效果" style="display:block; width:100%; height:auto; border:1px solid #e5e7eb; border-radius:8px;">
+      <figcaption style="margin-top:8px; color:#667085; font-size:13px;">打开管理界面后的环境管理示例</figcaption>
+    </figure>
+
+    <!-- 接口规格 -->
+    <h2 id="response">接口规格</h2>
+    <h3>请求格式</h3>
+    <p>GET 接口使用 URL Query 参数；普通 POST 接口使用 JSON Body，并设置 <code>Content-Type: application/json</code>。扩展新增/修改接口使用 <code>multipart/form-data</code>，文本字段与 ZIP 文件通过表单提交；客户端回调按各接口说明提交 JSON。</p>
+    <p>请求 Content-Type：GET 无请求体；环境、代理及普通扩展操作使用 <code>application/json</code>；扩展新增、修改使用 <code>multipart/form-data</code>。当前源码实际存在以下响应类型：</p>
+    <div class="response-type">响应示例 · 标准管理接口</div>
+    <div class="response-label">成功响应</div>
+    <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { /* 业务数据 */ } }
+{ <span class="key">"success"</span>: <span class="kw">false</span>, <span class="key">"error"</span>: <span class="str">"错误描述"</span> }</pre>
+    <p>有业务结果时放入 <code>data</code>；修改、删除等仅确认完成的接口实际返回 <code>{ "success": true }</code>，没有 <code>data</code> 字段。</p>
+    <div class="response-type">响应示例 · 客户端回调接口</div>
+    <div class="response-label">成功 / 失败响应</div>
+    <pre>{ <span class="key">"code"</span>: <span class="num">200</span>, <span class="key">"message"</span>: <span class="str">"OK"</span>, <span class="key">"data"</span>: { /* 业务数据 */ }, <span class="key">"success"</span>: <span class="kw">true</span> }
+{ <span class="key">"code"</span>: <span class="num">400</span>, <span class="key">"message"</span>: <span class="str">"错误描述"</span>, <span class="key">"data"</span>: <span class="kw">null</span>, <span class="key">"success"</span>: <span class="kw">false</span> }</pre>
+    <div class="response-type">响应示例 · 检测与状态接口</div>
+    <div class="response-label">成功 / 失败响应</div>
+    <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"ip"</span>: <span class="str">"203.0.113.10"</span>, <span class="key">"latency_ms"</span>: <span class="num">85</span>, ... }
+{ <span class="key">"success"</span>: <span class="kw">false</span>, <span class="key">"error"</span>: <span class="str">"检测失败原因"</span> }</pre>
+
+    <!-- ==================== 数据表结构 ==================== -->
+    <h2 id="schema">数据表结构</h2>
+    <p>以下为服务端 SQLite 中的业务数据表结构。客户端运行配置不属于 SaaS 业务表；字段约束和默认值以当前 SDK 初始化脚本为准，JSON 字段以文本形式存储，接口返回时解析为对象或数组。</p>
+    <h3>environments · 环境表</h3>
+    <table class="param-table"><tr><th>字段</th><th>类型</th><th>约束</th><th>默认</th><th>说明</th></tr>
+      <tr><td>id</td><td>INTEGER</td><td>主键，自增</td><td>—</td><td>内部记录 ID</td></tr><tr><td>code</td><td>TEXT</td><td>唯一，必填</td><td>—</td><td>环境唯一标识</td></tr><tr><td>name</td><td>TEXT</td><td>必填</td><td>—</td><td>环境名称</td></tr><tr><td>platform</td><td>TEXT</td><td>必填</td><td>Win32</td><td>系统平台</td></tr><tr><td>browser_version</td><td>TEXT</td><td>可空</td><td>NULL</td><td>内核版本</td></tr><tr><td>browser_kernel</td><td>TEXT</td><td>必填</td><td>chrome</td><td>chrome / firefox</td></tr><tr><td>user_agent</td><td>TEXT</td><td>可空</td><td>NULL</td><td>User-Agent</td></tr><tr><td>proxy_code</td><td>TEXT</td><td>可空</td><td>NULL</td><td>绑定代理 code</td></tr><tr><td>proxy_mode</td><td>TEXT</td><td>必填</td><td>no_proxy</td><td>no_proxy / existing / custom</td></tr><tr><td>custom_proxy_type</td><td>TEXT</td><td>可空</td><td>NULL</td><td>自定义代理类型</td></tr><tr><td>custom_proxy_addr</td><td>TEXT</td><td>可空</td><td>NULL</td><td>自定义代理地址</td></tr><tr><td>custom_proxy_port</td><td>INTEGER</td><td>可空</td><td>NULL</td><td>自定义代理端口</td></tr><tr><td>custom_proxy_username / password</td><td>TEXT</td><td>可空</td><td>NULL</td><td>自定义代理认证</td></tr><tr><td>proxy_input_type</td><td>TEXT</td><td>可空</td><td>NULL</td><td>manual / api</td></tr><tr><td>proxy_api_url</td><td>TEXT</td><td>可空</td><td>NULL</td><td>代理 API 地址</td></tr><tr><td>open_home_page</td><td>INTEGER</td><td>非空</td><td>0</td><td>是否打开首页</td></tr><tr><td>enable_tabs</td><td>INTEGER</td><td>非空</td><td>0</td><td>是否启用标签页</td></tr><tr><td>tabs</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>标签页数据</td></tr><tr><td>sync_user_info</td><td>INTEGER</td><td>非空</td><td>0</td><td>是否同步用户信息</td></tr><tr><td>cookie</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>Cookie 配置</td></tr><tr><td>launch_args</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>启动参数</td></tr><tr><td>remark</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>备注</td></tr><tr><td>tag_ids</td><td>TEXT (JSON)</td><td>非空</td><td>[]</td><td>标签 ID 列表</td></tr><tr><td>fingerprint</td><td>TEXT (JSON)</td><td>非空</td><td>{}</td><td>指纹配置</td></tr><tr><td>pid / debug_port</td><td>INTEGER</td><td>可空</td><td>NULL</td><td>进程 ID 与调试端口</td></tr><tr><td>create_time / update_time</td><td>TEXT</td><td>必填</td><td>—</td><td>创建和更新时间</td></tr>
+    </table>
+    <h3>proxies · 代理表</h3>
+    <table class="param-table"><tr><th>字段</th><th>类型</th><th>约束</th><th>默认</th><th>说明</th></tr>
+      <tr><td>id</td><td>INTEGER</td><td>主键，自增</td><td>—</td><td>内部记录 ID</td></tr><tr><td>code</td><td>TEXT</td><td>唯一，必填</td><td>—</td><td>代理唯一标识</td></tr><tr><td>proxy_name</td><td>TEXT</td><td>必填</td><td>—</td><td>代理名称</td></tr><tr><td>proxy_type</td><td>TEXT</td><td>必填</td><td>—</td><td>http / https / socks5</td></tr><tr><td>proxy_addr</td><td>TEXT</td><td>必填</td><td>—</td><td>代理地址</td></tr><tr><td>proxy_port</td><td>INTEGER</td><td>必填</td><td>—</td><td>代理端口</td></tr><tr><td>username / password</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>代理认证</td></tr><tr><td>proxy_input_type</td><td>TEXT</td><td>非空</td><td>manual</td><td>manual / api</td></tr><tr><td>proxy_api_url</td><td>TEXT</td><td>可空</td><td>NULL</td><td>代理 API 地址</td></tr><tr><td>remark</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>备注</td></tr><tr><td>create_time / update_time</td><td>TEXT</td><td>必填</td><td>—</td><td>创建和更新时间</td></tr>
+    </table>
+    <h3>extensions · 扩展表</h3>
+    <table class="param-table"><tr><th>字段</th><th>类型</th><th>约束</th><th>默认</th><th>说明</th></tr>
+      <tr><td>id</td><td>INTEGER</td><td>主键，自增</td><td>—</td><td>内部记录 ID</td></tr><tr><td>code</td><td>TEXT</td><td>唯一，必填</td><td>—</td><td>扩展唯一标识</td></tr><tr><td>name / version</td><td>TEXT</td><td>必填</td><td>—</td><td>名称与版本</td></tr><tr><td>browser_kernel</td><td>TEXT</td><td>非空</td><td>chrome</td><td>chrome / firefox</td></tr><tr><td>extension_type</td><td>TEXT</td><td>非空</td><td>normal</td><td>normal / builtin</td></tr><tr><td>provider / source_url / description</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>来源与说明</td></tr><tr><td>file_name / file_path / oss_key</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>文件及 OSS 存储信息</td></tr><tr><td>sha256</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>文件校验值</td></tr><tr><td>file_size</td><td>INTEGER</td><td>非空</td><td>0</td><td>文件大小</td></tr><tr><td>icon_path</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>图标路径</td></tr><tr><td>status</td><td>INTEGER</td><td>非空</td><td>1</td><td>1 启用，0 停用</td></tr><tr><td>create_time / update_time</td><td>TEXT</td><td>必填</td><td>—</td><td>创建和更新时间</td></tr>
+    </table>
+    <p>扩展与环境的绑定保存在 <code>extension_bindings</code>，扩展同步结果保存在 <code>extension_sync_state</code>；这两张关联表用于支持“全部环境/指定环境”和同步状态，不属于扩展主表字段。</p>
+    <h3>browser_errors · 浏览器错误表</h3>
+    <table class="param-table"><tr><th>字段</th><th>类型</th><th>约束</th><th>默认</th><th>说明</th></tr>
+      <tr><td>id</td><td>INTEGER</td><td>主键，自增</td><td>—</td><td>内部记录 ID</td></tr><tr><td>code</td><td>TEXT</td><td>唯一，必填</td><td>—</td><td>错误记录唯一标识</td></tr><tr><td>title</td><td>TEXT</td><td>必填</td><td>—</td><td>错误标题</td></tr><tr><td>detail / type</td><td>TEXT</td><td>可空</td><td>NULL</td><td>错误详情与类型</td></tr><tr><td>create_time</td><td>TEXT</td><td>必填</td><td>—</td><td>创建时间</td></tr>
+    </table>
+    <h3>extension_bindings · 扩展环境绑定表</h3>
+    <table class="param-table"><tr><th>字段</th><th>类型</th><th>约束</th><th>默认</th><th>说明</th></tr>
+      <tr><td>id</td><td>INTEGER</td><td>主键，自增</td><td>—</td><td>内部记录 ID</td></tr><tr><td>extension_code</td><td>TEXT</td><td>必填</td><td>—</td><td>扩展 code</td></tr><tr><td>environment_code</td><td>TEXT</td><td>必填</td><td>—</td><td>环境 code；<code>*</code> 表示全部环境</td></tr><tr><td>create_time</td><td>TEXT</td><td>必填</td><td>—</td><td>绑定时间</td></tr><tr><td>extension_code + environment_code</td><td>—</td><td>联合唯一</td><td>—</td><td>避免重复绑定</td></tr>
+    </table>
+    <h3>extension_sync_state · 扩展同步状态表</h3>
+    <table class="param-table"><tr><th>字段</th><th>类型</th><th>约束</th><th>默认</th><th>说明</th></tr>
+      <tr><td>id</td><td>INTEGER</td><td>主键，自增</td><td>—</td><td>内部记录 ID</td></tr><tr><td>environment_code / extension_code</td><td>TEXT</td><td>必填</td><td>—</td><td>环境与扩展标识</td></tr><tr><td>version</td><td>TEXT</td><td>必填</td><td>—</td><td>已同步版本</td></tr><tr><td>target_path</td><td>TEXT</td><td>必填</td><td>—</td><td>本地目标路径</td></tr><tr><td>sha256</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>已同步文件校验值</td></tr><tr><td>sync_status</td><td>TEXT</td><td>非空</td><td>success</td><td>同步状态</td></tr><tr><td>error_message</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>失败原因</td></tr><tr><td>synced_at</td><td>TEXT</td><td>必填</td><td>—</td><td>同步时间</td></tr><tr><td>environment_code + extension_code</td><td>—</td><td>联合唯一</td><td>—</td><td>每个环境扩展仅保留一条状态</td></tr>
+    </table>
+
+    <!-- ==================== 环境接口 ==================== -->
+    <h2 id="env">环境接口 <span class="section-tag">Environment</span></h2>
+
+    <!-- GET /open/env/list -->
+    <div class="event-card" id="env-list">
+      <div class="event-header">
+        <span class="badge badge-get">GET</span>
+        <span class="event-name">/open/env/list</span>
+        <span class="event-cn">查询环境列表</span>
+<span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <h3>Query 参数</h3>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>page</td><td>number</td><td><span class="optional">可选</span></td><td>页码，默认 1</td></tr>
+          <tr><td>page_size</td><td>number</td><td><span class="optional">可选</span></td><td>每页数量，默认 20</td></tr>
+          <tr><td>keyword</td><td>string</td><td><span class="optional">可选</span></td><td>按名称 / 备注 / code 模糊搜索</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <pre>{
+  <span class="key">"success"</span>: <span class="kw">true</span>,
+  <span class="key">"data"</span>: {
+  <span class="key">"total"</span>: <span class="num">100</span>,
+  <span class="key">"page"</span>: <span class="num">1</span>,
+  <span class="key">"page_size"</span>: <span class="num">20</span>,
+  <span class="key">"items"</span>: [
+    {
+      <span class="key">"code"</span>: <span class="str">"a1b2c3d4..."</span>,         <span class="cmt">// string  环境唯一标识，后续操作均使用此字段</span>
+      <span class="key">"name"</span>: <span class="str">"测试账号-01"</span>,
+      <span class="key">"platform"</span>: <span class="str">"Win32"</span>,          <span class="cmt">// Win32 / MacIntel / Linux x86_64</span>
+      <span class="key">"browser_kernel"</span>: <span class="str">"chrome"</span>, <span class="cmt">// chrome（Chromium）/ firefox</span>
+      <span class="key">"browser_version"</span>: <span class="str">"150.0.7871.115"</span>,
+      <span class="key">"user_agent"</span>: <span class="str">"Mozilla/5.0 ..."</span>,
+      <span class="key">"proxy_code"</span>: <span class="str">"1716523..."</span>,    <span class="cmt">// 绑定代理的唯一标识，未绑定为 null</span>
+      <span class="key">"open_home_page"</span>: <span class="kw">false</span>,
+      <span class="key">"remark"</span>: <span class="str">"备注信息"</span>,
+      <span class="key">"tag_ids"</span>: [<span class="num">1</span>, <span class="num">2</span>],
+      <span class="key">"status"</span>: <span class="str">"stopped"</span>,          <span class="cmt">// running | stopped</span>
+      <span class="key">"pid"</span>: <span class="kw">null</span>,                  <span class="cmt">// 进程 pid，running 时有值</span>
+      <span class="key">"create_time"</span>: <span class="str">"2026-01-01 00:00:00"</span>,
+      <span class="key">"update_time"</span>: <span class="str">"2026-06-01 12:00:00"</span>
+    }
+  ],
+  <span class="key">"total_pages"</span>: <span class="num">5</span>
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/env/create -->
+    <div class="event-card" id="env-create">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/env/create</span>
+        <span class="event-cn">新增环境</span>
+        <span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr>
+          <tr><td>name</td><td>string</td><td><span class="required">必填</span></td><td>—</td><td>环境名称</td></tr>
+          <tr><td>platform</td><td>string</td><td><span class="optional">可选</span></td><td><code>Win32</code></td><td><code>Win32</code> / <code>MacIntel</code> / <code>Linux x86_64</code></td></tr>
+          <tr><td>browser_kernel</td><td>string</td><td><span class="optional">可选</span></td><td><code>chrome</code></td><td><code>chrome</code>（Chromium）或 <code>firefox</code>；版本须属于所选内核</td></tr>
+          <tr><td>browser_version</td><td>string</td><td><span class="optional">可选</span></td><td>最新版本</td><td>完整内核版本号，不填取默认</td></tr>
+          <tr><td>user_agent</td><td>string</td><td><span class="optional">可选</span></td><td>自动生成</td><td>不填时按 platform + browser_version 自动生成</td></tr>
+          <tr><td>proxy_code</td><td>string</td><td><span class="optional">可选</span></td><td></td><td>绑定代理的 code（来自 GET /open/proxy/list）</td></tr>
+          <tr><td>fingerprint</td><td>object</td><td><span class="optional">可选</span></td><td>自动随机</td><td>不填时按 platform 自动生成随机指纹</td></tr>
+          <tr><td>open_home_page</td><td>boolean</td><td><span class="optional">可选</span></td><td><code>false</code></td><td>是否打开起始页</td></tr>
+          <tr><td>enable_tabs</td><td>boolean</td><td><span class="optional">可选</span></td><td><code>false</code></td><td>是否启用标签页</td></tr>
+          <tr><td>tabs</td><td>string</td><td><span class="optional">可选</span></td><td><code>""</code></td><td>标签页 URL，换行分隔，最多 5 个（enable_tabs=true 生效）</td></tr>
+          <tr><td>sync_user_info</td><td>boolean</td><td><span class="optional">可选</span></td><td><code>false</code></td><td>是否同步用户信息</td></tr>
+          <tr><td>cookie</td><td>string</td><td><span class="optional">可选</span></td><td><code>""</code></td><td>初始 Cookie（JSON 数组）</td></tr>
+          <tr><td>launch_args</td><td>string</td><td><span class="optional">可选</span></td><td><code>""</code></td><td>额外 Chrome 启动参数，空格分隔</td></tr>
+          <tr><td>remark</td><td>string</td><td><span class="optional">可选</span></td><td><code>""</code></td><td>备注</td></tr>
+          <tr><td>tag_ids</td><td>number[]</td><td><span class="optional">可选</span></td><td><code>[]</code></td><td>标签 ID 列表</td></tr>
+        </table>
+
+        <h3 style="margin-top:16px">指纹字段（均可选，表单风格；不传走随机默认）</h3>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>可选值 / 说明</th></tr>
+          <tr><td>user_agent</td><td>string</td><td>不填按 platform + browser_version 自动生成</td></tr>
+          <tr><td>webrtc</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>disabled</code> / <code>transform_google</code></td></tr>
+          <tr><td>webgl</td><td>string</td><td><code>real</code> / <code>custom</code>；custom 时配合 <code>webgl_vendor</code> + <code>webgl_renderer</code></td></tr>
+          <tr><td>webgpu</td><td>string</td><td><code>basegl</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>webgpu_vendor/architecture/device/description</code></td></tr>
+          <tr><td>timezone</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>timezone_value</code>（如 <code>Asia/Shanghai</code>）</td></tr>
+          <tr><td>geo_location</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>longitude</code> + <code>latitude</code></td></tr>
+          <tr><td>language</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>languages</code>（string[]）</td></tr>
+          <tr><td>ui_language</td><td>string</td><td><code>language</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>ui_language_value</code></td></tr>
+          <tr><td>screen_resolution</td><td>string</td><td><code>real</code> / <code>custom</code>；custom 时配合 <code>screen_resolution_value</code>（如 <code>1920|1080</code>）</td></tr>
+          <tr><td>font / canvas / audio / client_rects</td><td>string</td><td><code>random</code>（随机偏移）/ <code>disabled</code>（0）</td></tr>
+          <tr><td>speech_voices</td><td>boolean</td><td>是否开启</td></tr>
+          <tr><td>media_devices</td><td>string</td><td><code>random</code> / <code>disabled</code></td></tr>
+          <tr><td>cpu_cores / memory_gb</td><td>string</td><td><code>real</code> 或具体数值（如 <code>8</code> / <code>16</code>）</td></tr>
+          <tr><td>tls</td><td>string</td><td><code>disabled</code> / <code>enabled</code>；enabled 时配合 <code>tls_features</code>（string[]）</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { <span class="key">"code"</span>: <span class="str">"新环境的唯一标识"</span> } }</pre>
+      </div>
+    </div>
+
+    <!-- GET /open/env/detail -->
+    <div class="event-card" id="env-detail">
+      <div class="event-header">
+        <span class="badge badge-get">GET</span>
+        <span class="event-name">/open/env/detail</span>
+        <span class="event-cn">环境详情（编辑回填）</span>
+        <span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <p>返回单个环境的完整字段 + 扁平指纹，供编辑表单回填。</p>
+        <h3>Query 参数</h3>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <pre>{
+  <span class="key">"success"</span>: <span class="kw">true</span>,
+  <span class="key">"data"</span>: {
+  <span class="key">"code"</span>: <span class="str">"..."</span>, <span class="key">"name"</span>: <span class="str">"..."</span>, <span class="key">"platform"</span>: <span class="str">"Win32"</span>,
+  <span class="key">"browser_kernel"</span>: <span class="str">"chrome"</span>,
+  <span class="key">"browser_version"</span>: <span class="str">"147.0.7727.102"</span>, <span class="key">"user_agent"</span>: <span class="str">"..."</span>,
+  <span class="key">"proxy_code"</span>: <span class="kw">null</span>, <span class="key">"open_home_page"</span>: <span class="kw">false</span>,
+  <span class="key">"enable_tabs"</span>: <span class="kw">false</span>, <span class="key">"tabs"</span>: <span class="str">""</span>, <span class="key">"sync_user_info"</span>: <span class="kw">false</span>,
+  <span class="key">"cookie"</span>: <span class="str">""</span>, <span class="key">"launch_args"</span>: <span class="str">""</span>, <span class="key">"remark"</span>: <span class="str">""</span>,
+  <span class="key">"fingerprint"</span>: { <span class="cmt">/* 扁平指纹：webgl_type, webgl_value, timezone_type, ... */</span> }
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/env/update -->
+    <div class="event-card" id="env-update">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/env/update</span>
+        <span class="event-cn">修改环境</span>
+        <span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
+          <tr><td>browser_kernel</td><td>string</td><td><span class="optional">可选</span></td><td><code>chrome</code>（Chromium）或 <code>firefox</code>；变更内核时需选择该内核支持的版本</td></tr>
+          <tr><td>browser_version</td><td>string</td><td><span class="optional">可选</span></td><td>所选内核的完整版本号</td></tr>
+          <tr><td>基础字段 + 指纹字段（同 <a href="#env-create">新增环境</a>）</td><td>—</td><td><span class="optional">可选</span></td><td>需要修改的字段；传入的指纹字段会合并进已存指纹。修改 platform / browser_version 且未显式传 user_agent 时自动重新生成 UA</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <pre>{ <span class="key">"success"</span>: <span class="kw">true</span> }</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/env/randomize_fingerprint -->
+    <div class="event-card" id="env-randomize">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/env/randomize_fingerprint</span>
+        <span class="event-cn">刷新指纹</span>
+        <span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <p><code>data</code> 为新生成的指纹对象。</p>
+        <pre>{ "success": true, "data": { "webgl_vendor": "Google Inc. (Intel)", "canvas": "random" } }</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/env/delete -->
+    <div class="event-card" id="env-delete">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/env/delete</span>
+        <span class="event-cn">删除环境</span>
+        <span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <p>删除环境记录，并自动关闭其运行中的浏览器、清理本地缓存目录。</p>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
+        </table>
+        <h3>响应示例</h3><pre>{ "success": true }</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/env/open -->
+    <div class="event-card" id="env-open">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/env/open</span>
+        <span class="event-cn">打开浏览器</span>
+        <span class="badge badge-local">本地</span>
+      </div>
+      <div class="event-body">
+        <p><strong>client 模式启动</strong>：以 <code>--mode=client --uuid={code} --token={token}</code> 拉起启元定制内核（路径 <code>%APPDATA%\qiyuan\client\{browser_version}\chrome.exe</code>，user-data-dir = <code>%APPDATA%\qiyuan\user_data\{uuid}</code>）。<strong>不再传</strong> <code>--user-agent</code> / <code>--proxy-server</code> / <code>--remote-debugging-port</code>——浏览器自身回调 <a href="#cb-md5"><code>GET /api/v1/browser/md5/{uuid}</code></a> 拉取并解密指纹后内部应用。打开前 SDK 会把 admin 服务地址写入 config.json 的 <code>base_api_path</code>。</p>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识（即 uuid）</td></tr>
+          <tr><td>openTabs</td><td>boolean</td><td><span class="optional">可选</span></td><td>是否按环境配置打开标签页，默认 <code>false</code></td></tr>
+          <tr><td>needDebugPort</td><td>boolean</td><td><span class="optional">可选</span></td><td>是否分配并等待 CDP 调试端口，默认 <code>true</code>。设为 <code>false</code> 时响应 <code>debug_port</code> 为 <code>null</code></td></tr>
+          <tr><td>args</td><td>string[]</td><td><span class="optional">可选</span></td><td>额外启动参数</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { <span class="key">"pid"</span>: <span class="num">12345</span>, <span class="key">"debug_port"</span>: <span class="num">19222</span>, <span class="key">"browser_kernel"</span>: <span class="str">"chrome"</span>, <span class="key">"debug_protocol"</span>: <span class="str">"cdp"</span> } }</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/env/close -->
+    <div class="event-card" id="env-close">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/env/close</span>
+        <span class="event-cn">关闭浏览器</span>
+        <span class="badge badge-local">本地</span>
+      </div>
+      <div class="event-body">
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识；未运行时返回错误</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- GET /open/env/status -->
+    <div class="event-card" id="env-status">
+      <div class="event-header">
+        <span class="badge badge-get">GET</span>
+        <span class="event-name">/open/env/status</span>
+        <span class="event-cn">运行状态</span>
+        <span class="badge badge-local">本地</span>
+      </div>
+      <div class="event-body">
+        <h3>Query 参数</h3>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { <span class="key">"code"</span>: <span class="str">"..."</span>, <span class="key">"status"</span>: <span class="str">"running"</span>, <span class="key">"pid"</span>: <span class="num">12345</span> } }</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/env/clear_cache -->
+    <div class="event-card" id="env-clear">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/env/clear_cache</span>
+        <span class="event-cn">清空缓存</span>
+        <span class="badge badge-local">本地</span>
+      </div>
+      <div class="event-body">
+        <p>删除该环境的本地 user-data-dir 缓存目录。若浏览器正在运行会先关闭。</p>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==================== 代理接口 ==================== -->
+    <h2 id="proxy">代理接口 <span class="section-tag">Proxy</span></h2>
+
+    <!-- GET /open/proxy/list -->
+    <div class="event-card" id="proxy-list">
+      <div class="event-header">
+        <span class="badge badge-get">GET</span>
+        <span class="event-name">/open/proxy/list</span>
+        <span class="event-cn">查询代理列表</span>
+        <span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <h3>Query 参数</h3>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>page</td><td>number</td><td><span class="optional">可选</span></td><td>页码，默认 1</td></tr>
+          <tr><td>page_size</td><td>number</td><td><span class="optional">可选</span></td><td>每页数量，默认 20</td></tr>
+          <tr><td>keyword</td><td>string</td><td><span class="optional">可选</span></td><td>按名称 / 地址 / code 模糊搜索</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <pre>{
+  <span class="key">"success"</span>: <span class="kw">true</span>,
+  <span class="key">"data"</span>: {
+  <span class="key">"total"</span>: <span class="num">3</span>,
+  <span class="key">"page"</span>: <span class="num">1</span>,
+  <span class="key">"page_size"</span>: <span class="num">20</span>,
+  <span class="key">"total_pages"</span>: <span class="num">1</span>,
+  <span class="key">"items"</span>: [
+    {
+      <span class="key">"code"</span>: <span class="str">"f3a9..."</span>,
+      <span class="key">"proxy_name"</span>: <span class="str">"美国节点"</span>,
+      <span class="key">"proxy_type"</span>: <span class="str">"http"</span>,   <span class="cmt">// http / https / socks5</span>
+      <span class="key">"proxy_addr"</span>: <span class="str">"1.2.3.4"</span>,
+      <span class="key">"proxy_port"</span>: <span class="num">8080</span>,
+      <span class="key">"proxy_input_type"</span>: <span class="str">"manual"</span>
+    }
+  ]
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/proxy/create -->
+    <div class="event-card" id="proxy-create">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/proxy/create</span>
+        <span class="event-cn">新增代理</span>
+        <span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>proxy_name</td><td>string</td><td><span class="required">必填</span></td><td>代理名称</td></tr>
+          <tr><td>proxy_type</td><td>string</td><td><span class="required">必填</span></td><td><code>http</code> / <code>https</code> / <code>socks5</code></td></tr>
+          <tr><td>proxy_addr</td><td>string</td><td><span class="required">必填</span></td><td>代理地址</td></tr>
+          <tr><td>proxy_port</td><td>number</td><td><span class="required">必填</span></td><td>代理端口</td></tr>
+          <tr><td>username</td><td>string</td><td><span class="optional">可选</span></td><td>账号</td></tr>
+          <tr><td>password</td><td>string</td><td><span class="optional">可选</span></td><td>密码</td></tr>
+          <tr><td>remark</td><td>string</td><td><span class="optional">可选</span></td><td>备注</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { <span class="key">"code"</span>: <span class="str">"新代理的唯一标识"</span> } }</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/proxy/update -->
+    <div class="event-card" id="proxy-update">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/proxy/update</span>
+        <span class="event-cn">修改代理</span>
+        <span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>代理唯一标识</td></tr>
+          <tr><td>proxy_name / proxy_type / proxy_addr / proxy_port / username / password / remark</td><td>—</td><td><span class="optional">可选</span></td><td>需要修改的字段</td></tr>
+        </table>
+        <h3>响应示例</h3><pre>{ "success": true }</pre>
+      </div>
+    </div>
+
+    <!-- POST /open/proxy/delete -->
+    <div class="event-card" id="proxy-delete">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/open/proxy/delete</span>
+        <span class="event-cn">删除代理</span>
+        <span class="badge badge-store">服务</span>
+      </div>
+      <div class="event-body">
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>代理唯一标识</td></tr>
+        </table>
+        <h3>响应示例</h3><pre>{ "success": true }</pre>
+      </div>
+    </div>
+
+    <!-- ==================== 客户端回调接口 ==================== -->
+    <h2 id="callbacks">客户端回调接口 <span class="section-tag">Client</span></h2>
+    <p>这些接口由 <code>--mode=client</code> 启动的浏览器（而非调用方）回调，admin server 提供实现。鉴权 token 即 <code>env_open</code> 传给浏览器的那一个。<code>/api/v1/*</code> 使用后端风格信封 <code>{code,message,data,success}</code>；<code>/api/*</code> 使用本地风格 <code>{success,...}</code>。</p>
+
+    <!-- GET /api/v1/browser/md5/{uuid} -->
+    <div class="event-card" id="cb-md5">
+      <div class="event-header">
+        <span class="badge badge-get">GET</span>
+        <span class="event-name">/api/v1/browser/md5/{uuid}</span>
+        <span class="event-cn">拉取指纹</span>
+      </div>
+      <div class="event-body">
+        <p>鉴权：<code>Authorization: Bearer {token}</code>。返回加密后的指纹（base64 字符串）。</p>
+        <h3>Query 参数</h3>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>默认</th><th>说明</th></tr>
+          <tr><td>secure</td><td>boolean</td><td><code>true</code></td><td>是否加密（安全）。<code>false</code> 返回明文，<code>encrypt_type</code> 忽略</td></tr>
+          <tr><td>encrypt_type</td><td>string</td><td><code>aes</code></td><td>加密方式：<code>aes</code> / <code>rsa</code>（rsa 为 AES 加密 + RSA 签名）</td></tr>
+          <tr><td>version</td><td>string</td><td><code>1.0</code></td><td>算法版本（便于后续升级）。<code>2.0</code> 且 <code>encrypt_type=aes</code> 时启用按 token 派生的密钥（见下）；<code>rsa</code> 恒用该派生密钥</td></tr>
+        </table>
+        <h3>响应</h3>
+        <pre>{ <span class="key">"code"</span>: <span class="num">200</span>, <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: <span class="str">"&lt;base64 密文 或 明文对象&gt;"</span> }</pre>
+        <h3>解密方式 · AES（默认）</h3>
+        <p>base64 解码 → 前 16 字节为 IV → AES-256-CBC / PKCS7 → 指纹 JSON 明文。</p>
+        <p><strong>version=1.0（默认）密钥</strong>：字符串 <code>aes-key-32-bytes-change!!!!!</code> 末尾补 <code>\0</code> 到 32 字节。</p>
+        <p><strong>version=2.0 密钥</strong>：<code>SHA-256( "aes-key-32-bytes-change!!!!!" + "_qiyuan_" + 用户认证token )</code> 的 32 字节摘要（token 即请求头 Bearer）。每用户唯一；内核须用同一算法派生密钥。</p>
+        <h3>解密方式 · RSA（<code>encrypt_type=rsa</code>，AES 加密 + RSA 签名）</h3>
+        <p>密文 = <code>base64( SIGN[keysize/8] + IV[16] + AES-256-CBC(PKCS7(json)) )</code>。其中 <code>SIGN = RSASSA-PKCS1-v1_5( 私钥, SHA-256( IV+密文 ) )</code>（2048-bit = 256 字节）。AES 密钥恒用 <strong>version=2.0</strong> 的 token 派生密钥。</p>
+        <p>内核侧：base64 解码 → 前 256 字节为签名、其余为 <code>IV+密文</code> → 用<strong>内置公钥</strong> <code>SHA-256</code> <strong>验签</strong>（失败即拒绝，不解密）→ 用 token 派生 AES key 解出 16 字节 IV 与密文 → AES-CBC 得 JSON。</p>
+        <p>方向：服务端持<strong>私钥签名</strong>，内核仅内置<strong>公钥验签</strong>，<strong>私钥永不下发</strong>。SDK 与 backend 各自独立密钥对（PEM 随仓库提供：SDK <code>sdk/keys/</code>、backend <code>app/config/keys/</code>；只把对应 <code>rsa_public.pem</code> 编入内核）。</p>
+        <h3>明文结构（节选）</h3>
+        <pre>{
+  <span class="key">"platform"</span>: <span class="str">"Win32"</span>,
+  <span class="key">"user_agent"</span>: <span class="str">"Mozilla/5.0 ..."</span>,
+  <span class="key">"browser_version"</span>: <span class="str">"147.0.7727.102"</span>,
+  <span class="key">"webgl"</span>: { <span class="key">"type"</span>: <span class="str">"custom"</span>, <span class="key">"value"</span>: <span class="str">"Google Inc. (NVIDIA)|ANGLE (NVIDIA, NVIDIA GeForce RTX 4070 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)"</span> },
+  <span class="key">"webgpu"</span>: { <span class="key">"type"</span>: <span class="str">"custom"</span>, <span class="key">"value"</span>: <span class="str">"nvidia|..."</span> },
+  <span class="key">"timezone"</span>: { <span class="key">"type"</span>: <span class="str">"ip"</span>, <span class="key">"value"</span>: <span class="kw">null</span> },
+  <span class="key">"language"</span>: { <span class="key">"type"</span>: <span class="str">"ip"</span>, <span class="key">"value"</span>: <span class="kw">null</span> },
+  <span class="key">"geo_location"</span>: { <span class="key">"type"</span>: <span class="str">"ip"</span>, <span class="key">"value"</span>: <span class="kw">null</span> },
+  <span class="key">"hardware_info"</span>: { <span class="key">"color_depth"</span>: <span class="str">"24"</span>, <span class="key">"cpu_cores"</span>: <span class="str">"8"</span>, <span class="key">"memory_gb"</span>: <span class="str">"8"</span> },
+  <span class="key">"font"</span>: <span class="str">"1"</span>, <span class="key">"canvas"</span>: <span class="str">"0.37"</span>, <span class="key">"audio"</span>: <span class="str">"42"</span>,
+  <span class="key">"speech_voices"</span>: <span class="kw">true</span>, <span class="key">"media_devices"</span>: [<span class="str">"a1b2..."</span>],
+  <span class="key">"open_home_page"</span>: <span class="kw">false</span>, <span class="key">"enable_tabs"</span>: <span class="kw">false</span>, <span class="key">"tabs"</span>: <span class="str">""</span>,
+  <span class="key">"cookie"</span>: <span class="str">""</span>, <span class="key">"launch_args"</span>: <span class="str">""</span>,
+  <span class="key">"proxy_info"</span>: { <span class="key">"proxy_type"</span>: <span class="str">"http"</span>, <span class="key">"proxy_addr"</span>: <span class="str">"1.2.3.4"</span>, <span class="key">"proxy_port"</span>: <span class="str">"8080"</span>, <span class="key">"username"</span>: <span class="str">"u"</span>, <span class="key">"password"</span>: <span class="str">"p"</span> }
+}</pre>
+      </div>
+    </div>
+
+    <!-- POST /api/v1/browser/error/report -->
+    <div class="event-card" id="cb-error">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/api/v1/browser/error/report</span>
+        <span class="event-cn">错误上报</span>
+      </div>
+      <div class="event-body">
+        <p>无需 token。</p>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>title</td><td>string</td><td><span class="required">必填</span></td><td>错误标题</td></tr>
+          <tr><td>detail</td><td>string</td><td><span class="optional">可选</span></td><td>错误详情</td></tr>
+          <tr><td>type</td><td>string</td><td><span class="optional">可选</span></td><td>错误类型</td></tr>
+        </table>
+        <h3>响应</h3>
+        <pre>{ <span class="key">"code"</span>: <span class="num">200</span>, <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { <span class="key">"code"</span>: <span class="str">"a1b2c3d4"</span> } }  <span class="cmt">// code 用于拼错误页</span></pre>
+      </div>
+    </div>
+
+    <!-- POST /api/v1/client/browser/tabs -->
+    <div class="event-card" id="cb-tabs">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/api/v1/client/browser/tabs</span>
+        <span class="event-cn">标签上报</span>
+      </div>
+      <div class="event-body">
+        <p>仅当该环境 <code>enable_tabs=true</code> 时保存；按域名去重、跳过起始页/内部地址（<code>chrome://</code>、<code>about:</code> 等）、最多 5 条。</p>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>md5</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识（uuid）</td></tr>
+          <tr><td>tabs</td><td>string</td><td><span class="required">必填</span></td><td>换行分隔的 URL 列表</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- POST /api/check-proxy -->
+    <div class="event-card" id="cb-checkproxy">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/api/check-proxy</span>
+        <span class="event-cn">代理检测</span>
+      </div>
+      <div class="event-body">
+        <p>经该代理访问 geo 服务，返回与 <a href="#cb-ipgeo">ip-geo</a> 兼容的结构。</p>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>proxy_type</td><td>string</td><td><span class="required">必填</span></td><td>http / https / socks5</td></tr>
+          <tr><td>proxy_addr</td><td>string</td><td><span class="required">必填</span></td><td>代理地址</td></tr>
+          <tr><td>proxy_port</td><td>number</td><td><span class="required">必填</span></td><td>代理端口</td></tr>
+          <tr><td>username / password</td><td>string</td><td><span class="optional">可选</span></td><td>认证信息</td></tr>
+        </table>
+        <h3>响应</h3>
+        <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"ip"</span>: <span class="str">"1.2.3.4"</span>, <span class="key">"country_code"</span>: <span class="str">"US"</span>,
+  <span class="key">"latitude"</span>: <span class="num">37.7</span>, <span class="key">"longitude"</span>: <span class="num">-122.4</span>,
+  <span class="key">"timezone"</span>: { <span class="key">"id"</span>: <span class="str">"America/Los_Angeles"</span> } }</pre>
+      </div>
+    </div>
+
+    <!-- GET /api/ip-geo -->
+    <div class="event-card" id="cb-ipgeo">
+      <div class="event-header">
+        <span class="badge badge-get">GET</span>
+        <span class="event-name">/api/ip-geo</span>
+        <span class="event-cn">IP 地理</span>
+      </div>
+      <div class="event-body">
+        <p>鉴权：<code>Authorization: Bearer {token}</code>。</p>
+        <h3>Query 参数</h3>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>ip</td><td>string</td><td><span class="optional">可选</span></td><td>留空查询出口 IP</td></tr>
+        </table>
+        <h3>响应</h3>
+        <p>同 <a href="#cb-checkproxy">check-proxy</a>（success / ip / country_code / latitude / longitude / timezone.id …）。</p>
+      </div>
+    </div>
+
+    <!-- POST /api/browser/status -->
+    <div class="event-card" id="cb-status">
+      <div class="event-header">
+        <span class="badge badge-post">POST</span>
+        <span class="event-name">/api/browser/status</span>
+        <span class="event-cn">开关状态</span>
+      </div>
+      <div class="event-body">
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>uuid</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
+          <tr><td>status</td><td>string</td><td><span class="required">必填</span></td><td><code>opened</code> | <code>closed</code></td></tr>
+        </table>
+        <h3>响应</h3>
+        <pre>{ <span class="key">"success"</span>: <span class="kw">true</span> }</pre>
+      </div>
+    </div>
+
+    <!-- ==================== 扩展接口 ==================== -->
+    <h2 id="extensions">扩展接口 <span class="section-tag">Extensions</span></h2>
+    <p>扩展管理接口由服务端提供，数据由服务端持久化。新增和修改使用 <code>multipart/form-data</code> 上传 ZIP，并可通过 <code>environment_codes</code> 绑定一个或多个环境；传入 <code>["*"]</code> 表示全部环境。</p>
+    <div class="event-card" id="extension-list"><div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/open/extension/list</span><span class="event-cn">扩展列表</span><span class="badge badge-store">服务</span></div><div class="event-body"><h3>Query 参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>page</td><td>number</td><td>可选</td><td>页码，默认 1</td></tr><tr><td>page_size</td><td>number</td><td>可选</td><td>每页数量，默认 20</td></tr><tr><td>keyword</td><td>string</td><td>可选</td><td>按名称、code、提供方搜索</td></tr><tr><td>browser_kernel</td><td>string</td><td>可选</td><td><code>chrome</code> / <code>firefox</code>；不传则全部</td></tr><tr><td>extension_type</td><td>string</td><td>可选</td><td><code>builtin</code> / <code>normal</code>；不传则全部</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "items": [{ "code": "demo", "name": "示例扩展", "version": "1.0", "browser_kernel": "chrome", "extension_type": "normal", "environment_codes": ["*"] }], "total": 1, "page": 1, "page_size": 20, "total_pages": 1 } }</pre></div></div>
+    <div class="event-card" id="extension-detail"><div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/open/extension/detail</span><span class="event-cn">扩展详情</span><span class="badge badge-store">服务</span></div><div class="event-body"><h3>Query 参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>code</td><td>string</td><td>必填</td><td>扩展唯一标识</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "code": "demo", "name": "示例扩展", "version": "1.0", "browser_kernel": "chrome", "extension_type": "normal", "status": 1, "environment_codes": ["*"] } }</pre></div></div>
+    <div class="event-card" id="extension-create"><div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/extension/create</span><span class="event-cn">新增扩展</span><span class="badge badge-store">服务</span></div><div class="event-body"><p>请求类型：<code>multipart/form-data</code>。</p><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>code</td><td>string</td><td>必填</td><td>扩展唯一标识，只能包含字母、数字、下划线、短横线</td></tr><tr><td>name</td><td>string</td><td>必填</td><td>扩展名称</td></tr><tr><td>version</td><td>string</td><td>必填</td><td>扩展版本</td></tr><tr><td>file</td><td>ZIP 文件</td><td>必填</td><td>需包含 <code>manifest.json</code></td></tr><tr><td>browser_kernel</td><td>string</td><td>可选</td><td><code>chrome</code>（默认）/ <code>firefox</code></td></tr><tr><td>extension_type</td><td>string</td><td>可选</td><td><code>normal</code>（默认）/ <code>builtin</code></td></tr><tr><td>environment_codes</td><td>JSON 数组字符串</td><td>可选</td><td>环境 code 列表；<code>["*"]</code> 为全部，空数组为不绑定</td></tr><tr><td>provider / source_url / description</td><td>string</td><td>可选</td><td>提供方、来源地址、说明</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "code": "demo", "name": "示例扩展", "version": "1.0", "environment_codes": ["*"] } }</pre></div></div>
+    <div class="event-card" id="extension-update"><div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/extension/update</span><span class="event-cn">修改/升级扩展</span><span class="badge badge-store">服务</span></div><div class="event-body"><p>请求类型：<code>multipart/form-data</code>。</p><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>code</td><td>string</td><td>必填</td><td>要修改的扩展 code，不可修改</td></tr><tr><td>name / version / provider / source_url / description</td><td>string</td><td>可选</td><td>需要修改的字段</td></tr><tr><td>browser_kernel</td><td>string</td><td>可选</td><td><code>chrome</code> / <code>firefox</code></td></tr><tr><td>extension_type</td><td>string</td><td>可选</td><td><code>normal</code> / <code>builtin</code></td></tr><tr><td>status</td><td>number</td><td>可选</td><td>1 启用，0 停用</td></tr><tr><td>environment_codes</td><td>JSON 数组字符串</td><td>可选</td><td>新的环境绑定；<code>["*"]</code> 为全部</td></tr><tr><td>file</td><td>ZIP 文件</td><td>可选</td><td>上传新包以升级扩展</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "code": "demo", "version": "1.1", "environment_codes": ["*"] } }</pre></div></div>
+    <div class="event-card" id="extension-delete"><div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/extension/delete</span><span class="event-cn">删除扩展</span><span class="badge badge-store">服务</span></div><div class="event-body"><h3>JSON 参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>code</td><td>string</td><td>必填</td><td>要删除的扩展 code</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "code": "demo" } }</pre></div></div>
+    <div class="event-card" id="extension-bindings"><div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/extension/bindings</span><span class="event-cn">绑定环境</span><span class="badge badge-store">服务</span></div><div class="event-body"><h3>JSON 参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>code</td><td>string</td><td>必填</td><td>扩展 code</td></tr><tr><td>environment_codes</td><td>string[]</td><td>可选</td><td>环境 code 列表；<code>["*"]</code> 为全部，空数组为取消绑定</td></tr><tr><td>bind_all</td><td>boolean</td><td>可选</td><td>为 true 且未提供环境列表时绑定全部</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "code": "demo", "environment_codes": ["*"] } }</pre></div></div>
+    <div class="event-card" id="extension-sync"><div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/extension/sync</span><span class="event-cn">同步扩展</span><span class="badge badge-local">本地</span></div><div class="event-body"><h3>JSON 参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>code</td><td>string</td><td>必填</td><td>需要同步扩展的环境 code；环境打开前也会自动同步</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": [{ "code": "demo", "status": "success", "target_path": "..." }] }</pre></div></div>
+    <h3>扩展类型与同步路径</h3>
+    <p><code>browser_kernel=chrome</code> 表示 Chromium，<code>browser_kernel=firefox</code> 表示 Firefox。<code>extension_type=builtin</code> 为内置扩展，<code>normal</code> 为普通扩展。</p>
+    <table class="param-table">
+      <tr><th>内核</th><th>内置（builtin）</th><th>普通（normal）</th></tr>
+      <tr><td>Chromium</td><td><code>%browser_app_data_dir%/extends/&lt;code&gt;</code></td><td><code>%browser_app_data_dir%/user_data/&lt;environment_code&gt;/Default/custom_extensions/&lt;code&gt;</code></td></tr>
+      <tr><td>Firefox</td><td><code>%browser_app_data_dir%/client/&lt;fire_version&gt;/custom-extensions/&lt;code&gt;</code></td><td><code>%browser_app_data_dir%/user_data/&lt;environment_code&gt;/extensions/&lt;code&gt;</code></td></tr>
+    </table>
+    <p>环境启动前会自动同步已绑定且启用的扩展；升级会覆盖旧目录，解除绑定或删除扩展会清理对应目录。同步接口返回标准 <code>success/data</code> 响应。</p>
+
+    <!-- ==================== 起始页 / 错误页 ==================== -->
+    <h2 id="pages">起始页 / 错误页 <span class="section-tag">Pages</span></h2>
+    <p>由 admin server 直接托管（无需扩展）。内核通过 config.json 的 <code>browser_base_path</code> 拼出页面地址：<code>{browser_base_path}/pages/home.html?md5={uuid}</code> 与 <code>{browser_base_path}/pages/error.html?code={code}</code>。页面与 admin 同源，直接 <code>fetch</code> 下方数据接口。<code>env_open</code> 时 SDK 会把 <code>base_api_path</code> 与 <code>browser_base_path</code> 一并写入 config.json。</p>
+
+    <div class="event-card" id="pg-home">
+      <div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/pages/home.html</span><span class="event-cn">起始页</span><span class="badge badge-local">页面</span></div>
+      <div class="event-body">
+        <p>开启起始页时浏览器加载的页面：顶部 IP 检测横幅 + 环境信息 + 指纹信息。Query：<code>md5</code>（环境唯一标识）。有代理时通过 <a href="#cb-checkproxy">check-proxy</a> 进行检测。</p>
+      </div>
+    </div>
+
+    <div class="event-card" id="pg-error">
+      <div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/pages/error.html</span><span class="event-cn">错误页</span><span class="badge badge-local">页面</span></div>
+      <div class="event-body">
+        <p>启动异常时浏览器加载的页面，展示错误编号 / 标题 / 时间。Query：<code>code</code>（错误编号，来自 <a href="#cb-error">error/report</a>）。</p>
+      </div>
+    </div>
+
+    <div class="event-card" id="pg-homedata">
+      <div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/api/v1/browser/home-data/{md5}</span><span class="event-cn">起始页数据</span><span class="badge badge-store">服务</span></div>
+      <div class="event-body">
+        <p>无需 token。返回 <code>{ browser, fingerprint, proxy }</code> 三段（中文化展示值）。</p>
+        <pre>{ <span class="key">"code"</span>: <span class="num">200</span>, <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: {
+  <span class="key">"browser"</span>: { <span class="key">"name"</span>: <span class="str">"..."</span>, <span class="key">"proxy_mode_cn"</span>: <span class="str">"集成代理"</span>, <span class="key">"sync_user"</span>: <span class="str">"关闭"</span>, ... },
+  <span class="key">"fingerprint"</span>: { <span class="key">"platform"</span>: <span class="str">"Windows"</span>, <span class="key">"webgl"</span>: <span class="str">"自定义 - NVIDIA / RTX 4090"</span>, ... },
+  <span class="key">"proxy"</span>: { <span class="key">"proxy_mode"</span>: <span class="str">"existing"</span>, <span class="key">"proxy_addr"</span>: <span class="str">"1.2.3.4"</span>, <span class="key">"proxy_port"</span>: <span class="num">8080</span>, ... }
+} }</pre>
+      </div>
+    </div>
+
+    <div class="event-card" id="pg-errordata">
+      <div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/api/v1/browser/error-data/{code}</span><span class="event-cn">错误页数据</span><span class="badge badge-store">服务</span></div>
+      <div class="event-body">
+        <p>无需 token。</p>
+        <pre>{ <span class="key">"code"</span>: <span class="num">200</span>, <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { <span class="key">"code"</span>: <span class="str">"a1b2c3d4"</span>, <span class="key">"title"</span>: <span class="str">"启动失败"</span>, <span class="key">"error_time"</span>: <span class="str">"2026-06-24 12:00:00"</span> } }</pre>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+// 与开放 API 文档统一：方法、中文名称和路径分别占据导航的三层信息。
+document.querySelectorAll('.nav-box a .nav-api').forEach(function(api) {
+  var match = api.textContent.trim().match(/^(GET|POST)\s+(.+)$/);
+  if (!match || !api.parentElement) return;
+  var link = api.parentElement;
+  link.classList.add('nav-endpoint');
+  var method = document.createElement('span');
+  method.className = 'nav-method ' + match[1].toLowerCase();
+  method.textContent = match[1];
+  var path = document.createElement('span');
+  path.className = 'nav-path';
+  path.textContent = match[2];
+  link.replaceChild(method, api);
+  var name = link.querySelector('.nav-cn');
+  if (name) link.insertBefore(path, name.nextSibling);
+  else link.appendChild(path);
+});
+
+// 云朵图标标识 base_api_path 承载的服务端接口。
+[
+  'env-list', 'env-detail', 'env-create', 'env-update', 'env-randomize', 'env-delete',
+  'proxy-list', 'proxy-create', 'proxy-update', 'proxy-delete',
+  'extension-list', 'extension-detail', 'extension-create', 'extension-update', 'extension-delete', 'extension-bindings',
+  'cb-md5', 'cb-error', 'cb-tabs', 'cb-status', 'pg-home', 'pg-error', 'pg-homedata', 'pg-errordata'
+].forEach(function(id) {
+  var name = document.querySelector('.nav-box a[href="#' + id + '"] .nav-cn');
+  if (!name) return;
+  var icon = document.createElement('span');
+  icon.className = 'nav-server-icon';
+  icon.title = '服务端接口';
+  icon.setAttribute('aria-label', '服务端接口');
+  icon.textContent = '☁';
+  name.prepend(icon);
+  var navBadge = document.createElement('span');
+  navBadge.className = 'nav-service-badge';
+  navBadge.textContent = '服务';
+  name.appendChild(navBadge);
+  var cardHeader = document.querySelector('#' + id + ' .event-header');
+  if (cardHeader && !cardHeader.querySelector('.badge-store')) {
+    var cardBadge = document.createElement('span');
+    cardBadge.className = 'badge badge-store';
+    cardBadge.textContent = '服务';
+    cardHeader.appendChild(cardBadge);
+  }
+});
+
+// 未标记为服务端的接口属于本地客户端接口，统一显示“本地”标签。
+[
+  'env-open', 'env-close', 'env-status', 'env-clear', 'extension-sync',
+  'cb-checkproxy', 'cb-ipgeo'
+].forEach(function(id) {
+  var link = document.querySelector('.nav-box a[href="#' + id + '"]');
+  var cardHeader = document.querySelector('#' + id + ' .event-header');
+  if (link) {
+    var name = link.querySelector('.nav-cn');
+    if (name && !name.querySelector('.nav-local-badge')) {
+      var navBadge = document.createElement('span');
+      navBadge.className = 'nav-local-badge';
+      navBadge.textContent = '本地';
+      name.appendChild(navBadge);
+    }
+  }
+  if (cardHeader && !cardHeader.querySelector('.badge-local')) {
+    var cardBadge = document.createElement('span');
+    cardBadge.className = 'badge badge-local';
+    cardBadge.textContent = '本地';
+    cardHeader.appendChild(cardBadge);
+  }
+});
+
+// 仅观察侧栏实际指向的章节；点击期间锁定高亮，避免相邻章节覆盖当前选择。
+(function () {
+  var links = Array.from(document.querySelectorAll('.nav-box a[href^="#"]'));
+  var setActive = function (id) {
+    links.forEach(function (link) { link.classList.toggle('active', link.getAttribute('href') === '#' + id); });
+  };
+  var lockedTarget = '';
+  var unlockTimer;
+  var lockTarget = function (id) {
+    lockedTarget = id; setActive(id); clearTimeout(unlockTimer);
+    unlockTimer = setTimeout(function () { lockedTarget = ''; }, 900);
+  };
+  var targets = links.map(function (link) { return document.getElementById(link.getAttribute('href').slice(1)); }).filter(Boolean);
+  var observer = new IntersectionObserver(function (entries) {
+    if (lockedTarget) return;
+    var visible = entries.filter(function (entry) { return entry.isIntersecting; }).sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; })[0];
+    if (visible) setActive(visible.target.id);
+  }, { rootMargin: '-12% 0px -72% 0px' });
+  targets.forEach(function (target) { observer.observe(target); });
+  links.forEach(function (link) { link.addEventListener('click', function () { lockTarget(link.getAttribute('href').slice(1)); }); });
+  if (location.hash) setActive(location.hash.slice(1));
+})();
+
+(function () {
+  var popover = document.querySelector('.kefu-popover');
+  var toggle = document.getElementById('kefu-popover-toggle');
+  if (!popover || !toggle) return;
+  document.addEventListener('pointerdown', function (event) {
+    if (!popover.contains(event.target)) toggle.checked = false;
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') toggle.checked = false;
+  });
+})();
+
+// 数据表结构作为文档最后一个内容章节展示，菜单锚点仍指向同一节点。
+(function () {
+  var schema = document.getElementById('schema');
+  var content = document.querySelector('.content');
+  var firstApi = document.getElementById('env');
+  if (!schema || !content || !firstApi) return;
+  var node = schema;
+  while (node && node !== firstApi) {
+    var next = node.nextElementSibling;
+    content.appendChild(node);
+    node = next;
+  }
+})();
+</script>
+</body>
+</html>

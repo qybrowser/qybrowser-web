@@ -20,7 +20,9 @@ fp/register/index.html
 node scripts/export-public-pages.mjs
 ```
 
-脚本会生成 `/fp/news/`、每篇文章详情页和 `/fp/register/` 页面。默认来源是 `https://usefullc.com`，也可以通过 `SOURCE_ORIGIN` 指定来源。
+脚本会生成 `/`、`/fp/news/`、每篇文章详情页、`/fp/register/`、帮助中心、协议、找回密码和两套开发文档。默认来源是 `https://usefullc.com`，也可以通过 `SOURCE_ORIGIN` 指定来源。
+
+详情页默认复用已存在的静态快照，避免触发旧后端的阅读量自增；需要重新抓取详情时再设置 `REFRESH_DETAILS=1`。
 
 ## Cloudflare Pages API 代理
 

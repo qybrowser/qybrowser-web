@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>找回密码 - 启元指纹浏览器</title>
+  <meta name="robots" content="noindex" />
+  <link rel="canonical" href="https://usefullc.com/fp/reset-password" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
+            dark: { 900:'#0a0f1e',800:'#0d1526',700:'#111827',600:'#1f2937',500:'#374151' }
+          },
+          fontFamily: { sans: ['"PingFang SC"','"Microsoft YaHei"','sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .grid-bg {
+      background-image: linear-gradient(rgba(37,99,235,.06) 1px,transparent 1px),
+                        linear-gradient(90deg,rgba(37,99,235,.06) 1px,transparent 1px);
+      background-size: 48px 48px;
+    }
+    .input-field {
+      width:100%; background:#111827; border:1px solid #374151;
+      color:#f3f4f6; border-radius:.5rem; padding:.625rem .875rem;
+      font-size:.875rem; outline:none; transition:border-color .15s;
+    }
+    .input-field:focus { border-color:#2563eb; }
+    .input-field::placeholder { color:#6b7280; }
+    .btn-primary {
+      width:100%; padding:.75rem; border-radius:.75rem;
+      background:#2563eb; color:#fff; font-weight:600;
+      font-size:.9375rem; cursor:pointer; transition:background .15s;
+    }
+    .btn-primary:hover:not(:disabled) { background:#1d4ed8; }
+    .btn-primary:disabled { opacity:.5; cursor:not-allowed; }
+    .error-box { background:#450a0a; border:1px solid #7f1d1d; border-radius:.5rem; padding:.75rem 1rem; color:#fca5a5; font-size:.8125rem; }
+    .success-box { background:#052e16; border:1px solid #166534; border-radius:.5rem; padding:.75rem 1rem; color:#86efac; font-size:.8125rem; }
+  </style>
+</head>
+<body class="min-h-screen bg-dark-900 grid-bg flex flex-col">
+
+  <!-- 顶部导航 -->
+  <header class="border-b border-dark-600 bg-dark-900/90 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-primary-600 flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <span class="font-bold text-white text-sm">启元<span class="text-primary-400">指纹浏览器</span></span>
+      </a>
+      <a href="/fp/login" class="text-sm text-primary-400 hover:text-primary-300 transition-colors">返回登录</a>
+    </div>
+  </header>
+
+  <!-- 主体 -->
+  <main class="flex-1 flex items-center justify-center py-12 px-4">
+    <div class="w-full max-w-md"
+         x-data="{
+           /* 从 URL 参数读取 type: sms / email */
+           type: new URLSearchParams(location.search).get('type') || 'sms',
+
+           /* 共用字段 */
+           identity: '',
+           code: '',
+           newPassword: '',
+           showPwd: false,
+           countdown: 0,
+           sending: false,
+           loading: false,
+           error: '',
+           success: '',
+
+           get isEmail() { return this.type === 'email' },
+           get label() { return this.isEmail ? '邮箱' : '手机号' },
+           get placeholder() { return this.isEmail ? '输入注册邮箱' : '输入注册手机号' },
+
+           async sendCode() {
+             this.error = ''
+             if (!this.identity.trim()) { this.error = `请输入${this.label}`; return }
+             this.sending = true
+             const url = this.isEmail ? '/api/v1/client/email/send-code' : '/api/v1/client/sms/send-code'
+             const body = this.isEmail ? { email: this.identity.trim() } : { phone_number: this.identity.trim() }
+             try {
+               const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) })
+               const json = await res.json()
+               if (json.code === 200) {
+                 this.startCountdown()
+               } else {
+                 this.error = json.message || '发送失败'
+               }
+             } catch(e) {
+               this.error = '网络错误'
+             } finally {
+               this.sending = false
+             }
+           },
+
+           startCountdown() {
+             this.countdown = 60
+             const t = setInterval(() => {
+               this.countdown--
+               if (this.countdown <= 0) clearInterval(t)
+             }, 1000)
+           },
+
+           async submit() {
+             this.error = ''
+             if (!this.identity.trim() || !this.code.trim() || !this.newPassword) {
+               this.error = '请填写所有字段'; return
+             }
+             if (this.newPassword.length < 6) { this.error = '密码不能少于6位'; return }
+             this.loading = true
+             const url = this.isEmail ? '/api/v1/client/email/reset-password' : '/api/v1/client/sms/reset-password'
+             const body = this.isEmail
+               ? { email: this.identity.trim(), code: this.code.trim(), new_password: this.newPassword }
+               : { phone_number: this.identity.trim(), code: this.code.trim(), new_password: this.newPassword }
+             try {
+               const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) })
+               const json = await res.json()
+               if (json.code === 200) {
+                 this.success = json.message || '密码重置成功'
+               } else {
+                 this.error = json.message || '重置失败'
+               }
+             } catch(e) {
+               this.error = '网络错误'
+             } finally {
+               this.loading = false
+             }
+           }
+         }">
+
+      <div class="text-center mb-8">
+        <h1 class="text-2xl font-bold text-white mb-1">找回密码</h1>
+        <p class="text-sm text-gray-500" x-text="isEmail ? '通过邮箱验证码重置密码' : '通过手机验证码重置密码'"></p>
+      </div>
+
+      <!-- 切换方式 -->
+      <div class="flex gap-3 mb-6">
+        <button @click="type='sms'; error=''; success=''"
+                :class="type==='sms' ? 'bg-primary-600 text-white' : 'bg-dark-600 text-gray-400 hover:text-white'"
+                class="flex-1 py-2 rounded-lg text-sm font-medium transition-colors">
+          手机号找回
+        </button>
+        <button @click="type='email'; error=''; success=''"
+                :class="type==='email' ? 'bg-primary-600 text-white' : 'bg-dark-600 text-gray-400 hover:text-white'"
+                class="flex-1 py-2 rounded-lg text-sm font-medium transition-colors">
+          邮箱找回
+        </button>
+      </div>
+
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl p-7 shadow-2xl">
+
+        <div x-show="error" x-cloak class="error-box mb-4" x-text="error"></div>
+        <div x-show="success" x-cloak class="success-box mb-4">
+          <p x-text="success" class="mb-3"></p>
+          <a href="/fp/login" class="text-green-300 underline text-sm">返回登录</a>
+        </div>
+
+        <template x-if="!success">
+          <div class="space-y-4">
+
+            <!-- 账号输入 -->
+            <div>
+              <label class="block text-xs text-gray-500 mb-1.5" x-text="label"></label>
+              <input x-model="identity" :type="isEmail ? 'email' : 'tel'"
+                     :placeholder="placeholder" class="input-field" />
+            </div>
+
+            <!-- 验证码 -->
+            <div>
+              <label class="block text-xs text-gray-500 mb-1.5">验证码</label>
+              <div class="flex gap-2">
+                <input x-model="code" type="text" maxlength="6" inputmode="numeric"
+                       placeholder="6位验证码"
+                       class="input-field text-center tracking-[.3em] font-mono" />
+                <button @click="sendCode"
+                        :disabled="sending || countdown > 0"
+                        class="shrink-0 px-4 rounded-lg bg-dark-600 hover:bg-dark-500 text-sm text-gray-300 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap">
+                  <span x-show="countdown <= 0" x-text="sending ? '发送中…' : '获取验证码'"></span>
+                  <span x-show="countdown > 0" x-cloak x-text="countdown + 's'"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 新密码 -->
+            <div>
+              <label class="block text-xs text-gray-500 mb-1.5">新密码</label>
+              <div class="relative">
+                <input x-model="newPassword"
+                       :type="showPwd ? 'text' : 'password'"
+                       @keyup.enter="submit"
+                       placeholder="至少 6 位"
+                       class="input-field pr-10" />
+                <button @click="showPwd=!showPwd" type="button"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
+                  <svg x-show="!showPwd" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                  <svg x-show="showPwd" x-cloak class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <button @click="submit" :disabled="loading" class="btn-primary mt-2">
+              <span x-show="!loading">确认重置密码</span>
+              <span x-show="loading" x-cloak>提交中…</span>
+            </button>
+
+          </div>
+        </template>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="border-t border-dark-700 py-4 text-center">
+    <p class="text-xs text-gray-700">© 2026 启元指纹浏览器 ·
+      <a href="/fp/privacy" class="hover:text-gray-500 transition-colors">隐私政策</a> ·
+      <a href="/fp/terms" class="hover:text-gray-500 transition-colors">用户协议</a>
+    </p>
+  </footer>
+
+</body>
+</html>

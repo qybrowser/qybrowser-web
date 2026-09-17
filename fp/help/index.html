@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>帮助中心 - 启元指纹浏览器</title>
+  <link rel="canonical" href="https://usefullc.com/fp/help" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 15px; scroll-behavior: smooth; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ==================== 侧边栏 ==================== */
+    .sidebar {
+      width: 230px;
+      min-width: 230px;
+      background: #fff;
+      border-right: 1px solid #e2e8f0;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+    .sidebar::-webkit-scrollbar { width: 3px; }
+    .sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+
+    .sidebar-logo {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .sidebar-brand-icon {
+      width: 32px;
+      height: 32px;
+      background: #2563eb;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-brand-icon svg { width: 17px; height: 17px; fill: none; stroke: #fff; stroke-width: 2; }
+    .sidebar-brand-name { font-size: 13.5px; font-weight: 700; color: #0f172a; line-height: 1.3; }
+    .sidebar-brand-sub { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+
+    .sidebar-nav { padding: 10px 0 20px; flex: 1; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 18px;
+      font-size: 13px;
+      color: #64748b;
+      text-decoration: none;
+      transition: color .15s, background .15s;
+      cursor: pointer;
+      position: relative;
+      line-height: 1.5;
+    }
+    .nav-item:hover { color: #0f172a; background: #f8fafc; }
+    .nav-item.active { color: #2563eb; background: #eff6ff; }
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: #2563eb;
+      border-radius: 0 2px 2px 0;
+    }
+    .nav-item.sub { padding-left: 34px; font-size: 12.5px; color: #94a3b8; }
+    .nav-item.sub:hover { color: #475569; }
+    .nav-item.sub.active { color: #2563eb; background: #eff6ff; }
+    .nav-item .nav-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      flex-shrink: 0;
+    }
+    .nav-item.active .nav-dot { background: #2563eb; }
+
+    /* ==================== 主内容 ==================== */
+    .main { flex: 1; min-width: 0; }
+
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0 44px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .topbar a { font-size: 13px; color: #94a3b8; text-decoration: none; }
+    .topbar a:hover { color: #475569; }
+    .topbar .sep { font-size: 13px; color: #cbd5e1; }
+    .topbar .current { font-size: 13px; color: #475569; }
+
+    .content {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 36px 44px 80px;
+    }
+
+    /* ==================== 章节 ==================== */
+    .section { margin-bottom: 60px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .section-icon {
+      width: 38px; height: 38px;
+      background: #eff6ff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-icon svg { width: 19px; height: 19px; fill: none; stroke: #2563eb; stroke-width: 1.8; }
+    .section-title { font-size: 21px; font-weight: 700; color: #0f172a; }
+
+    .subsection { margin-bottom: 32px; }
+    .subsection-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 12px;
+      padding-left: 10px;
+      border-left: 3px solid #3b82f6;
+    }
+
+    p { font-size: 14px; line-height: 1.85; color: #475569; margin-bottom: 12px; }
+    strong { color: #1e293b; }
+
+    /* ==================== 图片 ==================== */
+    .doc-img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      margin: 12px 0 4px;
+      cursor: zoom-in;
+      transition: box-shadow .2s;
+      display: block;
+    }
+    .doc-img:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.11); }
+    .img-cap {
+      font-size: 12px;
+      color: #94a3b8;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .img-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 12px 0;
+    }
+    .img-row .img-cell .doc-img { margin: 0 0 4px; }
+
+    /* ==================== 表格 ==================== */
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      margin: 12px 0 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .doc-table th {
+      background: #f8fafc;
+      padding: 9px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+    .doc-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #475569;
+      vertical-align: top;
+      line-height: 1.65;
+    }
+    .doc-table tr:last-child td { border-bottom: none; }
+    .doc-table tr:hover td { background: #f8fafc; }
+
+    /* ==================== 提示框 ==================== */
+    .notice {
+      border-radius: 8px;
+      padding: 11px 14px;
+      margin: 12px 0;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+    .notice-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .notice.warn  { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+    .notice.info  { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+    .notice.tip   { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+
+    /* ==================== 步骤 ==================== */
+    .steps { margin: 14px 0; }
+    .step { display: flex; gap: 13px; margin-bottom: 14px; align-items: flex-start; }
+    .step-num {
+      width: 24px; height: 24px;
+      background: #2563eb;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-body { flex: 1; font-size: 14px; color: #475569; line-height: 1.75; }
+
+    /* ==================== 徽标 ==================== */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.6;
+      margin: 0 2px;
+    }
+    .badge-blue   { background: #dbeafe; color: #1d4ed8; }
+    .badge-green  { background: #dcfce7; color: #15803d; }
+    .badge-orange { background: #ffedd5; color: #c2410c; }
+
+    /* ==================== FAQ ==================== */
+    .faq-list { display: flex; flex-direction: column; gap: 10px; }
+    .faq-item {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .faq-q {
+      padding: 13px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      user-select: none;
+    }
+    .faq-q:hover { background: #f8fafc; }
+    .faq-arrow { color: #94a3b8; font-size: 12px; transition: transform .2s; flex-shrink: 0; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      display: none;
+      padding: 12px 16px 14px;
+      font-size: 13.5px;
+      line-height: 1.8;
+      color: #475569;
+      border-top: 1px solid #f1f5f9;
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ==================== Lightbox ==================== */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 92vw;
+      max-height: 92vh;
+      border-radius: 8px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+      cursor: default;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 18px; right: 22px;
+      color: #fff;
+      font-size: 30px;
+      cursor: pointer;
+      line-height: 1;
+      opacity: .8;
+    }
+    .lightbox-close:hover { opacity: 1; }
+
+    /* ==================== 响应式 ==================== */
+    @media (max-width: 840px) {
+      .sidebar { display: none; }
+      .content { padding: 24px 20px 60px; }
+      .topbar { padding: 0 20px; }
+      .img-row { grid-template-columns: 1fr; }
+      .fc-row { flex-direction: column; gap: 10px; }
+      .fc-side-note { max-width: 100%; flex-direction: row; }
+      .fc-connector { display: none; }
+      .fc-note-box { border-left: 3px solid #3b82f6; }
+      .fc-notify-row { flex-wrap: wrap; justify-content: center; }
+    }
+
+    /* ==================== 应用中心流程图 ==================== */
+    .app-flow-wrap {
+      background: linear-gradient(160deg, #f8fafc 0%, #f0f7ff 100%);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 22px 20px 26px;
+      margin: 0 0 28px;
+      overflow-x: auto;
+    }
+    .app-flow-title {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .app-flow { min-width: 540px; display: flex; flex-direction: column; align-items: center; }
+
+    .fc-box {
+      padding: 9px 26px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .fc-box-blue   { background: #eff6ff; border: 2px solid #93c5fd; color: #1d4ed8; }
+    .fc-box-indigo { background: #eef2ff; border: 2px solid #818cf8; color: #3730a3; }
+    .fc-box-cyan   { background: #ecfeff; border: 2px solid #22d3ee; color: #0e7490; }
+    .fc-box-green  { background: #f0fdf4; border: 2px solid #86efac; color: #166534; }
+
+    .fc-down { display: flex; flex-direction: column; align-items: center; height: 26px; }
+    .fc-down-line { width: 2px; flex: 1; background: #94a3b8; }
+    .fc-down-tip  { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #94a3b8; }
+    .fc-down-sm   { height: 14px; }
+    .fc-down-dashed .fc-down-line {
+      background: repeating-linear-gradient(to bottom, #a78bfa 0, #a78bfa 4px, transparent 4px, transparent 8px);
+    }
+    .fc-down-dashed .fc-down-tip { border-top-color: #a78bfa; }
+
+    .fc-row { display: flex; align-items: center; width: 100%; justify-content: center; }
+    .fc-side-note { display: flex; align-items: center; flex: 1; max-width: 185px; }
+    .fc-note-box {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #475569;
+      flex: 1;
+    }
+    .fc-note-box b { display: block; color: #374151; font-size: 12px; margin-bottom: 3px; }
+    .fc-connector { display: flex; align-items: center; width: 22px; flex-shrink: 0; }
+    .fc-conn-line { height: 1.5px; flex: 1; background: #94a3b8; }
+    .fc-conn-r { width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #94a3b8; }
+    .fc-conn-l { width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-right: 6px solid #94a3b8; }
+
+    .fc-triggers { display: flex; align-items: center; gap: 10px; }
+    .fc-trigger {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1.5px solid;
+    }
+    .fc-trigger-timer  { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .fc-trigger-manual { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
+    .fc-trigger-or { font-size: 11px; color: #94a3b8; }
+
+    .fc-cond {
+      font-size: 11px;
+      color: #7c3aed;
+      background: #faf5ff;
+      border: 1px solid #e9d5ff;
+      border-radius: 10px;
+      padding: 2px 10px;
+      margin: 3px 0;
+    }
+    .fc-notify-row { display: flex; gap: 8px; }
+    .fc-notify-item {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1.5px solid;
+      text-align: center;
+    }
+    .fc-notify-wecom  { background: #f0fdf4; border-color: #4ade80; color: #166534; }
+    .fc-notify-ding   { background: #fff7ed; border-color: #fb923c; color: #9a3412; }
+    .fc-notify-email  { background: #eff6ff; border-color: #60a5fa; color: #1d4ed8; }
+  </style>
+</head>
+<body>
+
+<!-- ==================== 侧边栏 ==================== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a class="sidebar-brand" href="/">
+      <div class="sidebar-brand-icon">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <div>
+        <div class="sidebar-brand-name">启元指纹浏览器</div>
+        <div class="sidebar-brand-sub">帮助中心</div>
+      </div>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item" href="#intro">🚀 快速开始</a>
+
+    <a class="nav-item" href="#env">🖥️ 环境管理</a>
+    <a class="nav-item sub" href="#env-list"><span class="nav-dot"></span>环境列表</a>
+    <a class="nav-item sub" href="#env-create"><span class="nav-dot"></span>新建环境</a>
+    <a class="nav-item sub" href="#env-proxy"><span class="nav-dot"></span>代理配置</a>
+    <a class="nav-item sub" href="#env-ops"><span class="nav-dot"></span>其他操作</a>
+
+    <a class="nav-item" href="#proxy">🔗 代理管理</a>
+    <a class="nav-item sub" href="#proxy-guide"><span class="nav-dot"></span>代理配置指南</a>
+    <a class="nav-item sub" href="#proxy-buy-guide"><span class="nav-dot"></span>购买使用示例</a>
+
+    <a class="nav-item" href="#members">👥 成员管理</a>
+
+    <a class="nav-item" href="#extensions">🧩 扩展中心</a>
+
+    <a class="nav-item" href="#app-center">⚡ 应用中心</a>
+    <a class="nav-item sub" href="#app-market"><span class="nav-dot"></span>应用市场</a>
+    <a class="nav-item sub" href="#app-task-create"><span class="nav-dot"></span>创建任务</a>
+    <a class="nav-item sub" href="#app-tasks"><span class="nav-dot"></span>任务管理</a>
+    <a class="nav-item sub" href="#app-notify"><span class="nav-dot"></span>通知配置</a>
+
+    <a class="nav-item" href="#developer">💻 开发者中心</a>
+
+    <a class="nav-item" href="#plan">👑 套餐与会员</a>
+
+    <a class="nav-item" href="#faq">❓ 常见问题</a>
+  </nav>
+</aside>
+
+<!-- ==================== 主内容 ==================== -->
+<div class="main">
+  <div class="topbar">
+    <a href="/">首页</a>
+    <span class="sep">/</span>
+    <span class="current">帮助中心</span>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== 快速开始 ===== -->
+    <section class="section" id="intro">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h1 class="section-title">快速开始</h1>
+      </div>
+
+      <div class="subsection" id="intro-about">
+        <h2 class="subsection-title">软件介绍</h2>
+        <p>启元指纹浏览器是一款专为<strong>跨境电商、自媒体矩阵运营</strong>设计的多账号防关联工具。每个浏览器环境拥有独立的指纹信息、Cookie 存储和代理配置，账号之间完全隔离，告别封号与关联风险。</p>
+        <p>核心功能模块：
+          <span class="badge badge-blue">环境管理</span>
+          <span class="badge badge-blue">代理管理</span>
+          <span class="badge badge-blue">成员管理</span>
+          <span class="badge badge-blue">扩展中心</span>
+          <span class="badge badge-blue">应用中心</span>
+          <span class="badge badge-blue">开发者中心</span>
+        </p>
+        <img class="doc-img" src="/help-images/host.png" alt="软件主界面">
+        <p class="img-cap">图：软件主界面</p>
+      </div>
+
+      <div class="subsection">
+        <h2 class="subsection-title">系统要求</h2>
+        <table class="doc-table">
+          <tr><th>项目</th><th>要求</th></tr>
+          <tr><td>操作系统</td><td>Windows 10 及以上（暂不提供 macOS / Linux 版本）</td></tr>
+          <tr><td>网络</td><td>正常可上网即可；访问海外站点需配置对应地区的海外代理 IP</td></tr>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <h2 class="subsection-title">软件入口</h2>
+        <p>本软件<strong>免安装</strong>，下载 <code style="background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:13px">qiyuan-fb-x64.rar</code> 后解压即可直接运行。解压后目录结构如下图所示：</p>
+        <img class="doc-img" src="/help-images/client_files_list.png" alt="软件目录结构">
+        <p class="img-cap">图：解压后的软件目录</p>
+        <div class="notice info">
+          <span class="notice-icon">💡</span>
+          <span>建议将软件放置在磁盘空间充足的目录。任务采集产生的结果文件会保存在本地，请预留足够的存储空间。</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 环境管理 ===== -->
+    <section class="section" id="env">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <h1 class="section-title">环境管理</h1>
+      </div>
+      <p>「环境」即独立的浏览器实例。每个环境有专属的指纹参数、Cookie 存储和代理配置，彼此完全隔离，是账号防关联的核心保障。</p>
+
+      <!-- 环境管理使用流程图 -->
+      <div class="app-flow-wrap">
+        <div class="app-flow-title">环境管理 · 完整使用流程</div>
+        <div class="app-flow">
+
+          <!-- 环境列表 -->
+          <div class="fc-box fc-box-cyan">📋 环境列表</div>
+          <div class="fc-down"><div class="fc-down-line"></div><div class="fc-down-tip"></div></div>
+
+          <!-- 新建环境 + 两种模式 -->
+          <div class="fc-row">
+            <div class="fc-side-note">
+              <div class="fc-note-box">
+                <b>普通模式</b>
+                自动填充指纹参数，开箱即用，推荐新手使用
+              </div>
+              <div class="fc-connector"><div class="fc-conn-line"></div><div class="fc-conn-r"></div></div>
+            </div>
+            <div class="fc-box fc-box-indigo" style="flex-shrink:0">✨ 新建环境</div>
+            <div class="fc-side-note">
+              <div class="fc-connector"><div class="fc-conn-l"></div><div class="fc-conn-line"></div></div>
+              <div class="fc-note-box">
+                <b>专家模式</b>
+                手动配置全部指纹参数，适合进阶用户
+              </div>
+            </div>
+          </div>
+          <div class="fc-down"><div class="fc-down-line"></div><div class="fc-down-tip"></div></div>
+
+          <!-- 配置代理 -->
+          <div class="fc-row">
+            <div class="fc-side-note">
+              <div class="fc-note-box">
+                <b>集成代理</b>
+                引用代理管理中已保存的代理，<a href="#proxy-guide" style="color:#2563eb;text-decoration:none">详见代理配置指南 →</a>
+              </div>
+              <div class="fc-connector"><div class="fc-conn-line"></div><div class="fc-conn-r"></div></div>
+            </div>
+            <div class="fc-box fc-box-blue" style="flex-shrink:0">🔗 配置代理</div>
+            <div class="fc-side-note">
+              <div class="fc-connector"><div class="fc-conn-l"></div><div class="fc-conn-line"></div></div>
+              <div class="fc-note-box">
+                <b>本地直连 / 自定义</b>
+                直接使用本机网络，或手动填写代理信息
+              </div>
+            </div>
+          </div>
+          <div class="fc-down"><div class="fc-down-line"></div><div class="fc-down-tip"></div></div>
+
+          <!-- 打开浏览器 -->
+          <div class="fc-box fc-box-green">🖥️ 打开环境浏览器</div>
+          <div class="fc-down fc-down-sm"><div class="fc-down-line"></div></div>
+          <div class="fc-triggers">
+            <div class="fc-trigger fc-trigger-timer">可同时打开多个环境实例</div>
+          </div>
+          <div class="fc-down fc-down-sm"><div class="fc-down-line"></div><div class="fc-down-tip"></div></div>
+
+          <!-- 访问网站 -->
+          <div class="fc-row" style="gap:8px;flex-wrap:wrap;justify-content:center;max-width:500px">
+            <div class="fc-notify-item fc-notify-wecom" style="font-size:12px">🛒 跨境电商<br><span style="font-weight:400;font-size:11px">Amazon · TikTok Shop · Shopee · Lazada</span></div>
+            <div class="fc-notify-item fc-notify-ding" style="font-size:12px">📱 自媒体平台<br><span style="font-weight:400;font-size:11px">TikTok · Instagram · YouTube · Facebook</span></div>
+            <div class="fc-notify-item fc-notify-email" style="font-size:12px">🏪 国内平台<br><span style="font-weight:400;font-size:11px">淘宝 · 拼多多 · 抖音 · 小红书</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="subsection" id="env-list">
+        <h2 class="subsection-title">环境列表</h2>
+        <p>所有已创建的浏览器环境集中展示，支持按名称、标签筛选，可进行打开、关闭、复制、删除等批量操作。</p>
+        <img class="doc-img" src="/help-images/env.png" alt="环境列表">
+        <p class="img-cap">图：环境管理列表</p>
+      </div>
+
+      <div class="subsection" id="env-create">
+        <h2 class="subsection-title">新建环境</h2>
+        <p>点击右上角「新增环境」按钮，弹出新建面板。提供两种创建模式：</p>
+        <div class="img-row">
+          <div class="img-cell">
+            <img class="doc-img" src="/help-images/env_new_1.png" alt="普通模式">
+            <p class="img-cap">普通模式</p>
+          </div>
+          <div class="img-cell">
+            <img class="doc-img" src="/help-images/env_new_2.png" alt="专家模式">
+            <p class="img-cap">专家模式</p>
+          </div>
+        </div>
+        <p><strong>普通模式</strong>：系统自动填充所有指纹参数，适合大多数用户，开箱即用，推荐不熟悉指纹配置的用户使用。</p>
+        <p><strong>专家模式</strong>：开放全部指纹参数的手动调整，适合需要精细控制指纹特征的进阶用户。</p>
+        <div class="notice warn">
+          <span class="notice-icon">⚠️</span>
+          <span>专家模式下，建议将「时区」「地理位置」「语言」设置为<strong>基于 IP 自动匹配</strong>，并开启 <strong>TLS 特征列表</strong>，以获得与代理 IP 地区相符的真实指纹效果。</span>
+        </div>
+
+        <p style="margin-top:18px;"><strong>主要表单字段说明</strong></p>
+        <table class="doc-table">
+          <tr><th style="width:130px">字段</th><th>说明</th></tr>
+          <tr><td>代理信息</td><td>三种选项：<strong>本地直连</strong>（使用本机网络，无代理）、<strong>集成代理</strong>（从代理管理中选择已保存的代理）、<strong>自定义</strong>（手动填写代理地址）</td></tr>
+          <tr><td>打开起始页</td><td>开启后，环境浏览器启动时自动跳转到预设的起始网址</td></tr>
+          <tr><td>标签页</td><td>开启后可预设多个初始标签页地址，浏览器启动时一并打开</td></tr>
+          <tr><td>同步用户信息</td><td>开启后，登录信息（Cookie 等）经加密后同步至阿里云，同一环境在多台设备间自动同步，无需重复登录</td></tr>
+          <tr><td>标签</td><td>为环境打上自定义标签，便于分组与成员授权管理，每个环境最多设置 3 个标签</td></tr>
+          <tr><td>随机指纹</td><td>一键随机生成一套全新的指纹信息</td></tr>
+        </table>
+        <img class="doc-img" src="/help-images/env_browser.png" alt="打开起始页示例">
+        <p class="img-cap">图：开启「打开起始页」后的效果</p>
+      </div>
+
+      <div class="subsection" id="env-proxy">
+        <h2 class="subsection-title">代理配置</h2>
+        <p>新建或编辑环境时可为该环境绑定代理 IP，共有三种配置方式：</p>
+        <div class="img-row">
+          <div class="img-cell">
+            <img class="doc-img" src="/help-images/env_proxy_no.png" alt="本地直连">
+            <p class="img-cap">本地直连（无代理，使用本机网络）</p>
+          </div>
+          <div class="img-cell">
+            <img class="doc-img" src="/help-images/env_proxy_added.png" alt="集成代理">
+            <p class="img-cap">集成代理（引用代理管理中已保存的代理）</p>
+          </div>
+        </div>
+        <div class="img-row">
+          <div class="img-cell">
+            <img class="doc-img" src="/help-images/env_proxy_custom.png" alt="自定义代理">
+            <p class="img-cap">自定义（手动填写代理信息）</p>
+          </div>
+          <div class="img-cell">
+            <img class="doc-img" src="/help-images/env_proxy_buy.png" alt="推荐购买渠道">
+            <p class="img-cap">推荐购买渠道（暂未配置代理时显示）</p>
+          </div>
+        </div>
+        <div class="notice tip">
+          <span class="notice-icon">✅</span>
+          <span>为降低关联风险，<strong>建议为每个账号配置独立的代理 IP</strong>。使用本地直连可以正常使用软件，但多账号共享同一 IP 会显著增加被平台识别关联的概率。</span>
+        </div>
+      </div>
+
+      <div class="subsection" id="env-ops">
+        <h2 class="subsection-title">其他操作</h2>
+        <img class="doc-img" src="/help-images/env_operate.png" alt="环境操作">
+        <p class="img-cap">图：环境操作区域</p>
+        <table class="doc-table">
+          <tr><th style="width:90px">操作</th><th>说明</th></tr>
+          <tr><td>打开</td><td>启动该环境对应的浏览器实例</td></tr>
+          <tr><td>关闭</td><td>关闭该环境已打开的浏览器实例</td></tr>
+          <tr><td>复制环境</td><td>基于当前环境的指纹和配置，快速创建一个新的独立环境</td></tr>
+          <tr><td>清空缓存</td><td>清除该环境的浏览器缓存与 Cookie。<strong>注意：已登录账号的 Cookie 将一并清除，需重新登录</strong></td></tr>
+        </table>
+        <div class="notice warn">
+          <span class="notice-icon">⚠️</span>
+          <span>已在环境中登录账号后，<strong>不建议再修改指纹参数或更换代理 IP</strong>。指纹变更会导致设备信息改变，跨地区的代理 IP 切换可能触发平台风控，尤其对重要账号应做到「一账号一环境一 IP」，创建后不轻易变更。</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 代理管理 ===== -->
+    <section class="section" id="proxy">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+        </div>
+        <h1 class="section-title">代理管理</h1>
+      </div>
+      <p>在代理管理中统一录入和维护代理 IP 信息。录入后可在新建或编辑环境时以「集成代理」方式直接引用，无需每次手动填写，方便统一维护和批量替换。</p>
+
+      <div class="subsection">
+        <h2 class="subsection-title">代理列表</h2>
+        <img class="doc-img" src="/help-images/proxy_list.png" alt="代理列表">
+        <p class="img-cap">图：代理管理列表</p>
+      </div>
+
+<!--      <div class="subsection">-->
+<!--        <h2 class="subsection-title">新增代理</h2>-->
+<!--        <img class="doc-img" src="/help-images/proxy_new.png" alt="新增代理">-->
+<!--        <p class="img-cap">图：新增代理</p>-->
+<!--        <div class="notice info">-->
+<!--          <span class="notice-icon">💡</span>-->
+<!--          <span>软件本身<strong>不提供代理 IP 资源</strong>，需用户自行购买第三方代理服务。若暂未准备代理，可在新建环境的代理配置界面查看推荐购买渠道。</span>-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <!-- 代理配置指南 -->
+      <div class="subsection" id="proxy-guide">
+        <h2 class="subsection-title">代理配置指南</h2>
+
+        <p style="margin-bottom:16px">不同代理类型在稳定性、安全性和价格上差异显著，选对代理类型是账号安全运营的基础。</p>
+
+        <!-- 代理类型对比 -->
+        <h3 style="font-size:14px;font-weight:600;color:#374151;margin:0 0 10px">代理类型选择</h3>
+        <table class="doc-table">
+          <tr>
+            <th style="width:170px">类型</th>
+            <th>特征与优缺点</th>
+            <th style="width:110px">适用场景</th>
+          </tr>
+          <tr>
+            <td>
+              <div style="font-weight:700;color:#166534">🏠 住宅独享 IP</div>
+              <div style="font-size:12px;color:#6b7280;margin-top:2px">ISP 原生家庭 IP</div>
+              <span style="display:inline-block;margin-top:4px;background:#dcfce7;color:#166534;font-size:11px;padding:1px 6px;border-radius:4px;font-weight:600">⭐ 跨境首选</span>
+            </td>
+            <td style="font-size:13.5px">
+              来源于真实家庭宽带，与普通人家庭上网 IP 一致，平台风控信任度最高。<br>
+              <span style="color:#166534">✅ 几乎不被标记代理，存活率高，适合长期养号</span><br>
+              <span style="color:#dc2626">❌ 价格最贵</span>
+            </td>
+            <td style="font-size:13px">Amazon、TikTok、Facebook、Shopee、跨境店群</td>
+          </tr>
+          <tr>
+            <td>
+              <div style="font-weight:700;color:#92400e">📱 4G/5G 移动 IP</div>
+              <div style="font-size:12px;color:#6b7280;margin-top:2px">手机流量动态 IP</div>
+              <span style="display:inline-block;margin-top:4px;background:#fef3c7;color:#92400e;font-size:11px;padding:1px 6px;border-radius:4px;font-weight:600">⭐ 注册养号首选</span>
+            </td>
+            <td style="font-size:13.5px">
+              来源于手机卡流量池，每次重连自动换 IP，最像真实手机环境。<br>
+              <span style="color:#166534">✅ 风控极低，适合批量注册新账号、短期养号</span><br>
+              <span style="color:#dc2626">❌ 稳定性不如住宅，不适合固定店铺长期使用</span>
+            </td>
+            <td style="font-size:13px">批量注册社媒账号、小号矩阵、短期运营</td>
+          </tr>
+          <tr>
+            <td>
+              <div style="font-weight:700;color:#6b7280">🖥️ 机房服务器 IP</div>
+              <div style="font-size:12px;color:#6b7280;margin-top:2px">数据中心 IP</div>
+              <span style="display:inline-block;margin-top:4px;background:#fee2e2;color:#dc2626;font-size:11px;padding:1px 6px;border-radius:4px;font-weight:600">❌ 跨境不推荐</span>
+            </td>
+            <td style="font-size:13.5px">
+              来源于云服务器、机房集群，大量用户共用同一段 IP。<br>
+              <span style="color:#166534">✅ 价格便宜、速度快、量大</span><br>
+              <span style="color:#dc2626">❌ 极易被平台标记为代理/机房 IP，多人共用易关联、封号</span>
+            </td>
+            <td style="font-size:13px">仅适合普通爬虫、非账号敏感场景</td>
+          </tr>
+        </table>
+
+        <!-- IPFoxy 购买示例 -->
+        <h3 style="font-size:14px;font-weight:600;color:#374151;margin:24px 0 10px" id="proxy-buy-guide">购买使用示例（以 IPFoxy 为例）</h3>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong>注册登录</strong> — 点击软件代理管理页面右上角「推荐购买」，前往 IPFoxy 官网（<a href="https://www.ipfoxy.net" target="_blank" style="color:#2563eb">ipfoxy.net</a>）。用手机号注册并绑定手机，新用户可免费试用。
+            </div>
+          </div>
+        </div>
+        <img class="doc-img" src="/help-images/proxy/proxy_buy.png" alt="推荐购买引导">
+        <p class="img-cap">图：点击「推荐购买」进入代理选购</p>
+
+        <div class="steps" style="margin-top:16px">
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body"><strong>进入购买代理</strong> — 登录后点击左上角「购买代理」。</div>
+          </div>
+        </div>
+        <img class="doc-img" src="/help-images/proxy/ipfoxy1.png" alt="进入购买代理">
+        <p class="img-cap">图：IPFoxy 购买代理入口</p>
+
+        <div class="steps" style="margin-top:16px">
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong>选择套餐</strong> — 选择「静态住宅 ISP」→ 选择国家（如：美国）→ 选择套餐 → 数量填 1 → 去支付。
+            </div>
+          </div>
+        </div>
+        <img class="doc-img" src="/help-images/proxy/ipfoxy2.png" alt="选择套餐">
+        <p class="img-cap">图：选择静态住宅 ISP 套餐</p>
+
+        <div class="steps" style="margin-top:16px">
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong>获取代理信息</strong> — 支付成功后，左侧进入「静态代理管理」，点击对应代理条目，一键复制代理信息（格式：<code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:12px">ip:port:user:pass</code>）。
+            </div>
+          </div>
+        </div>
+        <img class="doc-img" src="/help-images/proxy/ipfoxy3.png" alt="获取代理信息">
+        <p class="img-cap">图：复制代理信息（示例格式：socks5://129.146.190.57:45024:用户名:密码）</p>
+
+        <div class="steps" style="margin-top:16px">
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <strong>填写到代理表单</strong> — 回到软件「新增代理」，按以下对应关系填写各字段，填写后点击「检查代理」验证连通性，成功后保存。
+            </div>
+          </div>
+        </div>
+        <table class="doc-table" style="margin-top:10px">
+          <tr><th style="width:120px">表单字段</th><th>对应信息</th><th>示例</th></tr>
+          <tr><td>代理名称</td><td>自定义，便于识别</td><td>美国节点-01</td></tr>
+          <tr><td>代理类型</td><td>按复制协议填写</td><td>SOCKS5</td></tr>
+          <tr><td>代理地址</td><td>ip 部分</td><td>129.146.190.57</td></tr>
+          <tr><td>端口</td><td>port 部分</td><td>45024</td></tr>
+          <tr><td>用户名</td><td>user 部分</td><td>vVp69f5687b69da5</td></tr>
+          <tr><td>密码</td><td>pass 部分</td><td>RnKp0YsZBhENJXxk4g</td></tr>
+        </table>
+        <img class="doc-img" src="/help-images/proxy_new_2.png" alt="填写代理表单">
+        <p class="img-cap">图：填写代理信息并检测连通性</p>
+
+        <div class="notice tip">
+          <span class="notice-icon">✅</span>
+          <span>代理保存成功后，在新建/编辑环境时选择「集成代理」，即可从列表中直接选用，无需每次手动填写。</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 成员管理 ===== -->
+    <section class="section" id="members">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        </div>
+        <h1 class="section-title">成员管理</h1>
+      </div>
+      <p>管理员可以在此添加团队成员子账号，并为其分配可操作的环境范围。成员登录后仅能查看和操作被授权的环境，实现团队协作下的权限隔离。</p>
+      <img class="doc-img" src="/help-images/user_list.png" alt="成员管理列表">
+      <p class="img-cap">图：成员管理列表</p>
+      <div class="notice info">
+        <span class="notice-icon">💡</span>
+        <span>成员账号目前支持<strong>环境管理、代理管理</strong>操作；扩展中心、应用中心、开发者中心功能仅限管理员（Boss）账号使用。</span>
+      </div>
+    </section>
+
+    <!-- ===== 扩展中心 ===== -->
+    <section class="section" id="extensions">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/></svg>
+        </div>
+        <h1 class="section-title">扩展中心</h1>
+      </div>
+      <p>在扩展中心管理 Chrome 插件（扩展），可将插件批量分配到指定的浏览器环境，无需进入每个环境逐一安装，统一管理更高效。</p>
+
+      <div class="subsection">
+        <h2 class="subsection-title">扩展市场</h2>
+        <img class="doc-img" src="/help-images/extensions_list.png" alt="扩展市场">
+        <p class="img-cap">图：扩展市场列表</p>
+      </div>
+
+      <div class="subsection">
+        <h2 class="subsection-title">添加扩展</h2>
+        <img class="doc-img" src="/help-images/extensions_add.png" alt="添加扩展">
+        <p class="img-cap">图：上传并添加 Chrome 扩展</p>
+      </div>
+    </section>
+
+    <!-- ===== 应用中心 ===== -->
+    <section class="section" id="app-center">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+        </div>
+        <h1 class="section-title">应用中心</h1>
+      </div>
+      <p>应用中心提供一系列基于指纹浏览器环境的<strong>自动化数据采集应用</strong>。选择应用后直接创建定时或立即执行的任务，任务完成后将结果保存为文件，并可通过企业微信 / 钉钉机器人实时推送通知。</p>
+
+      <!-- 使用流程图 -->
+      <div class="app-flow-wrap">
+        <div class="app-flow-title">应用中心 · 完整使用流程</div>
+        <div class="app-flow">
+
+          <!-- 应用市场 -->
+          <div class="fc-box fc-box-blue">🏪 应用市场</div>
+          <div class="fc-down"><div class="fc-down-line"></div><div class="fc-down-tip"></div></div>
+
+          <!-- 创建任务 + 两侧前提条件 -->
+          <div class="fc-row">
+            <div class="fc-side-note">
+              <div class="fc-note-box">
+                <b>① 运行环境</b>
+                需已创建浏览器环境。一个环境同时只能被一个任务绑定，删除任务后才可重新绑定。
+              </div>
+              <div class="fc-connector">
+                <div class="fc-conn-line"></div><div class="fc-conn-r"></div>
+              </div>
+            </div>
+
+            <div class="fc-box fc-box-indigo" style="flex-shrink:0">✨ 创建任务</div>
+
+            <div class="fc-side-note">
+              <div class="fc-connector">
+                <div class="fc-conn-l"></div><div class="fc-conn-line"></div>
+              </div>
+              <div class="fc-note-box">
+                <b>② 通知配置（按需）</b>
+                使用企微 / 钉钉通知须先在「通知配置」添加机器人；邮箱通知直接填写地址，无需提前配置。
+              </div>
+            </div>
+          </div>
+
+          <div class="fc-down"><div class="fc-down-line"></div><div class="fc-down-tip"></div></div>
+
+          <!-- 任务列表 -->
+          <div class="fc-box fc-box-cyan">📋 任务列表</div>
+
+          <!-- 触发方式 -->
+          <div class="fc-down fc-down-sm"><div class="fc-down-line"></div></div>
+          <div class="fc-triggers">
+            <div class="fc-trigger fc-trigger-timer">⏱ 定时触发</div>
+            <span class="fc-trigger-or">or</span>
+            <div class="fc-trigger fc-trigger-manual">▶ 手动触发</div>
+          </div>
+          <div class="fc-down fc-down-sm"><div class="fc-down-line"></div><div class="fc-down-tip"></div></div>
+
+          <!-- 任务执行 -->
+          <div class="fc-box fc-box-indigo">⚙️ 任务执行</div>
+          <div class="fc-down"><div class="fc-down-line"></div><div class="fc-down-tip"></div></div>
+
+          <!-- 任务记录 -->
+          <div class="fc-box fc-box-green">📄 任务记录</div>
+
+          <!-- 条件虚线箭头 -->
+          <div class="fc-down fc-down-dashed fc-down-sm"><div class="fc-down-line"></div></div>
+          <div class="fc-cond">应用支持通知 &amp; 已开启通知配置</div>
+          <div class="fc-down fc-down-dashed fc-down-sm"><div class="fc-down-line"></div><div class="fc-down-tip"></div></div>
+
+          <!-- 通知终端 -->
+          <div class="fc-notify-row">
+            <div class="fc-notify-item fc-notify-wecom">💬 企业微信机器人</div>
+            <div class="fc-notify-item fc-notify-ding">🔔 钉钉机器人</div>
+            <div class="fc-notify-item fc-notify-email">✉️ 邮箱</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="subsection" id="app-market">
+        <h2 class="subsection-title">应用市场</h2>
+        <p>在应用市场浏览所有可用的自动化应用。点击应用卡片可查看详细说明，确认后点击「<strong>创建任务</strong>」直接进入任务配置流程。</p>
+        <img class="doc-img" src="/help-images/app_list.png" alt="应用市场">
+        <p class="img-cap">图：应用市场</p>
+        <img class="doc-img" src="/help-images/app_add_task.png" alt="进入创建任务">
+        <p class="img-cap">图：点击「创建任务」进入配置</p>
+      </div>
+
+      <div class="subsection" id="app-task-create">
+        <h2 class="subsection-title">创建任务</h2>
+        <p>任务配置包含：绑定运行环境、填写输入参数、设置数据输出、选择执行方式等内容。</p>
+        <img class="doc-img" src="/help-images/app_task_edit.png" alt="创建任务表单">
+        <p class="img-cap">图：创建任务表单</p>
+
+        <p style="margin-top:20px;margin-bottom:8px;font-weight:600;color:#1e293b;font-size:14px;">各配置项详解</p>
+
+        <p><strong>⏰ 执行方式</strong></p>
+        <p>默认为「立即执行」，开启「定时执行」后可通过 Cron 表达式设置周期性自动运行时间。</p>
+        <img class="doc-img" src="/help-images/app_task_timer.png" alt="定时任务配置">
+        <p class="img-cap">图：定时执行配置（支持 Cron 表达式）</p>
+
+        <p><strong>🖥️ 运行环境</strong></p>
+        <p>任务必须绑定一个浏览器环境才能运行。若尚未创建环境，配置界面会出现如下提示，点击跳转链接可前往新建。</p>
+        <img class="doc-img" src="/help-images/app_task_edit_no_env.png" alt="暂无环境提示">
+        <p class="img-cap">图：尚未创建浏览器环境时的提示</p>
+
+        <p><strong>🔍 数据过滤</strong></p>
+        <p>可对采集到的原始数据设置过滤条件，仅将满足条件的数据写入结果文件，减少无效数据。</p>
+        <img class="doc-img" src="/help-images/app_task_filter.png" alt="数据过滤条件">
+        <p class="img-cap">图：采集数据的过滤条件配置</p>
+
+        <p><strong>🔐 账号登录</strong></p>
+        <p>部分应用需要先在目标平台登录账号才能采集数据。若任务要求登录，配置界面会显示当前登录状态。</p>
+        <img class="doc-img" src="/help-images/app_task_login.png" alt="需要登录提示">
+        <p class="img-cap">图：需要登录时的状态提示</p>
+        <p>点击「打开浏览器登录」，软件会弹出绑定环境的浏览器窗口，在其中完成账号登录后，关闭窗口返回即可。</p>
+        <img class="doc-img" src="/help-images/app_task_login_douyin.png" alt="打开浏览器登录示例">
+        <p class="img-cap">图：在环境浏览器中完成账号登录（示例：抖音）</p>
+        <img class="doc-img" src="/help-images/app_task_logined.png" alt="已登录状态">
+        <p class="img-cap">图：登录完成后的状态</p>
+
+        <p><strong>🔔 完成通知</strong></p>
+        <p>开启后，任务采集完毕时会自动将结果通过企业微信或钉钉机器人推送通知。</p>
+        <img class="doc-img" src="/help-images/app_task_notify.png" alt="完成通知配置">
+        <p class="img-cap">图：完成通知配置</p>
+        <p>若尚未配置通知机器人，界面会出现如下跳转提示，点击进入「通知配置」页面完成设置后返回。</p>
+        <img class="doc-img" src="/help-images/app_task_edit_no_robot.png" alt="未配置通知机器人提示">
+        <p class="img-cap">图：未配置通知机器人时的跳转提示</p>
+      </div>
+
+      <div class="subsection" id="app-tasks">
+        <h2 class="subsection-title">任务管理</h2>
+        <p>在任务管理列表中查看、运行、编辑和删除已创建的任务。</p>
+        <img class="doc-img" src="/help-images/task_list.png" alt="任务列表">
+        <p class="img-cap">图：任务管理列表</p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">点击操作栏中的「<strong>执行</strong>」，任务开始运行，状态变为「运行中」。最多可同时运行 <strong>5 个</strong>任务。</div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">运行过程中可点击「<strong>强制结束</strong>」立即中止当前任务。</div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">任务完成后，点击操作栏中的「<strong>记录</strong>」查看历史执行记录，并下载结果文件。</div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">若在创建任务时配置了完成通知，任务结束后会自动向企业微信或钉钉群推送消息，方便在手机端随时掌握采集进展。<br><span style="color:#64748b;font-size:13px">针对增量采集业务：已推送过的重复记录不会再次发送，避免消息冗余。</span></div>
+          </div>
+        </div>
+
+        <img class="doc-img" src="/help-images/task_list_running2.png" alt="任务运行中">
+        <p class="img-cap">图：任务运行中状态</p>
+        <img class="doc-img" src="/help-images/task_records.png" alt="任务执行记录">
+        <p class="img-cap">图：任务执行记录（可查看并下载输出文件）</p>
+
+        <div class="img-row">
+          <div class="img-cell">
+            <img class="doc-img" src="/help-images/dd_devices_nofity.jpg" alt="钉钉通知示例">
+            <p class="img-cap">图：钉钉群收到任务完成通知</p>
+          </div>
+          <div class="img-cell">
+            <img class="doc-img" src="/help-images/dd_devices_nofity2.jpg" alt="企业微信通知示例">
+            <p class="img-cap">图：企业微信群收到任务完成通知</p>
+          </div>
+        </div>
+
+        <div class="notice warn">
+          <span class="notice-icon">⚠️</span>
+          <span>结果文件仅保存在<strong>执行任务的本地设备</strong>上，其他设备无法访问。文件最多保留 <strong>7 天</strong>，到期自动清除，请及时备份重要数据。</span>
+        </div>
+      </div>
+
+      <div class="subsection" id="app-notify">
+        <h2 class="subsection-title">通知配置</h2>
+        <p>配置企业微信或钉钉的 Webhook 机器人，用于接收任务完成通知。支持分组管理，每组最多配置 <strong>6 个 Key</strong>，多 Key 轮询可有效规避单个机器人的推送频率限制。</p>
+        <img class="doc-img" src="/help-images/task_nofity_config2.png" alt="通知机器人配置">
+        <p class="img-cap">图：通知机器人分组配置</p>
+        <img class="doc-img" src="/help-images/robot_add_key.png" alt="添加机器人Key">
+        <p class="img-cap">图：添加机器人 Webhook Key</p>
+      </div>
+
+      <!-- Webhook Key 获取指南 -->
+      <div class="subsection" id="notify-webhook-guide">
+        <h2 class="subsection-title">Webhook Key 获取方式</h2>
+        <p>将机器人添加到群聊后，复制其 Webhook 地址中的 Key 部分填入通知配置，即可启用消息推送。以下分别介绍企业微信和钉钉的操作步骤。</p>
+
+        <!-- 企业微信 -->
+        <div style="margin-top:20px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+            <div style="width:4px;height:18px;background:#07c160;border-radius:2px"></div>
+            <h3 style="font-size:15px;font-weight:700;color:#1e293b">一、企业微信群机器人</h3>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num" style="background:#07c160">1</div>
+              <div class="step-body">
+                <strong>进入消息推送</strong> — 打开企业微信 PC 端，进入目标群聊，点击右上角「<strong>···</strong>」→「消息推送」。
+              </div>
+            </div>
+          </div>
+          <img class="doc-img" src="/help-images/wechat_wk1.png" alt="企业微信消息推送入口">
+          <p class="img-cap">图：群聊右上角进入「消息推送」</p>
+
+          <div class="steps" style="margin-top:14px">
+            <div class="step">
+              <div class="step-num" style="background:#07c160">2</div>
+              <div class="step-body">
+                <strong>创建机器人</strong> — 在消息推送页面点击「<strong>添加</strong>」，填写机器人名称后确认创建。
+              </div>
+            </div>
+          </div>
+          <img class="doc-img" src="/help-images/wechat_wk2.png" alt="添加企业微信机器人">
+          <p class="img-cap">图：点击「添加」创建群机器人</p>
+
+          <div class="steps" style="margin-top:14px">
+            <div class="step">
+              <div class="step-num" style="background:#07c160">3</div>
+              <div class="step-body">
+                <strong>复制 Webhook Key</strong> — 机器人创建成功后，页面显示 Webhook 地址，复制该地址。<br>
+                地址格式为：<code style="background:#f1f5f9;padding:1px 6px;border-radius:3px;font-size:12px">https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=<strong>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</strong></code><br>
+                将 <code style="background:#f1f5f9;padding:1px 6px;border-radius:3px;font-size:12px">key=</code> 后面的部分（即 Key 值）填入软件「通知配置」的微信 Webhook Key 输入框中。
+              </div>
+            </div>
+          </div>
+          <img class="doc-img" src="/help-images/wechat_wk3.png" alt="复制企业微信Webhook地址">
+          <p class="img-cap">图：复制 Webhook 地址</p>
+          <img class="doc-img" src="/help-images/wechat_wk_save.png" alt="填入企业微信Key">
+          <p class="img-cap">图：将 Key 填入软件通知配置并保存</p>
+        </div>
+
+        <!-- 钉钉 -->
+        <div style="margin-top:32px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+            <div style="width:4px;height:18px;background:#1677ff;border-radius:2px"></div>
+            <h3 style="font-size:15px;font-weight:700;color:#1e293b">二、钉钉群机器人</h3>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num" style="background:#1677ff">1</div>
+              <div class="step-body">
+                <strong>进入群机器人设置</strong> — 打开钉钉 PC 端，进入目标群聊，点击右上角「<strong>···</strong>」→「群设置」，拉到页面最底部，找到「<strong>机器人</strong>」入口。
+              </div>
+            </div>
+          </div>
+          <img class="doc-img" src="/help-images/dingding_wk1.png" alt="钉钉群机器人入口">
+          <p class="img-cap">图：群设置底部找到「机器人」入口</p>
+
+          <div class="steps" style="margin-top:14px">
+            <div class="step">
+              <div class="step-num" style="background:#1677ff">2</div>
+              <div class="step-body">
+                <strong>添加自定义机器人</strong> — 点击「<strong>添加机器人</strong>」，在弹出的列表中选择「<strong>自定义</strong>」类型。
+              </div>
+            </div>
+          </div>
+          <div class="img-row">
+            <div class="img-cell">
+              <img class="doc-img" src="/help-images/dingding_add_robot.png" alt="添加机器人">
+              <p class="img-cap">图：点击「添加机器人」</p>
+            </div>
+            <div class="img-cell">
+              <img class="doc-img" src="/help-images/dingding_add_custom.png" alt="选择自定义类型">
+              <p class="img-cap">图：选择「自定义」机器人</p>
+            </div>
+          </div>
+
+          <div class="steps" style="margin-top:14px">
+            <div class="step">
+              <div class="step-num" style="background:#1677ff">3</div>
+              <div class="step-body">
+                <strong>配置并获取 Key</strong> — 填写机器人名称；安全设置选择「<strong>自定义关键词</strong>」，输入 <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:12px">*</code>（星号，匹配任意消息）；点击「完成」后复制 Webhook 地址，将它填入软件「通知配置」的钉钉 Webhook Key 输入框中。
+              </div>
+            </div>
+          </div>
+          <img class="doc-img" src="/help-images/dingding_robot_save.png" alt="钉钉机器人配置">
+          <p class="img-cap">图：填写名称、设置关键词并完成创建</p>
+          <img class="doc-img" src="/help-images/dingding_webhookkey_save.png" alt="填入钉钉Key">
+          <p class="img-cap">图：将 Token 值填入软件通知配置并保存</p>
+
+          <div class="notice warn">
+            <span class="notice-icon">⚠️</span>
+            <span>钉钉安全设置的「自定义关键词」填写 <code style="background:rgba(255,255,255,0.6);padding:0 4px;border-radius:3px">*</code> 后，推送的消息内容中只要包含任意字符即可正常触发，无需关注关键词匹配问题。若设置为其他关键词，软件推送的消息必须包含该词才能到达群聊，请按需调整。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 开发者中心 ===== -->
+    <section class="section" id="developer">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        </div>
+        <h1 class="section-title">开发者中心</h1>
+      </div>
+      <p>开发者中心提供 API 接口管理功能，管理员可在此创建和管理 API Key，通过调用接口程序化控制浏览器环境（如启动、关闭环境，获取环境列表等），满足自动化集成需求。</p>
+      <img class="doc-img" src="/help-images/dev_list.png" alt="开发者中心">
+      <p class="img-cap">图：开发者中心 API Key 管理</p>
+      <div class="notice tip">
+        <span class="notice-icon">📄</span>
+        <span>完整的接口说明请查阅在线文档：<a href="/fp/docs/api" target="_blank" style="color:#6366f1;font-weight:600;text-decoration:none;border-bottom:1px solid #a5b4fc">开放接口文档</a></span>
+      </div>
+      <div class="notice info">
+        <span class="notice-icon">💡</span>
+        <span>开发者中心仅限<strong>管理员账号（Boss）</strong>使用，会员套餐到期后该功能将暂停使用，续费后立即恢复。</span>
+      </div>
+    </section>
+
+    <!-- ===== 套餐与会员 ===== -->
+    <section class="section" id="plan">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+        </div>
+        <h1 class="section-title">套餐与会员</h1>
+      </div>
+      <p>点击左侧底部的会员信息区域，进入套餐订购页面，可选购或续费适合的套餐。</p>
+      <img class="doc-img" src="/help-images/taocan.png" alt="套餐页面">
+      <p class="img-cap">图：套餐订购页面</p>
+      <table class="doc-table">
+        <tr><th>权益</th><th>免费版</th><th>VIP 会员</th></tr>
+        <tr><td>环境数量上限</td><td>免费额度</td><td>按套餐</td></tr>
+        <tr><td>成员数量上限</td><td>免费额度</td><td>按套餐</td></tr>
+        <tr><td>矩阵用户数上限</td><td>免费额度</td><td>按套餐</td></tr>
+        <tr><td>应用中心</td><td>❌</td><td>✅</td></tr>
+        <tr><td>开发者中心</td><td>❌</td><td>✅</td></tr>
+      </table>
+      <div class="notice info">
+        <span class="notice-icon">💡</span>
+        <span>会员到期后软件<strong>仍可继续使用</strong>，不会强制停用。到期后各项额度降级至免费版上限，应用中心和开发者中心暂停使用，续费后立即恢复全部权益。</span>
+      </div>
+    </section>
+
+    <!-- ===== 常见问题 ===== -->
+    <section class="section" id="faq">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h1 class="section-title">常见问题</h1>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q">环境浏览器里可以访问哪些网站？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">没有任何限制，只要网络可以访问的网站均可正常打开。访问海外站点（亚马逊、TikTok 等）时，需为该环境配置对应地区的海外代理 IP。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">在 A 电脑登录账号后，切换到 B 电脑还需要重新登录吗？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">取决于该环境是否开启了「同步用户信息」。开启后，Cookie 等登录信息会加密同步至云端，多台设备打开同一环境时将自动同步，无需重复登录。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">用户信息同步到云端安全吗？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">安全。所有同步内容在上传前均经过加密处理，数据托管于阿里云，服务端无法解密查看用户的明文信息。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">软件提供代理 IP 吗？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">软件本身不提供代理 IP，代理 IP 需用户自行向第三方购买。在新建环境的代理配置界面，我们提供了推荐购买渠道供参考。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">不配代理 IP 可以正常使用吗？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">可以使用，选择「本地直连」后，环境浏览器直接使用本机网络。但为保障账号安全，建议为每个账号配置独立的代理 IP，降低多账号共享同一 IP 带来的关联风险。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">已在环境中登录账号后，还能修改指纹和代理 IP 吗？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">技术上可以修改，但<strong>强烈不建议</strong>。修改指纹会导致设备信息突变，跨地区的 IP 切换也可能触发平台风控。对重要账号，建议做到「一账号一环境一 IP」，创建后保持稳定。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">一个账号可以在多台设备上同时登录使用吗？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">暂不支持，同一管理员账号同时只能在一台设备上登录。需要切换设备时，在新设备上登录后，旧设备会自动退出。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">成员账号有哪些操作权限？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">成员账号由管理员创建，可操作被授权的环境管理和代理管理功能。扩展中心、应用中心、开发者中心目前仅限管理员（Boss）账号使用。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">会员过期后软件还能用吗？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">可以继续使用，软件不会强制停用。到期后各项权益降级至免费版额度（环境数、成员数、矩阵用户数降至免费上限），应用中心和开发者中心暂停使用，续费后立即恢复所有权益。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">最多可以同时打开几个浏览器窗口？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">没有强制上限，取决于电脑硬件配置。普通配置的电脑建议同时打开 10～20 个，配置较高的电脑可达 20～30 个，超出配置上限可能出现卡顿。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">应用任务最多可以同时运行几个？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">最多同时运行 <strong>5 个</strong>任务。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">任务的输出文件可以在多台设备上查看吗？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">不可以，结果文件仅保存在执行任务的本地设备上，其他设备无法直接访问，需手动传输文件进行共享。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">任务结果文件会长期保存吗？<span class="faq-arrow">▾</span></div>
+          <div class="faq-a">不会。为避免占满本地磁盘，结果文件最多保留 <strong>7 天</strong>，到期后自动清除。请及时下载备份重要的采集数据。</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- 图片放大 Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lightbox-close">×</span>
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+</div>
+
+<script>
+// 图片点击放大
+document.querySelectorAll('.doc-img').forEach(img => {
+  img.addEventListener('click', function() {
+    document.getElementById('lightbox-img').src = this.src;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+function closeLightbox(e) {
+  if (e && e.target === document.getElementById('lightbox-img')) return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// FAQ 展开/收起
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', function() {
+    this.closest('.faq-item').classList.toggle('open');
+  });
+});
+
+// 侧边栏高亮当前章节
+const allSections = document.querySelectorAll('section[id], div[id]');
+const navLinks = document.querySelectorAll('.sidebar-nav .nav-item');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const id = entry.target.id;
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+    });
+  });
+}, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
+
+allSections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
