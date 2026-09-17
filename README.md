@@ -26,10 +26,14 @@ node scripts/export-public-pages.mjs
 
 ## Cloudflare Pages API 代理
 
-`functions/api/[[path]].js` 会把 `/api/*` 转发到现有 FastAPI 服务。需要在 Cloudflare Pages 的生产环境变量中设置：
+`worker.js` 会把 `/api/*` 转发到现有 FastAPI 服务，其余请求交给 Workers Static Assets。`functions/api/[[path]].js` 仍保留用于 Pages Functions 部署模式。
+
+当前后端地址配置为：
 
 ```text
-BACKEND_ORIGIN=https://你的后端域名
+BACKEND_ORIGIN=https://api.usefullc.com
 ```
+
+如果使用 Cloudflare Pages 而不是 Workers Static Assets，请在 Pages 的生产环境变量中设置同名变量。
 
 后端仍然负责数据库、Redis、邮件验证码和短信验证码；Pages 只托管静态页面并代理 API。

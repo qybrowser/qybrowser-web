@@ -1,6 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "qybrowser-web",
+  "main": "worker.js",
   "compatibility_date": "2026-09-17",
-  "assets": { "directory": "." }
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": {
+    "BACKEND_ORIGIN": "https://api.usefullc.com"
+  }
 }
