@@ -7,6 +7,7 @@ const decode = (value = '') => value.replaceAll('&amp;', '&').replaceAll('&lt;',
 const strip = (value = '') => decode(value.replace(/<[^>]+>/g, '').replace(/\s+/g, ' '));
 const escape = (value = '') => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 async function get(path) { const response = await fetch(new URL(path, origin)); if (!response.ok) throw new Error(`${path}: ${response.status}`); return response.text(); }
+async function getBytes(path) { const response = await fetch(new URL(path, origin)); if (!response.ok) throw new Error(`${path}: ${response.status}`); return Buffer.from(await response.arrayBuffer()); }
 function parseArticles(html) {
   return [...html.matchAll(/<article[\s\S]*?<\/article>/gi)].map(({ 0: card }) => {
     const id = card.match(/\/fp\/news\/(\d+)/)?.[1];
@@ -57,5 +58,15 @@ for (const [source, target] of Object.entries(snapshots)) {
   const targetPath = join(root, target);
   await mkdir(dirname(targetPath), { recursive: true });
   await writeFile(targetPath, await get(source), 'utf8');
+}
+const assetRefs = new Set();
+for (const pagePath of ['fp/help/index.html', 'fp/docs/qiyuan-sdk/index.html']) {
+  const html = await readFile(join(root, pagePath), 'utf8');
+  for (const match of html.matchAll(/\/help-images\/[^"' )]+/g)) assetRefs.add(match[0]);
+}
+for (const asset of assetRefs) {
+  const targetPath = join(root, asset);
+  await mkdir(dirname(targetPath), { recursive: true });
+  try { await readFile(targetPath); } catch { await writeFile(targetPath, await getBytes(asset)); }
 }
 console.log(`Exported ${articles.length} news articles and the register page from ${origin}`);
