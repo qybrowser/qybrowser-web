@@ -207,9 +207,12 @@
     <pre>qiyuanbrowser/
 ├── admin/
 ├── sdk/
+├── dist/
+│   └── QiyuanSDKClient.exe   # 已打包的客户端程序
 ├── browser-config-server.json
 ├── browser-config-client.json
 └── ...</pre>
+    <p><code>dist/QiyuanSDKClient.exe</code> 是客户端启动程序的打包版本，功能等价于 <code>python -m admin.client</code>。它不包含浏览器内核，启动时通过 <code>--config</code> 指定客户端配置文件；适合随自研产品一起分发并独立启动。</p>
     <p>两种内核的版本号均需与 <code>browser-config-client.json</code> 中配置的一致。</p>
 
     <h3>单机部署接入操作步骤</h3>
@@ -262,7 +265,7 @@ python -m admin.client --config browser-config-client.json</pre>
     </ul>
 
     <h3 style="margin-top:14px">测试与验证</h3>
-    <p>直接测试接口：进入 SDK 源码目录的 <code>tests</code> 目录运行测试脚本。UI 测试：使用 <code>all</code> 或 <code>server</code> 模式启动后，访问 <code>http://127.0.0.1:9003/</code>；分离部署时客户端的浏览器操作由本地服务执行，服务端页面仍从服务端地址打开。</p>
+    <p>直接测试接口：进入 SDK 源码目录的 <code>tests</code> 目录运行测试脚本。UI 测试：同时启动服务端和客户端后，访问客户端地址 <code>http://127.0.0.1:9005/</code>；服务端管理接口地址为 <code>http://127.0.0.1:9003/</code>。</p>
     <figure style="margin: 16px 0 24px;">
       <img src="/help-images/qiyuan-sdk-admin.png" alt="打开本地管理界面后的环境管理演示效果" style="display:block; width:100%; height:auto; border:1px solid #e5e7eb; border-radius:8px;">
       <figcaption style="margin-top:8px; color:#667085; font-size:13px;">打开管理界面后的环境管理示例</figcaption>
