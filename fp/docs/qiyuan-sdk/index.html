@@ -125,6 +125,7 @@
         <div class="nav-group">
           <div class="nav-group-title">代理接口</div>
           <a href="#proxy-list"><span class="nav-api">GET /open/proxy/list</span><span class="nav-cn">代理列表</span></a>
+          <a href="#proxy-detail"><span class="nav-api">GET /open/proxy/detail</span><span class="nav-cn">代理详情</span></a>
           <a href="#proxy-create"><span class="nav-api">POST /open/proxy/create</span><span class="nav-cn">新增代理</span></a>
           <a href="#proxy-update"><span class="nav-api">POST /open/proxy/update</span><span class="nav-cn">修改代理</span></a>
           <a href="#proxy-delete"><span class="nav-api">POST /open/proxy/delete</span><span class="nav-cn">删除代理</span></a>
@@ -159,6 +160,11 @@
           <div class="nav-group-title">其他</div>
           <a class="nav-plain" href="#schema">数据表结构</a>
         </div>
+        <div class="nav-group">
+          <div class="nav-group-title">客户端设置</div>
+          <a href="#settings-token"><span class="nav-api">POST /open/settings/token</span><span class="nav-cn">更新 Token</span></a>
+          <a href="#settings-kernel-upload"><span class="nav-api">POST /open/settings/kernels/upload</span><span class="nav-cn">上传内核</span></a>
+        </div>
       </div>
     </div>
   </div>
@@ -170,7 +176,7 @@
 
     <!-- 概述 -->
     <h2 id="overview">概述与架构</h2>
-    <p>本 SDK 将<strong>服务端接口</strong>与<strong>本地客户端接口</strong>拆分维护。根目录 <code>browser-config.json</code> 配置内核、启动模式和服务端地址；客户端启动时会生成 <code>browser/config/config.json</code>。独立部署时，服务端与本地客户端通过 <code>base_api_path</code> 通信。</p>
+    <p>本 SDK 将<strong>服务端接口</strong>与<strong>本地客户端接口</strong>拆分维护。根目录 <code>browser-config.json</code> 配置 Token、内核版本、启动模式和服务端地址；客户端启动时会在浏览器应用数据目录生成 <code>config/config.json</code>。独立部署时，服务端与本地客户端通过 <code>base_api_path</code> 通信。</p>
     <p><code>base_api_path</code> 承载服务端接口，<code>base_local_api_path</code> 承载本地客户端接口，生成的 <code>browser_base_path</code> 使用 <code>base_api_path</code> 的值。导航中的 <span class="nav-server-icon" title="服务端接口">☁</span> 标识服务端接口。</p>
     <ul style="margin: 8px 0 0 20px;">
       <li><strong>环境 / 代理管理 / 插件</strong>：由服务端接口承载；自包含运行时数据由服务端持久化，<a href="#schema">查看具体数据表结构</a>。</li>
@@ -195,36 +201,24 @@
     </ol>
 
     <h3>准备工作</h3>
-    <p>首先联系<span class="kefu-popover"><input type="checkbox" id="kefu-popover-toggle"><label for="kefu-popover-toggle">平台客服</label><span class="kefu-popover-panel"><img src="https://res.usefullc.com/fingerprint/qiyuan_kefu.jpg" alt="平台客服联系方式" loading="lazy"></span></span>拿到 SDK 源码和浏览器内核。源码目录应包含 <code>admin</code>、<code>sdk</code> 和 <code>browser-config.json</code>。</p>
-    <p>单机部署和分离部署的客户端需要内核；分离部署的服务端<strong>不需要复制内核</strong>。内核版本目录放在 <code>browser/client/&lt;版本&gt;</code>，Chromium 与 Firefox 目录并列：</p>
-    <p>内核目录相对于 SDK 源码根目录；以下以 <code>qiyuanbrowser/browser/client</code> 为例，Chromium 与 Firefox 的版本目录并列放置：</p>
+    <p>首先联系<span class="kefu-popover"><input type="checkbox" id="kefu-popover-toggle"><label for="kefu-popover-toggle">平台客服</label><span class="kefu-popover-panel"><img src="https://res.usefullc.com/fingerprint/qiyuan_kefu.jpg" alt="平台客服联系方式" loading="lazy"></span></span>拿到 SDK 源码和浏览器内核。源码目录应包含 <code>admin</code>、<code>sdk</code> 和 <code>browser-config.json</code>；当前版本不再要求源码中携带 <code>browser/</code> 目录。</p>
+    <p>单机部署和分离部署的客户端需要内核；分离部署的服务端<strong>不需要复制内核</strong>。客户端通过系统设置上传对应的 ZIP，内核最终保存到浏览器应用数据目录的 <code>client/&lt;版本&gt;</code>。</p>
     <pre>qiyuanbrowser/
 ├── admin/
 ├── sdk/
 ├── browser-config.json
-└── browser/
-    └── client/
-        ├── 150.0.7871.115/       # Chromium
-        │   ├── QyBrowser.exe
-        │   ├── chrome.dll
-        │   ├── 150.0.7871.115.manifest
-        │   └── ...
-        └── 153.0.4/              # Firefox
-            ├── QyBrowser.exe
-            ├── application.ini
-            ├── browser-brand.json
-            └── ...</pre>
+└── ...</pre>
     <p>两种内核的版本号均需与 <code>browser-config.json</code> 中配置的一致。</p>
 
     <h3>单机部署接入操作步骤</h3>
     <ol>
-      <li>将对应 Chromium / Firefox 内核复制到 <code>browser/client/&lt;版本&gt;</code>。</li>
+      <li>启动后进入系统设置，选择内核类型和版本并上传 ZIP；应用数据目录会自动创建 <code>client</code>、<code>config</code>、<code>extends</code> 目录。</li>
       <li>设置 <code>browser-config.json</code> 的 <code>startup_mode=all</code>。</li>
       <li>在 SDK 根目录安装 Python 依赖并启动：</li>
     </ol>
     <pre>cd qiyuanbrowser
 pip install -r requirements.txt
-python -m admin.server</pre>
+python -m admin.server --config D:\path\browser-config.json</pre>
 
     <h3>分离部署接入操作步骤</h3>
     <p>适合将用户体系与业务界面放在自研产品中，由 SDK 服务端集中管理环境、代理和扩展，由安装在用户电脑上的 SDK 客户端启动浏览器。终端用户先登录自研产品，再通过产品操作自己的浏览器环境。</p>
@@ -243,13 +237,13 @@ python -m admin.server</pre>
     <p>服务端只保存和管理数据，<strong>不需要复制浏览器内核</strong>。设置 <code>startup_mode=server</code> 后执行：</p>
     <pre>cd qiyuanbrowser
 pip install -r requirements.txt
-python -m admin.server</pre>
+python -m admin.server --config D:\path\browser-config.json</pre>
     <h4>2. 客户端</h4>
-    <p>客户端需要复制浏览器内核，并将 <code>base_api_path</code> 设置为服务端地址，例如 <code>http://服务端IP:9003</code>；设置 <code>startup_mode=client</code> 后执行：</p>
+    <p>客户端不需要源码中的 <code>browser/</code> 目录；启动后在系统设置中上传内核。将 <code>base_api_path</code> 设置为服务端地址，例如 <code>http://服务端IP:9003</code>；设置 <code>startup_mode=client</code> 后执行：</p>
     <pre>cd qiyuanbrowser
 pip install -r requirements.txt
-python -m admin.server</pre>
-    <p>如果开发自研产品，可以将客户端 SDK 打包为 EXE，随产品附带并独立启动本地服务。当前打包仍需包含配置文件和对应内核；后续可考虑由客户端从服务端获取内核，以缩小安装包并支持版本升级。</p>
+python -m admin.server --config D:\path\browser-config.json</pre>
+    <p>如果开发自研产品，可以将客户端 SDK 打包为 EXE，随产品附带并独立启动本地服务。打包时包含配置文件即可，内核通过系统设置上传；同版本允许覆盖，但正在运行的内核不能覆盖。</p>
 
     <h3>请求说明</h3>
     <ul style="margin: 8px 0 0 20px;">
@@ -282,6 +276,11 @@ python -m admin.server</pre>
     <div class="response-label">成功 / 失败响应</div>
     <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"ip"</span>: <span class="str">"203.0.113.10"</span>, <span class="key">"latency_ms"</span>: <span class="num">85</span>, ... }
 { <span class="key">"success"</span>: <span class="kw">false</span>, <span class="key">"error"</span>: <span class="str">"检测失败原因"</span> }</pre>
+
+    <!-- ==================== 客户端设置接口 ==================== -->
+    <h2 id="settings">客户端设置接口 <span class="section-tag">Local</span></h2>
+    <div class="event-card" id="settings-token"><div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/settings/token</span><span class="event-cn">更新 Token</span><span class="badge badge-local">本地</span></div><div class="event-body"><p>仅 client / all 模式可用。更新客户端本地 Token，不修改服务端 Token。</p><h3>JSON 参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>token</td><td>string</td><td><span class="required">必填</span></td><td>新的共享 Token</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "updated": true } }</pre></div></div>
+    <div class="event-card" id="settings-kernel-upload"><div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/settings/kernels/upload</span><span class="event-cn">上传内核</span><span class="badge badge-local">本地</span></div><div class="event-body"><p>仅 client / all 模式可用，使用 <code>multipart/form-data</code>。内核只保存到浏览器应用数据目录。</p><h3>表单参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>kernel</td><td>string</td><td><span class="required">必填</span></td><td><code>chrome</code> 或 <code>firefox</code></td></tr><tr><td>version</td><td>string</td><td><span class="required">必填</span></td><td>内核版本号</td></tr><tr><td>file</td><td>ZIP</td><td><span class="required">必填</span></td><td>用户选择对应内核 ZIP</td></tr><tr><td>set_default</td><td>boolean</td><td>可选</td><td>是否设为默认版本；同版本允许覆盖，运行中禁止覆盖</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "kernels": { "chrome": { "installed_versions": ["150.0.7871.116"] } } } }</pre></div></div>
 
     <!-- ==================== 数据表结构 ==================== -->
     <h2 id="schema">数据表结构</h2>
@@ -616,6 +615,12 @@ python -m admin.server</pre>
   }
 }</pre>
       </div>
+    </div>
+
+    <!-- GET /open/proxy/detail -->
+    <div class="event-card" id="proxy-detail">
+      <div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/open/proxy/detail</span><span class="event-cn">代理详情</span><span class="badge badge-store">服务</span></div>
+      <div class="event-body"><h3>Query 参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>代理唯一标识</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "code": "f3a9...", "proxy_name": "美国节点", "proxy_type": "http", "proxy_addr": "1.2.3.4", "proxy_port": 8080 } }</pre></div>
     </div>
 
     <!-- POST /open/proxy/create -->
