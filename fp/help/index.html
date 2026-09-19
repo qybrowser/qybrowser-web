@@ -329,11 +329,31 @@
       .content { padding: 24px 20px 60px; }
       .topbar { padding: 0 20px; }
       .img-row { grid-template-columns: 1fr; }
+      .section { margin-bottom: 42px; }
+      .section-title { font-size: 19px; }
+      .section-header { gap: 9px; }
+      .doc-table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .doc-table th, .doc-table td { padding: 8px 10px; }
       .fc-row { flex-direction: column; gap: 10px; }
       .fc-side-note { max-width: 100%; flex-direction: row; }
       .fc-connector { display: none; }
       .fc-note-box { border-left: 3px solid #3b82f6; }
       .fc-notify-row { flex-wrap: wrap; justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      html { font-size: 14px; }
+      .content { padding: 20px 14px 48px; }
+      .topbar { padding: 0 14px; height: 46px; }
+      .topbar a, .topbar .sep, .topbar .current { font-size: 12px; }
+      .section-header { align-items: flex-start; padding-bottom: 11px; }
+      .section-icon { width: 32px; height: 32px; border-radius: 8px; }
+      .section-icon svg { width: 16px; height: 16px; }
+      p, .step-body { font-size: 13.5px; }
+      .notice { padding: 10px 11px; }
+      .faq-q { padding: 12px 13px; }
+      .faq-a { padding: 11px 13px 13px; }
+      .lightbox img { max-width: 96vw; max-height: 86vh; }
     }
 
     /* ==================== 应用中心流程图 ==================== */
