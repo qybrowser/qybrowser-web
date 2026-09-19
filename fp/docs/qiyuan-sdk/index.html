@@ -157,13 +157,14 @@
           <a href="#pg-errordata"><span class="nav-api">GET /api/v1/browser/error-data/{code}</span><span class="nav-cn">错误页数据</span></a>
         </div>
         <div class="nav-group">
-          <div class="nav-group-title">其他</div>
-          <a class="nav-plain" href="#schema">数据表结构</a>
-        </div>
-        <div class="nav-group">
           <div class="nav-group-title">客户端设置</div>
+          <a href="#settings-token-get"><span class="nav-api">GET /open/settings/token</span><span class="nav-cn">读取 Token</span></a>
           <a href="#settings-token"><span class="nav-api">POST /open/settings/token</span><span class="nav-cn">更新 Token</span></a>
           <a href="#settings-kernel-upload"><span class="nav-api">POST /open/settings/kernels/upload</span><span class="nav-cn">上传内核</span></a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">其他</div>
+          <a class="nav-plain" href="#schema">数据表结构</a>
         </div>
       </div>
     </div>
@@ -176,7 +177,7 @@
 
     <!-- 概述 -->
     <h2 id="overview">概述与架构</h2>
-    <p>本 SDK 将<strong>服务端接口</strong>与<strong>本地客户端接口</strong>拆分维护。根目录 <code>browser-config.json</code> 配置 Token、内核版本、启动模式和服务端地址；客户端启动时会在浏览器应用数据目录生成 <code>config/config.json</code>。独立部署时，服务端与本地客户端通过 <code>base_api_path</code> 通信。</p>
+    <p>本 SDK 将<strong>服务端接口</strong>与<strong>本地客户端接口</strong>拆分维护。服务端使用 <code>browser-config-server.json</code>，客户端使用 <code>browser-config-client.json</code>；客户端启动时会在浏览器应用数据目录生成 <code>config/config.json</code>，并通过 <code>base_api_path</code> 访问服务端。</p>
     <p><code>base_api_path</code> 承载服务端接口，<code>base_local_api_path</code> 承载本地客户端接口，生成的 <code>browser_base_path</code> 使用 <code>base_api_path</code> 的值。导航中的 <span class="nav-server-icon" title="服务端接口">☁</span> 标识服务端接口。</p>
     <ul style="margin: 8px 0 0 20px;">
       <li><strong>环境 / 代理管理 / 插件</strong>：由服务端接口承载；自包含运行时数据由服务端持久化，<a href="#schema">查看具体数据表结构</a>。</li>
@@ -194,31 +195,32 @@
 
     <!-- 接入方式 -->
     <h2 id="connect">接入方式</h2>
-    <p>管理后台基于 <strong>HTTP</strong> 协议，默认监听 <code>http://127.0.0.1:9003</code>。部署方式由根目录 <code>browser-config.json</code> 的 <code>startup_mode</code> 控制。本 SDK 提供以下两种接入方式：</p>
+    <p>管理后台基于 <strong>HTTP</strong> 协议。服务端默认监听 <code>http://127.0.0.1:9003</code>，客户端默认监听 <code>http://127.0.0.1:9005</code>。本 SDK 提供单机部署和分离部署两种方式，二者使用相同的服务端启动与客户端启动步骤。</p>
     <ol>
-      <li><strong>单机部署（<code>startup_mode=all</code>）</strong>：服务端、客户端和浏览器内核在同一台机器，适合开发调试、演示和单机使用。</li>
-      <li><strong>客户端与服务端分离部署（<code>startup_mode=server</code> + <code>client</code>）</strong>：服务端集中管理环境、代理和扩展，客户端在用户电脑上启动本地浏览器，适合自研产品、多用户或多终端场景。</li>
+      <li><strong>单机部署</strong>：在同一台机器分别启动服务端和客户端，适合开发调试、演示和单机使用。</li>
+      <li><strong>分离部署</strong>：服务端和客户端部署在不同机器，服务端集中管理环境、代理和扩展，客户端在用户电脑上启动本地浏览器。</li>
     </ol>
 
     <h3>准备工作</h3>
-    <p>首先联系<span class="kefu-popover"><input type="checkbox" id="kefu-popover-toggle"><label for="kefu-popover-toggle">平台客服</label><span class="kefu-popover-panel"><img src="https://res.usefullc.com/fingerprint/qiyuan_kefu.jpg" alt="平台客服联系方式" loading="lazy"></span></span>拿到 SDK 源码和浏览器内核。源码目录应包含 <code>admin</code>、<code>sdk</code> 和 <code>browser-config.json</code>；当前版本不再要求源码中携带 <code>browser/</code> 目录。</p>
-    <p>单机部署和分离部署的客户端需要内核；分离部署的服务端<strong>不需要复制内核</strong>。客户端通过系统设置上传对应的 ZIP，内核最终保存到浏览器应用数据目录的 <code>client/&lt;版本&gt;</code>。</p>
+    <p>首先联系<span class="kefu-popover"><input type="checkbox" id="kefu-popover-toggle"><label for="kefu-popover-toggle">平台客服</label><span class="kefu-popover-panel"><img src="https://res.usefullc.com/fingerprint/qiyuan_kefu.jpg" alt="平台客服联系方式" loading="lazy"></span></span>拿到 SDK 源码、客户端程序和对应的 Chromium / Firefox 内核 ZIP。源码目录应包含 <code>admin</code>、<code>sdk</code>、<code>browser-config-server.json</code> 和 <code>browser-config-client.json</code>。</p>
+    <p>内核不需要放入源码目录。客户端启动后，在“系统设置”中选择内核类型和版本并上传 ZIP，程序会将内核安装到浏览器应用数据目录的 <code>client/&lt;版本&gt;</code> 下。</p>
     <pre>qiyuanbrowser/
 ├── admin/
 ├── sdk/
-├── browser-config.json
+├── browser-config-server.json
+├── browser-config-client.json
 └── ...</pre>
-    <p>两种内核的版本号均需与 <code>browser-config.json</code> 中配置的一致。</p>
+    <p>两种内核的版本号均需与 <code>browser-config-client.json</code> 中配置的一致。</p>
 
     <h3>单机部署接入操作步骤</h3>
     <ol>
-      <li>启动后进入系统设置，选择内核类型和版本并上传 ZIP；应用数据目录会自动创建 <code>client</code>、<code>config</code>、<code>extends</code> 目录。</li>
-      <li>设置 <code>browser-config.json</code> 的 <code>startup_mode=all</code>。</li>
-      <li>在 SDK 根目录安装 Python 依赖并启动：</li>
+      <li>在 SDK 根目录安装 Python 依赖：</li>
     </ol>
     <pre>cd qiyuanbrowser
 pip install -r requirements.txt
-python -m admin.server --config D:\path\browser-config.json</pre>
+python -m admin.server --config browser-config-server.json
+python -m admin.client --config browser-config-client.json</pre>
+    <p>服务端和客户端都启动后，打开 <code>http://127.0.0.1:9005/</code> 进入客户端管理页面，在“系统设置”上传 Chromium 或 Firefox 内核 ZIP。内核最终位置示例：<code>%USERPROFILE%\.qiyuan\client\153.0.4</code>。</p>
 
     <h3>分离部署接入操作步骤</h3>
     <p>适合将用户体系与业务界面放在自研产品中，由 SDK 服务端集中管理环境、代理和扩展，由安装在用户电脑上的 SDK 客户端启动浏览器。终端用户先登录自研产品，再通过产品操作自己的浏览器环境。</p>
@@ -234,16 +236,24 @@ python -m admin.server --config D:\path\browser-config.json</pre>
       <div class="integration-caption">实线部分为当前 SDK 的主要调用路径；虚线框为自研产品接入时建议补齐的能力，并非现成功能。</div>
     </div>
     <h4>1. 服务端</h4>
-    <p>服务端只保存和管理数据，<strong>不需要复制浏览器内核</strong>。设置 <code>startup_mode=server</code> 后执行：</p>
+    <p>服务端只保存和管理环境、代理、扩展等数据，不负责启动本地浏览器。使用 <code>browser-config-server.json</code> 执行：</p>
     <pre>cd qiyuanbrowser
 pip install -r requirements.txt
-python -m admin.server --config D:\path\browser-config.json</pre>
+python -m admin.server --config browser-config-server.json</pre>
     <h4>2. 客户端</h4>
-    <p>客户端不需要源码中的 <code>browser/</code> 目录；启动后在系统设置中上传内核。将 <code>base_api_path</code> 设置为服务端地址，例如 <code>http://服务端IP:9003</code>；设置 <code>startup_mode=client</code> 后执行：</p>
+    <p>在 <code>browser-config-client.json</code> 中将 <code>base_api_path</code> 设置为服务端地址，例如 <code>http://服务端IP:9003</code>，将 <code>base_local_api_path</code> 设置为本机客户端地址（例如 <code>http://127.0.0.1:9005</code>）。客户端有两种启动方式，二选一：</p>
+    <p><strong>方式 A：源码启动</strong></p>
     <pre>cd qiyuanbrowser
 pip install -r requirements.txt
-python -m admin.server --config D:\path\browser-config.json</pre>
-    <p>如果开发自研产品，可以将客户端 SDK 打包为 EXE，随产品附带并独立启动本地服务。打包时包含配置文件即可，内核通过系统设置上传；同版本允许覆盖，但正在运行的内核不能覆盖。</p>
+python -m admin.client --config browser-config-client.json</pre>
+    <p><strong>方式 B：QiyuanSDKClient.exe 启动（客户端程序请联系官网客服获取）</strong></p>
+    <pre>QiyuanSDKClient.exe --config browser-config-client.json</pre>
+    <p>EXE 启动方式等价于源码启动方式，只替换了启动程序。启动后访问 <code>http://127.0.0.1:9005/</code>，进入“系统设置”，上传对应内核 ZIP；内核会安装到 <code>%USERPROFILE%\.qiyuan\client\&lt;版本&gt;</code>，例如 <code>%USERPROFILE%\.qiyuan\client\153.0.4</code>。</p>
+    <figure style="margin: 16px 0 24px;">
+      <img src="/help-images/qiyuan-sdk-settings.png" alt="客户端系统设置中上传浏览器内核" style="display:block; width:100%; height:auto; border:1px solid #e5e7eb; border-radius:8px;">
+      <figcaption style="margin-top:8px; color:#667085; font-size:13px;">客户端模式：在系统设置中上传内核，内核保存到浏览器应用数据目录的 client/&lt;版本&gt; 下</figcaption>
+    </figure>
+    <p>如果开发自研产品，可以将 <code>QiyuanSDKClient.exe</code> 随产品附带并独立启动本地客户端服务。服务端仍通过 <code>base_api_path</code> 提供环境、代理和扩展数据。</p>
 
     <h3>请求说明</h3>
     <ul style="margin: 8px 0 0 20px;">
@@ -279,6 +289,7 @@ python -m admin.server --config D:\path\browser-config.json</pre>
 
     <!-- ==================== 客户端设置接口 ==================== -->
     <h2 id="settings">客户端设置接口 <span class="section-tag">Local</span></h2>
+    <div class="event-card" id="settings-token-get"><div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/open/settings/token</span><span class="event-cn">读取 Token</span><span class="badge badge-local">本地</span></div><div class="event-body"><p>仅 client / all 模式可用。读取当前客户端使用的共享 Token，用于初始化系统设置页面。</p><h3>响应示例</h3><pre>{ "success": true, "data": { "token": "your-token" } }</pre></div></div>
     <div class="event-card" id="settings-token"><div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/settings/token</span><span class="event-cn">更新 Token</span><span class="badge badge-local">本地</span></div><div class="event-body"><p>仅 client / all 模式可用。更新客户端本地 Token，不修改服务端 Token。</p><h3>JSON 参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>token</td><td>string</td><td><span class="required">必填</span></td><td>新的共享 Token</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "updated": true } }</pre></div></div>
     <div class="event-card" id="settings-kernel-upload"><div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/settings/kernels/upload</span><span class="event-cn">上传内核</span><span class="badge badge-local">本地</span></div><div class="event-body"><p>仅 client / all 模式可用，使用 <code>multipart/form-data</code>。内核只保存到浏览器应用数据目录。</p><h3>表单参数</h3><table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>kernel</td><td>string</td><td><span class="required">必填</span></td><td><code>chrome</code> 或 <code>firefox</code></td></tr><tr><td>version</td><td>string</td><td><span class="required">必填</span></td><td>内核版本号</td></tr><tr><td>file</td><td>ZIP</td><td><span class="required">必填</span></td><td>用户选择对应内核 ZIP</td></tr><tr><td>set_default</td><td>boolean</td><td>可选</td><td>是否设为默认版本；同版本允许覆盖，运行中禁止覆盖</td></tr></table><h3>响应示例</h3><pre>{ "success": true, "data": { "kernels": { "chrome": { "installed_versions": ["150.0.7871.116"] } } } }</pre></div></div>
 
@@ -510,7 +521,7 @@ python -m admin.server --config D:\path\browser-config.json</pre>
         <span class="badge badge-local">本地</span>
       </div>
       <div class="event-body">
-        <p><strong>client 模式启动</strong>：以 <code>--mode=client --uuid={code} --token={token}</code> 拉起启元定制内核（路径 <code>%APPDATA%\qiyuan\client\{browser_version}\chrome.exe</code>，user-data-dir = <code>%APPDATA%\qiyuan\user_data\{uuid}</code>）。<strong>不再传</strong> <code>--user-agent</code> / <code>--proxy-server</code> / <code>--remote-debugging-port</code>——浏览器自身回调 <a href="#cb-md5"><code>GET /api/v1/browser/md5/{uuid}</code></a> 拉取并解密指纹后内部应用。打开前 SDK 会把 admin 服务地址写入 config.json 的 <code>base_api_path</code>。</p>
+        <p><strong>client 模式启动</strong>：以 <code>--mode=client --uuid={code} --token={token}</code> 拉起启元定制内核（路径 <code>%USERPROFILE%\.qiyuan\client\{browser_version}\QyBrowser.exe</code>，user-data-dir = <code>%USERPROFILE%\.qiyuan\user_data\{uuid}</code>）。<strong>不再传</strong> <code>--user-agent</code> / <code>--proxy-server</code> / <code>--remote-debugging-port</code>——浏览器自身回调 <a href="#cb-md5"><code>GET /api/v1/browser/md5/{uuid}</code></a> 拉取并解密指纹后内部应用。打开前 SDK 会把 admin 服务地址写入 config.json 的 <code>base_api_path</code>。</p>
         <table class="param-table">
           <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
           <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识（即 uuid）</td></tr>
@@ -997,15 +1008,25 @@ document.querySelectorAll('.nav-box a .nav-api').forEach(function(api) {
 // 数据表结构作为文档最后一个内容章节展示，菜单锚点仍指向同一节点。
 (function () {
   var schema = document.getElementById('schema');
+  var settings = document.getElementById('settings');
   var content = document.querySelector('.content');
   var firstApi = document.getElementById('env');
-  if (!schema || !content || !firstApi) return;
+  if (!schema || !content || !firstApi || !settings) return;
+  // Capture the settings section before moving the schema section.  The
+  // rendered order is: API sections -> pages -> client settings -> other.
+  var settingsNodes = [];
+  var settingsNode = settings;
+  while (settingsNode && settingsNode !== schema) {
+    settingsNodes.push(settingsNode);
+    settingsNode = settingsNode.nextElementSibling;
+  }
   var node = schema;
   while (node && node !== firstApi) {
     var next = node.nextElementSibling;
     content.appendChild(node);
     node = next;
   }
+  settingsNodes.forEach(function (item) { content.insertBefore(item, schema); });
 })();
 </script>
 </body>
