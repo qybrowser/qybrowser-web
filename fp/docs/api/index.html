@@ -187,40 +187,45 @@
     <!-- 认证 -->
     <h2 id="auth">认证流程</h2>
     <div class="auth-box">
-      <p>启动 Qiyuan 客户端或嵌入式 Runtime 时传入 <code>--app_id</code> 和 <code>--app_secret</code>，服务会自动完成身份认证。<br>
-      嵌入式 Runtime 的 <code>--service_token</code> 为可选本地访问保护；未配置时，本机调用无需请求令牌。AppID 和 AppSecret 从「开发者中心」页面获取。</p>
+      <p>普通客户端通过客户端界面手动输入账号密码登录；API 客户端和嵌入式客户端传入 <code>--app_id</code> 和 <code>--app_secret</code> 后自动完成身份认证。<br>
+      嵌入式客户端的 <code>--service_token</code> 仅用于保护本机接口，不参与云端登录；未配置时，本机调用无需请求令牌。AppID 和 AppSecret 从「开发者中心」页面获取。</p>
     </div>
 
     <!-- 接入方式 -->
     <h2 id="connect">接入方式</h2>
-    <p>开放接口基于 <strong>HTTP</strong> 协议，服务默认监听在 <code>http://127.0.0.1:9001</code>（可通过 <code>--port</code> 修改）。两种接入方式的接口路径、请求参数和响应格式完全一致。<strong>以下是两种接入模式，选择其中一种接入</strong></p>
+    <p>开放接口基于 <strong>HTTP</strong> 协议，服务默认监听在 <code>http://127.0.0.1:9001</code>（可通过 <code>--port</code> 修改）。三种接入方式的接口路径、请求参数和响应格式完全一致，请根据使用场景选择一种。</p>
+
+    <h3>普通客户端模式</h3>
+    <p>适合直接使用 Qiyuan 客户端，通过窗口手动输入账号密码完成登录：</p>
+    <pre>Qiyuan.exe --windowless=false</pre>
+    <p>登录完成后可调用下方开放接口；如需无窗口运行，可将 <code>--windowless</code> 设置为 <code>true</code>。</p>
 
     <h3>Qiyuan 客户端 API 模式（推荐）</h3>
     <p>适合自己运营环境、需要使用 Qiyuan 客户端窗口进行人工管理、登录或排查问题的场景。可直接启动 Qiyuan.exe，或通过命令启动 API 模式：</p>
     <pre>Qiyuan.exe --run_mode=api --windowsless=false --port=9001 --app_id=your_app_id --app_secret=your_app_secret</pre>
     <p><code>--windowsless=false</code> 表示保留客户端窗口。客户端完成登录和初始化后，可直接调用下方开放接口，无需额外请求鉴权头。</p>
 
-    <h3>嵌入式 Runtime 模式（自研产品场景使用）</h3>
-    <p>适合将指纹浏览器能力嵌入 Python、Node.js、Java、.NET 或其他自研产品。Runtime 是独立文件，可与自研产品一起发布，无需安装或打开 Qiyuan.exe。</p>
+    <h3>嵌入式客户端（自研产品场景使用）</h3>
+    <p>适合将指纹浏览器能力嵌入 Python、Node.js、Java、.NET 或其他自研产品。嵌入式客户端默认无窗口运行，可与自研产品一起发布，无需打开 Qiyuan.exe。</p>
     <!-- 发布新版本时只需替换下面 href 中的 OSS 文件地址。 -->
     <a class="download-link" href="https://ossbucket2020.oss-cn-beijing.aliyuncs.com/fingerprint/client/QiyuanCloudRuntime.exe">下载 QiyuanCloudRuntime.exe</a>
     <pre>QiyuanCloudRuntime.exe --port=9001 --app_id=your_app_id --app_secret=your_app_secret</pre>
     <p>首次启动会自动初始化本地运行配置、RSA 公钥、浏览器内核和插件。需要限制本机调用时，可额外传入 <code>--service_token</code>：</p>
     <pre>QiyuanCloudRuntime.exe --port=9001 --app_id=your_app_id --app_secret=your_app_secret --service_token=your_service_token</pre>
-    <p>未传入 <code>--service_token</code> 时，Runtime 请求无需额外请求头；传入后，每个接口请求都需携带 <code>X-Qiyuan-Runtime-Token: your_service_token</code>。同一端口只能运行其中一种模式。</p>
+    <p>未传入 <code>--service_token</code> 时，嵌入式客户端请求无需额外请求头；传入后，每个接口请求都需携带 <code>X-Qiyuan-Runtime-Token: your_service_token</code>。同一端口只能运行其中一种模式。</p>
 
     <h3>请求说明</h3>
     <ul style="margin: 8px 0 0 20px;">
       <li>GET 接口：参数通过 URL Query String 传递</li>
       <li>POST 接口：参数通过 JSON Body 传递，请求头需包含 <code>Content-Type: application/json</code></li>
       <li>Qiyuan 客户端 API 模式无需额外请求鉴权头</li>
-      <li>嵌入式 Runtime 仅在配置 <code>service_token</code> 时携带 <code>X-Qiyuan-Runtime-Token</code></li>
+      <li>嵌入式客户端仅在配置 <code>service_token</code> 时携带 <code>X-Qiyuan-Runtime-Token</code></li>
     </ul>
     <h3 style="margin-top:14px">快速验证</h3>
-    <pre><span class="cmt"># Qiyuan 客户端模式，或未配置 service_token 的 Runtime</span>
+    <pre><span class="cmt"># Qiyuan 客户端模式，或未配置 service_token 的嵌入式客户端</span>
 curl <span class="str">"http://127.0.0.1:9001/open/env/list?page=1&page_size=10"</span>
 
-<span class="cmt"># 配置 service_token 的 Runtime</span>
+<span class="cmt"># 配置 service_token 的嵌入式客户端</span>
 curl <span class="str">"http://127.0.0.1:9001/open/env/list?page=1&page_size=10"</span> \
   -H <span class="str">"X-Qiyuan-Runtime-Token: your_service_token"</span></pre>
 
@@ -730,7 +735,7 @@ driver = webdriver.<span class="fn">Chrome</span>(options=options)</pre>
     <table class="param-table">
       <tr><th>项目</th><th>规范</th></tr>
       <tr><td>请求 URL</td><td>本机服务地址 <code>http://127.0.0.1:{port}</code> 加接口路径；默认端口为 <code>9001</code>。</td></tr>
-      <tr><td>Header</td><td>POST 请求携带 <code>Content-Type: application/json</code>。Qiyuan 客户端 API 模式无需鉴权 Header；Runtime 设置 <code>service_token</code> 时携带 <code>X-Qiyuan-Runtime-Token</code>。</td></tr>
+<tr><td>Header</td><td>POST 请求携带 <code>Content-Type: application/json</code>。Qiyuan 客户端 API 模式无需鉴权 Header；嵌入式客户端设置 <code>service_token</code> 时携带 <code>X-Qiyuan-Runtime-Token</code>。</td></tr>
       <tr><td>Body</td><td>POST 接口使用 JSON Object；必填与条件必填字段见各接口说明。</td></tr>
       <tr><td>Query</td><td>GET 接口使用 URL Query String；未传的可选字段使用接口默认值。</td></tr>
     </table>
@@ -758,10 +763,10 @@ driver = webdriver.<span class="fn">Chrome</span>(options=options)</pre>
     <div class="tab-panel active" id="demo-curl">
       <div class="code-wrap">
         <button class="copy-btn">复制</button>
-<pre><span class="cmt"># 1. 查询环境（Qiyuan 客户端模式，或未配置 service_token 的 Runtime）</span>
+<pre><span class="cmt"># 1. 查询环境（Qiyuan 客户端模式，或未配置 service_token 的嵌入式客户端）</span>
 curl <span class="str">"http://127.0.0.1:9001/open/env/list?page=1&amp;page_size=10"</span>
 
-<span class="cmt"># 2. 配置 service_token 的 Runtime：所有请求附加此 Header</span>
+<span class="cmt"># 2. 配置 service_token 的嵌入式客户端：所有请求附加此 Header</span>
 curl <span class="str">"http://127.0.0.1:9001/open/env/list?page=1&amp;page_size=10"</span> \
   -H <span class="str">"X-Qiyuan-Runtime-Token: your_service_token"</span>
 
