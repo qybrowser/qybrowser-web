@@ -354,8 +354,7 @@ curl <span class="str">"http://127.0.0.1:9001/open/env/list?page=1&page_size=10"
           <tr><td>do_not_track</td><td>integer</td><td><code>1</code></td><td>Do Not Track：<code>1</code> 开启（默认）&nbsp;|&nbsp; <code>0</code> 关闭</td></tr>
           <tr><td>cpu_cores</td><td>string</td><td><code>real</code></td><td><code>real</code> 使用真实值 &nbsp;|&nbsp; <code>2</code> / <code>4</code> / <code>6</code> / <code>8</code> / <code>10</code> / <code>12</code> / <code>16</code> / <code>20</code> / <code>24</code> / <code>32</code></td></tr>
           <tr><td>memory_gb</td><td>string</td><td><code>real</code></td><td><code>real</code> 使用真实值 &nbsp;|&nbsp; <code>2</code> / <code>4</code> / <code>8</code> / <code>16</code> / <code>32</code> / <code>64</code> / <code>128</code>（单位 GB）</td></tr>
-          <tr><td>tls</td><td>string</td><td><code>enabled</code></td><td><code>disabled</code> 关闭 &nbsp;|&nbsp; <code>enabled</code> 启用（不传 tls_features 则默认启用全部特征）</td></tr>
-          <tr><td>tls_features</td><td>string[]</td><td>—</td><td>tls=enabled 时可选，不填则启用全部。可选值（多选）：<code>:!aPSK</code> 禁用PSK认证 / <code>:!kRSA</code> 禁用RSA密钥交换 / <code>:!ECDSA</code> 禁用ECDSA证书 / <code>:!ECDSA+SHA1</code> / <code>:!3DES</code> 禁用3DES加密</td></tr>
+          <tr><td>tls_disable</td><td>string</td><td><code>""</code></td><td>空字符串表示关闭；非空时按 <code>cipher=套件名[,套件名];ext=扩展名[,扩展名]</code> 禁用 ClientHello 中的项目，两组均可单独使用。示例：<code>cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA;ext=compress_certificate</code>。建议使用 <code>compress_certificate</code>、<code>signed_certificate_timestamp</code>、<code>trust_anchors</code>；<code>encrypted_client_hello</code> 只在原本启用 ECH 时有变化，<code>GREASE</code> 不影响 JA4。</td></tr>
         </table>
 
         <h3 style="margin-top:16px">响应示例</h3>

@@ -454,7 +454,7 @@ python -m admin.client --config browser-config-client.json</pre>
           <tr><td>speech_voices</td><td>boolean</td><td>是否开启</td></tr>
           <tr><td>media_devices</td><td>string</td><td><code>random</code> / <code>disabled</code></td></tr>
           <tr><td>cpu_cores / memory_gb</td><td>string</td><td><code>real</code> 或具体数值（如 <code>8</code> / <code>16</code>）</td></tr>
-          <tr><td>tls</td><td>string</td><td><code>disabled</code> / <code>enabled</code>；enabled 时配合 <code>tls_features</code>（string[]）</td></tr>
+          <tr><td>tls_disable</td><td>string</td><td>空字符串表示关闭；格式 <code>cipher=套件名[,套件名];ext=扩展名[,扩展名]</code>，两组可单独使用。示例：<code>cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA;ext=compress_certificate</code>。建议使用 <code>compress_certificate</code>、<code>signed_certificate_timestamp</code>、<code>trust_anchors</code>；<code>encrypted_client_hello</code> 只在原本启用 ECH 时有变化，<code>GREASE</code> 不影响 JA4。</td></tr>
         </table>
         <h3>响应示例</h3>
         <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { <span class="key">"code"</span>: <span class="str">"新环境的唯一标识"</span> } }</pre>
