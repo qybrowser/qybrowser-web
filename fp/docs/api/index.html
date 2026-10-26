@@ -171,6 +171,15 @@
           <a class="nav-endpoint" href="#proxy-delete"><span class="nav-method post">POST</span><span class="nav-cn">删除代理</span><span class="nav-path">/open/proxy/delete</span></a>
         </div>
         <div class="nav-group">
+          <div class="nav-group-title">扩展接口</div>
+          <a class="nav-endpoint" href="#extension-list"><span class="nav-method get">GET</span><span class="nav-cn">扩展列表</span><span class="nav-path">/open/extension/list</span></a>
+          <a class="nav-endpoint" href="#extension-detail"><span class="nav-method get">GET</span><span class="nav-cn">扩展详情</span><span class="nav-path">/open/extension/detail</span></a>
+          <a class="nav-endpoint" href="#extension-create"><span class="nav-method post">POST</span><span class="nav-cn">新增扩展</span><span class="nav-path">/open/extension/create</span></a>
+          <a class="nav-endpoint" href="#extension-update"><span class="nav-method post">POST</span><span class="nav-cn">修改扩展</span><span class="nav-path">/open/extension/update</span></a>
+          <a class="nav-endpoint" href="#extension-delete"><span class="nav-method post">POST</span><span class="nav-cn">删除扩展</span><span class="nav-path">/open/extension/delete</span></a>
+          <a class="nav-endpoint" href="#extension-bindings"><span class="nav-method post">POST</span><span class="nav-cn">绑定环境</span><span class="nav-path">/open/extension/bindings</span></a>
+        </div>
+        <div class="nav-group">
           <div class="nav-group-title">其他信息</div>
           <a class="nav-plain" href="#datasets">数据集</a>
           <a class="nav-plain" href="https://qybrowser.com/fp/docs/qiyuan-sdk" target="_blank">私有化文档 ↗</a>
@@ -217,7 +226,7 @@
     <h3>请求说明</h3>
     <ul style="margin: 8px 0 0 20px;">
       <li>GET 接口：参数通过 URL Query String 传递</li>
-      <li>POST 接口：参数通过 JSON Body 传递，请求头需包含 <code>Content-Type: application/json</code></li>
+      <li>POST 接口：默认通过 JSON Body 传递，请求头为 <code>Content-Type: application/json</code>；扩展 create / update 使用 <code>multipart/form-data</code> 上传文件，由调用工具自动生成 boundary</li>
       <li>Qiyuan 客户端 API 模式无需额外请求鉴权头</li>
       <li>嵌入式客户端仅在配置 <code>service_token</code> 时携带 <code>X-Qiyuan-Runtime-Token</code></li>
     </ul>
@@ -711,6 +720,104 @@ driver = webdriver.<span class="fn">Chrome</span>(options=options)</pre>
     </div>
 
     <!-- 接口规格 -->
+    <h2 id="extensions">扩展接口 <span class="section-tag">Extensions</span></h2>
+    <p>Electron 客户端和 Cloud SDK 提供相同的六个接口，共用云端 backend 的扩展数据和权限。扩展 code 是上传时指定的唯一标识；环境 code 是环境的 MD5。上传私人扩展与绑定到环境是两个操作，未绑定的扩展不会自动安装。</p>
+    <p>需使用组织老板身份；只能修改、删除当前用户上传的私人扩展。官方扩展可以查询和绑定，使用空绑定数组取消应用。扩展来源使用 <code>source_type=1</code>（官方）或 <code>2</code>（私人）；当前仅支持普通扩展，<code>extension_type</code> 如提供只能为 <code>normal</code>。</p>
+
+    <div class="event-card" id="extension-list">
+      <div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/open/extension/list</span><span class="event-cn">扩展列表</span></div>
+      <div class="event-body">
+        <h3>Query 参数</h3>
+        <table class="param-table"><tr><th>字段</th><th>类型</th><th>说明</th></tr>
+          <tr><td>page / page_size</td><td>number</td><td>页码默认 1，每页默认 20，最多 100</td></tr>
+          <tr><td>keyword</td><td>string</td><td>按名称或提供方搜索；按 code 精确查询请使用 detail</td></tr>
+          <tr><td>browser_kernel</td><td>string</td><td>chrome / firefox；不传返回全部内核</td></tr>
+          <tr><td>source_type</td><td>number</td><td>1 官方 / 2 当前用户上传；不传返回所有可见扩展</td></tr>
+          <tr><td>extension_type</td><td>string</td><td>可选，仅 normal</td></tr>
+        </table>
+        <h3>响应示例</h3>
+        <pre>{ "success": true, "data": {
+  "items": [{ "code": "demo", "name": "示例扩展", "version": "1.0",
+    "browser_kernel": "chrome", "source_type": 2, "extension_type": "normal",
+    "is_added": true, "environment_codes": ["*"] }],
+  "total": 1, "page": 1, "page_size": 20, "total_pages": 1
+} }</pre>
+      </div>
+    </div>
+
+    <div class="event-card" id="extension-detail">
+      <div class="event-header"><span class="badge badge-get">GET</span><span class="event-name">/open/extension/detail</span><span class="event-cn">扩展详情</span></div>
+      <div class="event-body">
+        <p>Query 参数：<code>code</code>，必填，扩展唯一标识。精确查询 backend 详情接口，返回扩展信息和当前组织的环境绑定。</p>
+        <pre>{ "success": true, "data": {
+  "code": "demo", "name": "示例扩展", "version": "1.0",
+  "browser_kernel": "chrome", "source_type": 2, "extension_type": "normal",
+  "status": 1, "is_added": true, "environment_codes": ["环境code"]
+} }</pre>
+      </div>
+    </div>
+
+    <div class="event-card" id="extension-create">
+      <div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/extension/create</span><span class="event-cn">新增扩展</span></div>
+      <div class="event-body">
+        <p>请求类型：<code>multipart/form-data</code>。创建私人扩展，每个用户最多上传 5 个。ZIP 根目录须有 manifest.json，填写版本须与 manifest 的 version 一致。</p>
+        <table class="param-table"><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td>是</td><td>唯一标识，只能包含字母、数字、下划线和短横线</td></tr>
+          <tr><td>name / version</td><td>string</td><td>是</td><td>名称及版本</td></tr>
+          <tr><td>file</td><td>ZIP 文件</td><td>是</td><td>最大 50MB，也兼容字段名 zip_file</td></tr>
+          <tr><td>browser_kernel</td><td>string</td><td>否</td><td>chrome（默认）/ firefox；Firefox manifest 须提供合法 Gecko ID</td></tr>
+          <tr><td>environment_codes</td><td>JSON 数组字符串</td><td>否</td><td>["*"] 为该内核全部环境，[] 为不绑定；不传则不绑定</td></tr>
+          <tr><td>bind_all</td><td>boolean 字符串</td><td>否</td><td>未提供 environment_codes 时，"true" 表示绑定全部</td></tr>
+          <tr><td>source_url / description</td><td>string</td><td>否</td><td>来源地址、说明</td></tr>
+          <tr><td>icon_file</td><td>图片文件</td><td>否</td><td>最大 5MB，支持 png、jpg、jpeg、webp</td></tr>
+          <tr><td>extension_type</td><td>string</td><td>否</td><td>仅 normal；provider 由 backend 根据当前用户生成</td></tr>
+        </table>
+        <pre>curl -X POST http://127.0.0.1:9001/open/extension/create \
+  -F 'code=demo' -F 'name=示例扩展' -F 'version=1.0' \
+  -F 'file=@extension.zip' -F 'environment_codes=["*"]'</pre>
+        <p>返回结构同 detail。上传成功后再执行绑定；若绑定失败，success=false，error 明确提示上传已成功，此时使用 bindings 重试，勿重复创建。</p>
+      </div>
+    </div>
+
+    <div class="event-card" id="extension-update">
+      <div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/extension/update</span><span class="event-cn">修改 / 升级扩展</span></div>
+      <div class="event-body">
+        <p>请求类型：<code>multipart/form-data</code>。必填 <code>code</code>、<code>version</code>、<code>file</code>。遵循现有 backend 规则：每次修改必须上传新 ZIP，版本号必须高于当前版本，且与 manifest 一致。code 不可修改，browser_kernel 不可更换。</p>
+        <p>可选 name、source_url、description、icon_file、environment_codes、bind_all。不传名称、来源地址或说明则保留原值；不传绑定字段则保留原绑定，传 [] 则取消绑定。不支持设置 status 或自定义 provider。仅调整绑定请使用 bindings 接口。</p>
+        <pre>curl -X POST http://127.0.0.1:9001/open/extension/update \
+  -F 'code=demo' -F 'version=1.1' -F 'file=@extension-1.1.zip'</pre>
+        <p>返回结构同 detail。修改成功但绑定失败时，error 明确提示修改已成功，此时仅重试 bindings。</p>
+      </div>
+    </div>
+
+    <div class="event-card" id="extension-delete">
+      <div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/extension/delete</span><span class="event-cn">删除扩展</span></div>
+      <div class="event-body">
+        <p>JSON 参数：<code>code</code>，必填。删除当前用户上传的私人扩展记录及环境关联。官方扩展需通过 bindings 空数组取消绑定。</p>
+        <pre>{ "code": "demo" }</pre>
+        <pre>{ "success": true, "data": { "code": "demo" } }</pre>
+      </div>
+    </div>
+
+    <div class="event-card" id="extension-bindings">
+      <div class="event-header"><span class="badge badge-post">POST</span><span class="event-name">/open/extension/bindings</span><span class="event-cn">绑定环境</span></div>
+      <div class="event-body">
+        <table class="param-table"><tr><th>JSON 字段</th><th>类型</th><th>说明</th></tr>
+          <tr><td>code</td><td>string</td><td>必填，扩展 code</td></tr>
+          <tr><td>environment_codes</td><td>string[]</td><td>替换完整绑定列表；["*"] 全部，[] 取消绑定；不能混用 * 和具体环境</td></tr>
+          <tr><td>bind_all</td><td>boolean</td><td>未提供 environment_codes 时，true 表示绑定全部；两个字段至少提供一个有效绑定指令</td></tr>
+        </table>
+        <pre>{ "code": "demo", "environment_codes": ["环境code1", "环境code2"] }</pre>
+        <p>绑定环境必须属于当前可访问范围，且内核与扩展一致。返回结构同 detail。未添加的扩展会建立组织关联，已添加的扩展更新范围，空数组会移除组织关联但保留私人扩展记录。</p>
+      </div>
+    </div>
+
+    <h3>打开浏览器时自动同步</h3>
+    <p>Electron 和 Cloud SDK 均在环境目录准备完成后、启动浏览器前，从 backend 获取该环境的扩展配置，自动下载、缓存、安装和升级。解绑或删除扩展后，下次打开环境时清理对应扩展；已运行的浏览器需关闭并重新打开。</p>
+    <p>Chromium 普通扩展安装到环境目录的 <code>Default/custom_extensions/&lt;code&gt;</code>；Firefox 安装到 <code>extensions/&lt;Gecko ID&gt;.xpi</code>。Cloud SDK 查询或下载失败会记录日志并继续打开浏览器，保留既有安装供下次重试。当前未提供手动 sync 接口或 builtin 内置扩展管理。</p>
+    <p>Cloud SDK 如配置了 accessToken，请携带 <code>X-Qiyuan-Runtime-Token</code> 请求头。Node.js 直接调用可使用 <code>sdk.extensions.list()</code>、<code>detail(code)</code>、<code>create({ code, name, version, file: new Blob([...]) })</code>、<code>update(...)</code>、<code>delete(code)</code>、<code>bindings(...)</code>，其中 environment_codes 可直接传字符串数组。</p>
+
+
     <h2 id="datasets">数据集</h2>
     <p>创建和修改环境时，可参考以下内置数据集选择相互匹配的指纹参数。以下为版本 <code>2026-07-23</code> 的静态快照。</p>
     <h3 id="datasets-gpu">WebGL + WebGPU</h3>
