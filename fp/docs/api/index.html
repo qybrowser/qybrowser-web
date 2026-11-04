@@ -249,7 +249,7 @@ curl <span class="str">"http://127.0.0.1:9001/open/env/list?page=1&page_size=10"
         <span class="event-cn">当前用户会员和配额</span>
       </div>
       <div class="event-body">
-        <p>无请求参数。Electron 与云端 Runtime 返回一致，仅需完成已有授权，不额外检查 VIP 权限。配置了 Runtime Token 时需携带 X-Qiyuan-Runtime-Token 请求头。</p>
+        <p>无请求参数。仅需完成已有授权，不额外检查 VIP 权限。配置了 Runtime Token 时需携带 X-Qiyuan-Runtime-Token 请求头。</p>
         <p>用户身份为当前登录用户；员工的会员和配额继承组织老板。每次从后端读取，返回当前有效会员状态。</p>
         <pre>{
   "success": true,
@@ -258,18 +258,18 @@ curl <span class="str">"http://127.0.0.1:9001/open/env/list?page=1&page_size=10"
     "user": "demo",
     "nickname": "示例用户",
     "is_boss": true,
-    "member_type": "vip",
-    "member_card_type": "permanent",
-    "member_expire_at": "2027-10-31T16:00:00",
+    "member_type": "vip",  //会员类型
+    "member_card_type": "year",
+    "member_expire_at": "2027-10-31T16:00:00",  //会员过期时间
     "limits": {
-      "env_count": 50,
-      "env_open_count_per_day": null,
-      "account_count": 1,
-      "matrix_user_count": 5
+      "env_count": 50,  //浏览器窗口最大数量
+      "env_open_count_per_day": null,  //每天打开窗口最大次数
+      "account_count": 1,  //员工账号最大数量
+      "matrix_user_count": 5  //矩阵账号最大数量
     }
   }
 }</pre>
-        <p>member_type：free / vip。member_card_type：week（7天卡）、month（月卡）、quarter（季卡）、half_year（半年卡）、year（年卡）、permanent（永久卡）、custom（自定义）；历史用户未设置时为 null。</p>
+        <p>member_type：free / vip。member_card_type：week（7天卡）、month（月卡）、quarter（季卡）、half_year（半年卡）、year（年卡）、custom（自定义）；历史用户未设置时为 null。</p>
         <p>会员状态返回 free。limits 中 null 表示不限，0 表示配额为零；每日打开次数已将内部的0（不限）转换为 null。</p>
       </div>
     </div>
