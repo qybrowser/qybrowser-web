@@ -375,6 +375,7 @@ curl <span class="str">"http://127.0.0.1:9001/open/env/list?page=1&page_size=10"
           <tr><td>webgpu_architecture</td><td>string</td><td>—</td><td>如 <code>common-shader-cores</code> / <code>rdna-3</code> / <code>apple-gpu</code></td></tr>
           <tr><td>webgpu_device</td><td>string</td><td>—</td><td>如 <code>integrated-gpu</code> / <code>discrete-gpu</code></td></tr>
           <tr><td>webgpu_description</td><td>string</td><td>—</td><td>如 <code>NVIDIA GeForce RTX 4070 Ti</code> / <code>Intel(R) Iris(R) Xe Graphics</code></td></tr>
+          <tr><td>webgl_image_seed</td><td>string</td><td><code>"random"</code></td><td>WebGL图像；<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 固定种子；<code>"random"</code> 由服务端生成并保存（创建时默认）</td></tr>
           <tr><td>timezone</td><td>string</td><td><code>ip</code></td><td><code>ip</code> 基于IP &nbsp;|&nbsp; <code>real</code> 真实 &nbsp;|&nbsp; <code>custom</code> 自定义（需提供 <code>timezone_value</code>）</td></tr>
           <tr id="dataset-timezone"><td>timezone_value</td><td>string</td><td>—</td><td>timezone=custom 时使用，IANA 时区格式，如 <code>Asia/Shanghai</code> / <code>America/New_York</code> / <code>Europe/London</code>。<a href="#datasets-timezone">查看时区数据集</a></td></tr>
           <tr><td>geo_location</td><td>string</td><td><code>ip</code></td><td><code>ip</code> 基于IP &nbsp;|&nbsp; <code>real</code> 真实 &nbsp;|&nbsp; <code>custom</code> 自定义（需提供 <code>longitude</code> 和 <code>latitude</code>）</td></tr>
@@ -398,11 +399,12 @@ curl <span class="str">"http://127.0.0.1:9001/open/env/list?page=1&page_size=10"
           <tr><td>memory_gb</td><td>string</td><td><code>real</code></td><td><code>real</code> 使用真实值 &nbsp;|&nbsp; <code>2</code> / <code>4</code> / <code>8</code> / <code>16</code> / <code>32</code> / <code>64</code> / <code>128</code>（单位 GB）</td></tr>
           <tr><td>tls_disable</td><td>string</td><td><code>""</code></td><td>空字符串表示关闭；非空时按 <code>cipher=套件名[,套件名];ext=扩展名[,扩展名]</code> 禁用 ClientHello 中的项目，两组均可单独使用。示例：<code>cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA;ext=compress_certificate</code>。建议使用 <code>compress_certificate</code>、<code>signed_certificate_timestamp</code>、<code>trust_anchors</code>；<code>encrypted_client_hello</code> 只在原本启用 ECH 时有变化，<code>GREASE</code> 不影响 JA4。</td></tr>
         </table>
+        <p style="margin-top:8px">WebGL图像使用，与 WebGL元数据（厂商 / 渲染器）及 WebGPU 配置互不替代。<code>webgl_image_seed</code> 类型为字符串：<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 为有效种子；新建时未传默认随机；写入时传 <code>"random"</code> 请求服务端生成。种子持久保存，每次启动沿用；详情和内核指纹返回实际十进制字符串，不返回 <code>"random"</code>。</p>
 
         <h3 style="margin-top:16px">响应示例</h3>
         <pre>{ <span class="key">"success"</span>: <span class="num">true</span>, <span class="key">"data"</span>: { <span class="key">"code"</span>: <span class="str">"d911bf3f0c482c42d390d3cab6891484"</span> } }</pre>
         <h3>示例</h3>
-        <pre><span class="cmt"># 最简调用（版本默认最新，UA 自动生成，指纹全部随机）</span>
+        <pre><span class="cmt"># 最简调用（版本默认最新，UA 自动生成；WebGL图像默认由服务端随机生成并保存）</span>
 curl -X POST <span class="url">http://127.0.0.1:9001/open/env/create</span> \
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{"name": "账号01"}'</span>
@@ -445,6 +447,7 @@ curl -X POST <span class="url">http://127.0.0.1:9001/open/env/create</span> \
     "browser_version": "145.0.7632.109",
     "proxy_ip_code": "PROXY_CODE",
     "webrtc": "disabled",
+    "webgl_image_seed": "random",
     "webgl": "custom",
     "webgl_vendor": "Google Inc. (NVIDIA)",
     "webgl_renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4070 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)",
@@ -471,6 +474,7 @@ curl -X POST <span class="url">http://127.0.0.1:9001/open/env/create</span> \
         <span class="event-cn">修改环境（只传需要修改的字段）</span>
       </div>
       <div class="event-body">
+        <p style="margin-bottom:12px">WebGL图像：未传 <code>webgl_image_seed</code> 时保留原种子；传 <code>"0"</code> 关闭；传有效十进制字符串设置固定种子；传 <code>"random"</code> 重新生成并保存。</p>
         <p style="margin-bottom:12px">支持与 <code>POST /open/env/create</code> 相同的所有字段（<code>code</code> 必填，其余字段只传需要修改的）。未传的字段保持不变。</p>
         <h3>必填字段</h3>
         <table class="param-table">
@@ -492,6 +496,13 @@ curl -X POST <span class="url">http://127.0.0.1:9001/open/env/update</span> \
 curl -X POST <span class="url">http://127.0.0.1:9001/open/env/update</span> \
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{"code": "ENV_CODE", "proxy_ip_code": "NEW_PROXY_CODE", "webrtc": "disabled"}'</span></pre>
+        <h3>WebGL图像修改示例</h3>
+        <pre><span class="cmt">// 设置固定种子</span>
+{ "code": "ENV_CODE", "webgl_image_seed": "123456789" }
+<span class="cmt">// 重新生成并保存种子</span>
+{ "code": "ENV_CODE", "webgl_image_seed": "random" }
+<span class="cmt">// 关闭</span>
+{ "code": "ENV_CODE", "webgl_image_seed": "0" }</pre>
       </div>
     </div>
 
@@ -503,7 +514,8 @@ curl -X POST <span class="url">http://127.0.0.1:9001/open/env/update</span> \
         <span class="event-cn">随机刷新指纹</span>
       </div>
       <div class="event-body">
-        <p style="margin-bottom:12px">一键随机重新生成环境的指纹数据，逻辑与客户端界面的"随机指纹"按钮完全一致。WebGL/WebGPU 按平台随机，font/canvas/audio/client_rects/media_devices 全部重新随机，时区/地理位置/语言保持基于IP策略。</p>
+        <p style="margin-bottom:12px">WebGL图像保留开关状态：已开启时由服务端重新生成并保存种子；关闭或历史未设置时保持 <code>"0"</code>。响应 <code>data.webgl_image_seed</code> 为保存后的十进制字符串，后续启动沿用。该接口只需传 <code>code</code>；如需开启或关闭 WebGL图像，请使用 <a href="#env-update">修改环境</a>。</p>
+        <p style="margin-bottom:12px">一键随机重新生成环境的指纹数据，逻辑与客户端界面的"随机指纹"按钮完全一致。WebGL元数据 / WebGPU 按平台随机，font/canvas/audio/client_rects/media_devices 全部重新随机，时区/地理位置/语言保持基于IP策略。</p>
         <h3>Body 参数</h3>
         <table class="param-table">
           <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
@@ -513,6 +525,7 @@ curl -X POST <span class="url">http://127.0.0.1:9001/open/env/update</span> \
         <pre>{
   <span class="key">"success"</span>: <span class="num">true</span>,
   <span class="key">"data"</span>: {
+    <span class="key">"webgl_image_seed"</span>: <span class="str">"123456789"</span>,
     <span class="key">"webgl_vendor"</span>: <span class="str">"Google Inc. (Intel)"</span>,
     <span class="key">"webgl_renderer"</span>: <span class="str">"ANGLE (Intel, Intel(R) HD Graphics Family..., D3D11)"</span>,
     <span class="key">"webgpu_value"</span>: <span class="str">"intel|common-shader-cores|integrated-gpu|Intel(R) HD Graphics Family"</span>,

@@ -438,13 +438,14 @@ python -m admin.client --config browser-config-client.json</pre>
           <tr><td>tag_ids</td><td>number[]</td><td><span class="optional">可选</span></td><td><code>[]</code></td><td>标签 ID 列表</td></tr>
         </table>
 
-        <h3 style="margin-top:16px">指纹字段（均可选，表单风格；不传走随机默认）</h3>
+        <h3 style="margin-top:16px">指纹字段（均可选；未传时使用各字段默认值）</h3>
         <table class="param-table">
           <tr><th>字段</th><th>类型</th><th>可选值 / 说明</th></tr>
           <tr><td>user_agent</td><td>string</td><td>不填按 platform + browser_version 自动生成</td></tr>
           <tr><td>webrtc</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>disabled</code> / <code>transform_google</code></td></tr>
           <tr><td>webgl</td><td>string</td><td><code>real</code> / <code>custom</code>；custom 时配合 <code>webgl_vendor</code> + <code>webgl_renderer</code></td></tr>
           <tr><td>webgpu</td><td>string</td><td><code>basegl</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>webgpu_vendor/architecture/device/description</code></td></tr>
+          <tr><td>webgl_image_seed</td><td>string</td><td>WebGL图像；<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 固定种子；<code>"random"</code> 由服务端生成并保存（创建时默认）</td></tr>
           <tr><td>timezone</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>timezone_value</code>（如 <code>Asia/Shanghai</code>）</td></tr>
           <tr><td>geo_location</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>longitude</code> + <code>latitude</code></td></tr>
           <tr><td>language</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>languages</code>（string[]）</td></tr>
@@ -456,6 +457,9 @@ python -m admin.client --config browser-config-client.json</pre>
           <tr><td>cpu_cores / memory_gb</td><td>string</td><td><code>real</code> 或具体数值（如 <code>8</code> / <code>16</code>）</td></tr>
           <tr><td>tls_disable</td><td>string</td><td>空字符串表示关闭；格式 <code>cipher=套件名[,套件名];ext=扩展名[,扩展名]</code>，两组可单独使用。示例：<code>cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA;ext=compress_certificate</code>。建议使用 <code>compress_certificate</code>、<code>signed_certificate_timestamp</code>、<code>trust_anchors</code>；<code>encrypted_client_hello</code> 只在原本启用 ECH 时有变化，<code>GREASE</code> 不影响 JA4。</td></tr>
         </table>
+        <p style="margin-top:8px">WebGL图像使用，与 WebGL元数据（厂商 / 渲染器）及 WebGPU 配置互不替代。<code>webgl_image_seed</code> 类型为字符串：<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 为有效种子；新建时未传默认随机；写入时传 <code>"random"</code> 请求服务端生成。种子持久保存，每次启动沿用；详情和内核指纹返回实际十进制字符串，不返回 <code>"random"</code>。</p>
+        <h3>请求示例（服务端生成 WebGL图像）</h3>
+        <pre>{ "name": "账号01", "webgl_image_seed": "random" }</pre>
         <h3>响应示例</h3>
         <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { <span class="key">"code"</span>: <span class="str">"新环境的唯一标识"</span> } }</pre>
       </div>
@@ -470,7 +474,7 @@ python -m admin.client --config browser-config-client.json</pre>
         <span class="badge badge-store">服务</span>
       </div>
       <div class="event-body">
-        <p>返回单个环境的完整字段 + 扁平指纹，供编辑表单回填。</p>
+        <p>返回单个环境的完整字段 + 扁平指纹，供编辑表单回填。<code>data.fingerprint.webgl_image_seed</code> 为保存的十进制种子字符串，关闭时为 <code>"0"</code>。</p>
         <h3>Query 参数</h3>
         <table class="param-table">
           <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
@@ -486,7 +490,7 @@ python -m admin.client --config browser-config-client.json</pre>
   <span class="key">"proxy_code"</span>: <span class="kw">null</span>, <span class="key">"open_home_page"</span>: <span class="kw">false</span>,
   <span class="key">"enable_tabs"</span>: <span class="kw">false</span>, <span class="key">"tabs"</span>: <span class="str">""</span>, <span class="key">"sync_user_info"</span>: <span class="kw">false</span>,
   <span class="key">"cookie"</span>: <span class="str">""</span>, <span class="key">"launch_args"</span>: <span class="str">""</span>, <span class="key">"remark"</span>: <span class="str">""</span>,
-  <span class="key">"fingerprint"</span>: { <span class="cmt">/* 扁平指纹：webgl_type, webgl_value, timezone_type, ... */</span> }
+  <span class="key">"fingerprint"</span>: { <span class="key">"webgl_image_seed"</span>: <span class="str">"123456789"</span>, <span class="cmt">/* 其余扁平指纹：webgl_type, webgl_value, timezone_type, ... */</span> }
   }
 }</pre>
       </div>
@@ -501,6 +505,7 @@ python -m admin.client --config browser-config-client.json</pre>
         <span class="badge badge-store">服务</span>
       </div>
       <div class="event-body">
+        <p style="margin-bottom:12px">WebGL图像：未传 <code>webgl_image_seed</code> 时保留原种子；传 <code>"0"</code> 关闭；传有效十进制字符串设置固定种子；传 <code>"random"</code> 重新生成并保存。</p>
         <table class="param-table">
           <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
           <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
@@ -510,6 +515,13 @@ python -m admin.client --config browser-config-client.json</pre>
         </table>
         <h3>响应示例</h3>
         <pre>{ <span class="key">"success"</span>: <span class="kw">true</span> }</pre>
+        <h3>WebGL图像修改示例</h3>
+        <pre><span class="cmt">// 设置固定种子</span>
+{ "code": "ENV_CODE", "webgl_image_seed": "123456789" }
+<span class="cmt">// 重新生成并保存种子</span>
+{ "code": "ENV_CODE", "webgl_image_seed": "random" }
+<span class="cmt">// 关闭</span>
+{ "code": "ENV_CODE", "webgl_image_seed": "0" }</pre>
       </div>
     </div>
 
@@ -522,13 +534,14 @@ python -m admin.client --config browser-config-client.json</pre>
         <span class="badge badge-store">服务</span>
       </div>
       <div class="event-body">
+        <p style="margin-bottom:12px">WebGL图像保留开关状态：已开启时由服务端重新生成并保存种子；关闭或历史未设置时保持 <code>"0"</code>。响应 <code>data.webgl_image_seed</code> 为保存后的十进制字符串，后续启动沿用。该接口只需传 <code>code</code>；如需开启或关闭 WebGL图像，请使用 <a href="#env-update">修改环境</a>。</p>
         <table class="param-table">
           <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
           <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
         </table>
         <h3>响应示例</h3>
         <p><code>data</code> 为新生成的指纹对象。</p>
-        <pre>{ "success": true, "data": { "webgl_vendor": "Google Inc. (Intel)", "canvas": "random" } }</pre>
+        <pre>{ "success": true, "data": { "webgl_image_seed": "123456789", "webgl_vendor": "Google Inc. (Intel)", "canvas": 0.3 } }</pre>
       </div>
     </div>
 
@@ -761,11 +774,13 @@ python -m admin.client --config browser-config-client.json</pre>
         <p>密文 = <code>base64( SIGN[keysize/8] + IV[16] + AES-256-CBC(PKCS7(json)) )</code>。其中 <code>SIGN = RSASSA-PKCS1-v1_5( 私钥, SHA-256( IV+密文 ) )</code>（2048-bit = 256 字节）。AES 密钥恒用 <strong>version=2.0</strong> 的 token 派生密钥。</p>
         <p>内核侧：base64 解码 → 前 256 字节为签名、其余为 <code>IV+密文</code> → 用<strong>内置公钥</strong> <code>SHA-256</code> <strong>验签</strong>（失败即拒绝，不解密）→ 用 token 派生 AES key 解出 16 字节 IV 与密文 → AES-CBC 得 JSON。</p>
         <p>方向：服务端持<strong>私钥签名</strong>，内核仅内置<strong>公钥验签</strong>，<strong>私钥永不下发</strong>。SDK 与 backend 各自独立密钥对（PEM 随仓库提供：SDK <code>sdk/keys/</code>、backend <code>app/config/keys/</code>；只把对应 <code>rsa_public.pem</code> 编入内核）。</p>
+        <p>WebGL图像使用，与 WebGL元数据（厂商 / 渲染器）及 WebGPU 配置互不替代。<code>webgl_image_seed</code> 类型为字符串：<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 为有效种子；新建时未传默认随机；写入时传 <code>"random"</code> 请求服务端生成。种子持久保存，每次启动沿用；详情和内核指纹返回实际十进制字符串，不返回 <code>"random"</code>。此字段位于明文指纹 JSON 顶层，AES / RSA 加密使用同一结构。</p>
         <h3>明文结构（节选）</h3>
         <pre>{
   <span class="key">"platform"</span>: <span class="str">"Win32"</span>,
   <span class="key">"user_agent"</span>: <span class="str">"Mozilla/5.0 ..."</span>,
   <span class="key">"browser_version"</span>: <span class="str">"147.0.7727.102"</span>,
+  <span class="key">"webgl_image_seed"</span>: <span class="str">"123456789"</span>,
   <span class="key">"webgl"</span>: { <span class="key">"type"</span>: <span class="str">"custom"</span>, <span class="key">"value"</span>: <span class="str">"Google Inc. (NVIDIA)|ANGLE (NVIDIA, NVIDIA GeForce RTX 4070 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)"</span> },
   <span class="key">"webgpu"</span>: { <span class="key">"type"</span>: <span class="str">"custom"</span>, <span class="key">"value"</span>: <span class="str">"nvidia|..."</span> },
   <span class="key">"timezone"</span>: { <span class="key">"type"</span>: <span class="str">"ip"</span>, <span class="key">"value"</span>: <span class="kw">null</span> },
