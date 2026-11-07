@@ -336,7 +336,7 @@ python -m admin.client --config browser-config-client.json</pre>
     <p>以下为服务端 SQLite 中的业务数据表结构。客户端运行配置不属于 SaaS 业务表；字段约束和默认值以当前 SDK 初始化脚本为准，JSON 字段以文本形式存储，接口返回时解析为对象或数组。</p>
     <h3>environments · 环境表</h3>
     <table class="param-table"><tr><th>字段</th><th>类型</th><th>约束</th><th>默认</th><th>说明</th></tr>
-      <tr><td>id</td><td>INTEGER</td><td>主键，自增</td><td>—</td><td>内部记录 ID</td></tr><tr><td>code</td><td>TEXT</td><td>唯一，必填</td><td>—</td><td>环境唯一标识</td></tr><tr><td>name</td><td>TEXT</td><td>必填</td><td>—</td><td>环境名称</td></tr><tr><td>platform</td><td>TEXT</td><td>必填</td><td>Win32</td><td>系统平台</td></tr><tr><td>browser_version</td><td>TEXT</td><td>可空</td><td>NULL</td><td>内核版本</td></tr><tr><td>browser_kernel</td><td>TEXT</td><td>必填</td><td>chrome</td><td>chrome / firefox</td></tr><tr><td>user_agent</td><td>TEXT</td><td>可空</td><td>NULL</td><td>User-Agent</td></tr><tr><td>proxy_code</td><td>TEXT</td><td>可空</td><td>NULL</td><td>绑定代理 code</td></tr><tr><td>proxy_mode</td><td>TEXT</td><td>必填</td><td>no_proxy</td><td>no_proxy / existing / custom</td></tr><tr><td>custom_proxy_type</td><td>TEXT</td><td>可空</td><td>NULL</td><td>自定义代理类型</td></tr><tr><td>custom_proxy_addr</td><td>TEXT</td><td>可空</td><td>NULL</td><td>自定义代理地址</td></tr><tr><td>custom_proxy_port</td><td>INTEGER</td><td>可空</td><td>NULL</td><td>自定义代理端口</td></tr><tr><td>custom_proxy_username / password</td><td>TEXT</td><td>可空</td><td>NULL</td><td>自定义代理认证</td></tr><tr><td>proxy_input_type</td><td>TEXT</td><td>可空</td><td>NULL</td><td>manual / api</td></tr><tr><td>proxy_api_url</td><td>TEXT</td><td>可空</td><td>NULL</td><td>代理 API 地址</td></tr><tr><td>open_home_page</td><td>INTEGER</td><td>非空</td><td>0</td><td>是否打开首页</td></tr><tr><td>enable_tabs</td><td>INTEGER</td><td>非空</td><td>0</td><td>是否启用标签页</td></tr><tr><td>tabs</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>标签页数据</td></tr><tr><td>sync_user_info</td><td>INTEGER</td><td>非空</td><td>0</td><td>是否同步用户信息</td></tr><tr><td>cookie</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>Cookie 配置</td></tr><tr><td>launch_args</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>启动参数</td></tr><tr><td>remark</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>备注</td></tr><tr><td>tag_ids</td><td>TEXT (JSON)</td><td>非空</td><td>[]</td><td>标签 ID 列表</td></tr><tr><td>fingerprint</td><td>TEXT (JSON)</td><td>非空</td><td>{}</td><td>指纹配置</td></tr><tr><td>pid / debug_port</td><td>INTEGER</td><td>可空</td><td>NULL</td><td>进程 ID 与调试端口</td></tr><tr><td>create_time / update_time</td><td>TEXT</td><td>必填</td><td>—</td><td>创建和更新时间</td></tr>
+      <tr><td>id</td><td>INTEGER</td><td>主键，自增</td><td>—</td><td>内部记录 ID</td></tr><tr><td>code</td><td>TEXT</td><td>唯一，必填</td><td>—</td><td>环境唯一标识</td></tr><tr><td>name</td><td>TEXT</td><td>必填</td><td>—</td><td>环境名称</td></tr><tr><td>platform</td><td>TEXT</td><td>必填</td><td>Win32</td><td>系统平台</td></tr><tr><td>browser_version</td><td>TEXT</td><td>可空</td><td>NULL</td><td>内核版本</td></tr><tr><td>browser_kernel</td><td>TEXT</td><td>必填</td><td>chrome</td><td>chrome / firefox</td></tr><tr><td>user_agent</td><td>TEXT</td><td>可空</td><td>NULL</td><td>User-Agent</td></tr><tr><td>proxy_ip_code</td><td>TEXT</td><td>可空</td><td>NULL</td><td>绑定代理 code</td></tr><tr><td>proxy_mode</td><td>TEXT</td><td>必填</td><td>no_proxy</td><td>no_proxy / existing / custom</td></tr><tr><td>custom_proxy_type</td><td>TEXT</td><td>可空</td><td>NULL</td><td>自定义代理类型</td></tr><tr><td>custom_proxy_addr</td><td>TEXT</td><td>可空</td><td>NULL</td><td>自定义代理地址</td></tr><tr><td>custom_proxy_port</td><td>INTEGER</td><td>可空</td><td>NULL</td><td>自定义代理端口</td></tr><tr><td>custom_proxy_username / password</td><td>TEXT</td><td>可空</td><td>NULL</td><td>自定义代理认证</td></tr><tr><td>proxy_input_type</td><td>TEXT</td><td>可空</td><td>NULL</td><td>manual / api</td></tr><tr><td>proxy_api_url</td><td>TEXT</td><td>可空</td><td>NULL</td><td>代理 API 地址</td></tr><tr><td>open_home_page</td><td>INTEGER</td><td>非空</td><td>0</td><td>是否打开首页</td></tr><tr><td>enable_tabs</td><td>INTEGER</td><td>非空</td><td>0</td><td>是否启用标签页</td></tr><tr><td>tabs</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>标签页数据</td></tr><tr><td>sync_user_info</td><td>INTEGER</td><td>非空</td><td>0</td><td>是否同步用户信息</td></tr><tr><td>cookie</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>Cookie 配置</td></tr><tr><td>launch_args</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>启动参数</td></tr><tr><td>remark</td><td>TEXT</td><td>非空</td><td>空字符串</td><td>备注</td></tr><tr><td>tag_ids</td><td>TEXT (JSON)</td><td>非空</td><td>[]</td><td>标签 ID 列表，最多3个</td></tr><tr><td>pid / debug_port</td><td>INTEGER</td><td>可空</td><td>NULL</td><td>进程 ID 与调试端口</td></tr><tr><td>create_time / update_time</td><td>TEXT</td><td>必填</td><td>—</td><td>创建和更新时间</td></tr>
     </table>
     <h3>proxies · 代理表</h3>
     <table class="param-table"><tr><th>字段</th><th>类型</th><th>约束</th><th>默认</th><th>说明</th></tr>
@@ -426,40 +426,146 @@ python -m admin.client --config browser-config-client.json</pre>
           <tr><td>browser_kernel</td><td>string</td><td><span class="optional">可选</span></td><td><code>chrome</code></td><td><code>chrome</code>（Chromium）或 <code>firefox</code>；版本须属于所选内核</td></tr>
           <tr><td>browser_version</td><td>string</td><td><span class="optional">可选</span></td><td>最新版本</td><td>完整内核版本号，不填取默认</td></tr>
           <tr><td>user_agent</td><td>string</td><td><span class="optional">可选</span></td><td>自动生成</td><td>不填时按 platform + browser_version 自动生成</td></tr>
-          <tr><td>proxy_code</td><td>string</td><td><span class="optional">可选</span></td><td></td><td>绑定代理的 code（来自 GET /open/proxy/list）</td></tr>
-          <tr><td>fingerprint</td><td>object</td><td><span class="optional">可选</span></td><td>自动随机</td><td>不填时按 platform 自动生成随机指纹</td></tr>
+
           <tr><td>open_home_page</td><td>boolean</td><td><span class="optional">可选</span></td><td><code>false</code></td><td>是否打开起始页</td></tr>
           <tr><td>enable_tabs</td><td>boolean</td><td><span class="optional">可选</span></td><td><code>false</code></td><td>是否启用标签页</td></tr>
           <tr><td>tabs</td><td>string</td><td><span class="optional">可选</span></td><td><code>""</code></td><td>标签页 URL，换行分隔，最多 5 个（enable_tabs=true 生效）</td></tr>
           <tr><td>sync_user_info</td><td>boolean</td><td><span class="optional">可选</span></td><td><code>false</code></td><td>是否同步用户信息</td></tr>
           <tr><td>cookie</td><td>string</td><td><span class="optional">可选</span></td><td><code>""</code></td><td>初始 Cookie（JSON 数组）</td></tr>
-          <tr><td>launch_args</td><td>string</td><td><span class="optional">可选</span></td><td><code>""</code></td><td>额外 Chrome 启动参数，空格分隔</td></tr>
+          <tr><td>launch_args</td><td>string</td><td><span class="optional">可选</span></td><td><code>""</code></td><td>额外浏览器启动参数，空格分隔，最长500字符</td></tr>
           <tr><td>remark</td><td>string</td><td><span class="optional">可选</span></td><td><code>""</code></td><td>备注</td></tr>
-          <tr><td>tag_ids</td><td>number[]</td><td><span class="optional">可选</span></td><td><code>[]</code></td><td>标签 ID 列表</td></tr>
+          <tr><td>tag_ids</td><td>number[]</td><td><span class="optional">可选</span></td><td><code>[]</code></td><td>标签 ID 列表，最多3个</td></tr>
+                  <tr><td>native_fp_protection</td><td>integer</td><td>可选</td><td><code>0</code></td><td>0/1（兼容字符串 "0"/"1"），拒绝布尔值；仅Firefox有效，其他内核保存0</td></tr>
+          <tr><td>cookie_auto_update</td><td>boolean</td><td>可选</td><td><code>false</code></td><td>关闭浏览器后自动提取 Cookie</td></tr>
+          <tr><td>group_id</td><td>integer | null</td><td>可选</td><td><code>null</code></td><td>环境分组ID</td></tr>
+<tr><td>proxy_mode</td><td>string</td><td>可选</td><td>自动推导</td><td>no_proxy / existing / custom；按 custom_proxy、proxy_ip_code 推导</td></tr></table>
+
+        <h3 style="margin-top:16px">代理字段</h3>
+        <table class="param-table">
+          <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
+          <tr><td>proxy_ip_code</td><td>string</td><td><span class="optional">条件必填</span></td><td><code>proxy_mode=existing</code> 时必填，值来自 GET /open/proxy/list 的 code 字段</td></tr>
+          <tr><td>custom_proxy</td><td>object</td><td><span class="optional">条件必填</span></td><td><code>proxy_mode=custom</code> 时必填。自定义代理对象，不需要代理名称</td></tr>
+          <tr><td>custom_proxy.input_type</td><td>string</td><td><span class="optional">可选</span></td><td><code>manual</code> 手动填写（默认）/ <code>api</code> API 提取</td></tr>
+          <tr><td>custom_proxy.type</td><td>string</td><td><span class="optional">可选</span></td><td>代理协议，默认 <code>http</code>；可选 <code>http</code> / <code>https</code> / <code>socks5</code></td></tr>
+          <tr><td>custom_proxy.addr</td><td>string</td><td><span class="optional">条件必填</span></td><td>手动填写时必填，代理主机地址，不包含协议和端口</td></tr>
+          <tr><td>custom_proxy.port</td><td>integer</td><td><span class="optional">条件必填</span></td><td>手动填写时必填，范围 1～65535</td></tr>
+          <tr><td>custom_proxy.username</td><td>string</td><td><span class="optional">可选</span></td><td>手动代理认证用户名</td></tr>
+          <tr><td>custom_proxy.password</td><td>string</td><td><span class="optional">可选</span></td><td>手动代理认证密码</td></tr>
+          <tr><td>custom_proxy.api_url</td><td>string</td><td><span class="optional">条件必填</span></td><td>API 提取时必填，仅支持 http/https URL；接口需返回 <code>ip:port</code>，多条可用换行、回车或 Tab 分隔。每次打开环境前重新提取</td></tr>
         </table>
+        <p style="margin-top:8px"><code>proxy_ip_code</code> 与 <code>custom_proxy</code> 不能同时使用。</p>
 
         <h3 style="margin-top:16px">指纹字段（均可选；未传时使用各字段默认值）</h3>
         <table class="param-table">
-          <tr><th>字段</th><th>类型</th><th>可选值 / 说明</th></tr>
-          <tr><td>user_agent</td><td>string</td><td>不填按 platform + browser_version 自动生成</td></tr>
-          <tr><td>webrtc</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>disabled</code> / <code>transform_google</code></td></tr>
-          <tr><td>webgl</td><td>string</td><td><code>real</code> / <code>custom</code>；custom 时配合 <code>webgl_vendor</code> + <code>webgl_renderer</code></td></tr>
-          <tr><td>webgpu</td><td>string</td><td><code>basegl</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>webgpu_vendor/architecture/device/description</code></td></tr>
-          <tr><td>webgl_image_seed</td><td>string</td><td>WebGL图像；<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 固定种子；<code>"random"</code> 由服务端生成并保存（创建时默认）</td></tr>
-          <tr><td>timezone</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>timezone_value</code>（如 <code>Asia/Shanghai</code>）</td></tr>
-          <tr><td>geo_location</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>longitude</code> + <code>latitude</code></td></tr>
-          <tr><td>language</td><td>string</td><td><code>ip</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>languages</code>（string[]）</td></tr>
-          <tr><td>ui_language</td><td>string</td><td><code>language</code> / <code>real</code> / <code>custom</code>；custom 时配合 <code>ui_language_value</code></td></tr>
-          <tr><td>screen_resolution</td><td>string</td><td><code>real</code> / <code>custom</code>；custom 时配合 <code>screen_resolution_value</code>（如 <code>1920|1080</code>）</td></tr>
-          <tr><td>font / canvas / audio / client_rects</td><td>string</td><td><code>random</code>（随机偏移）/ <code>disabled</code>（0）</td></tr>
-          <tr><td>speech_voices</td><td>boolean</td><td>是否开启</td></tr>
-          <tr><td>media_devices</td><td>string</td><td><code>random</code> / <code>disabled</code></td></tr>
-          <tr><td>cpu_cores / memory_gb</td><td>string</td><td><code>real</code> 或具体数值（如 <code>8</code> / <code>16</code>）</td></tr>
-          <tr><td>tls_disable</td><td>string</td><td>空字符串表示关闭；格式 <code>cipher=套件名[,套件名];ext=扩展名[,扩展名]</code>，两组可单独使用。示例：<code>cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA;ext=compress_certificate</code>。建议使用 <code>compress_certificate</code>、<code>signed_certificate_timestamp</code>、<code>trust_anchors</code>；<code>encrypted_client_hello</code> 只在原本启用 ECH 时有变化，<code>GREASE</code> 不影响 JA4。</td></tr>
+          <tr><th>字段</th><th>类型</th><th>默认值</th><th>说明 / 可选值</th></tr>
+          <tr><td>webrtc</td><td>string</td><td><code>ip</code></td><td><code>ip</code> / <code>real</code> / <code>disabled</code> / <code>transform_google</code></td></tr>
+          <tr><td>webgl</td><td>string</td><td><code>real</code></td><td><code>real</code> 真实 &nbsp;|&nbsp; <code>custom</code> 自定义（需同时提供 <code>webgl_vendor</code> 和 <code>webgl_renderer</code>）</td></tr>
+          <tr id="dataset-gpu"><td>webgl_vendor</td><td>string</td><td>—</td><td>webgl=custom 时必填。厂商名，如 <code>Google Inc. (Intel)</code> / <code>Google Inc. (NVIDIA)</code> / <code>Google Inc. (AMD)</code> / <code>Google Inc. (Apple)</code>。<a href="../api/index.html#datasets-gpu">查看 GPU 数据集</a></td></tr>
+          <tr><td>webgl_renderer</td><td>string</td><td>—</td><td>webgl=custom 时必填。使用与厂商匹配的完整 ANGLE renderer 字符串</td></tr>
+          <tr><td>webgpu</td><td>string</td><td><code>basegl</code></td><td><code>basegl</code> 基于WebGL / <code>real</code> 真实 / <code>custom</code> 自定义；custom 使用配套的 webgpu_vendor/architecture/device/description</td></tr>
+          <tr><td>webgpu_vendor</td><td>string</td><td>—</td><td>webgpu=custom 时使用，如 <code>intel</code> / <code>nvidia</code> / <code>amd</code> / <code>apple</code>。<a href="../api/index.html#datasets-gpu">查看 GPU 数据集</a></td></tr>
+          <tr><td>webgpu_architecture</td><td>string</td><td>—</td><td>如 <code>common-shader-cores</code> / <code>rdna-3</code> / <code>apple-gpu</code></td></tr>
+          <tr><td>webgpu_device</td><td>string</td><td>—</td><td>如 <code>integrated-gpu</code> / <code>discrete-gpu</code></td></tr>
+          <tr><td>webgpu_description</td><td>string</td><td>—</td><td>如 <code>NVIDIA GeForce RTX 4070 Ti</code> / <code>Intel(R) Iris(R) Xe Graphics</code></td></tr>
+          <tr><td>webgl_image_seed</td><td>string</td><td><code>"random"</code></td><td>WebGL图像；<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 固定种子；<code>"random"</code> 由服务端生成并保存（创建时默认）</td></tr>
+          <tr><td>timezone</td><td>string</td><td><code>ip</code></td><td><code>ip</code> 基于IP &nbsp;|&nbsp; <code>real</code> 真实 &nbsp;|&nbsp; <code>custom</code> 自定义（需提供 <code>timezone_value</code>）</td></tr>
+          <tr id="dataset-timezone"><td>timezone_value</td><td>string</td><td>—</td><td>timezone=custom 时使用，IANA 时区格式，如 <code>Asia/Shanghai</code> / <code>America/New_York</code> / <code>Europe/London</code>。<a href="../api/index.html#datasets-timezone">查看时区数据集</a></td></tr>
+          <tr><td>geo_location</td><td>string</td><td><code>ip</code></td><td><code>ip</code> 基于IP &nbsp;|&nbsp; <code>real</code> 真实 &nbsp;|&nbsp; <code>custom</code> 自定义（需提供 <code>longitude</code> 和 <code>latitude</code>）</td></tr>
+          <tr><td>longitude</td><td>string</td><td>—</td><td>geo_location=custom 时使用，经度，如 <code>116.3</code></td></tr>
+          <tr><td>latitude</td><td>string</td><td>—</td><td>geo_location=custom 时使用，纬度，如 <code>39.9</code></td></tr>
+          <tr><td>language</td><td>string</td><td><code>ip</code></td><td><code>ip</code> 基于IP &nbsp;|&nbsp; <code>real</code> 真实 &nbsp;|&nbsp; <code>custom</code> 自定义（需提供 <code>languages</code> 数组）</td></tr>
+          <tr id="dataset-language"><td>languages</td><td>string[]</td><td>—</td><td>language=custom 时使用，语言代码数组，如 <code>["zh-CN","en-US"]</code>。<a href="../api/index.html#datasets-language">查看语言数据集</a></td></tr>
+          <tr><td>ui_language</td><td>string</td><td><code>language</code></td><td><code>language</code> 跟随语言 &nbsp;|&nbsp; <code>real</code> 真实 &nbsp;|&nbsp; <code>custom</code> 自定义（需提供 <code>ui_language_value</code>）</td></tr>
+          <tr><td>ui_language_value</td><td>string</td><td>—</td><td>ui_language=custom 时使用，单个语言代码，如 <code>zh-CN</code>。<a href="../api/index.html#datasets-language">查看语言数据集</a></td></tr>
+          <tr><td>screen_resolution</td><td>string</td><td><code>real</code></td><td><code>real</code> 真实 &nbsp;|&nbsp; <code>custom</code> 自定义（需提供 <code>screen_resolution_value</code>）</td></tr>
+          <tr><td>screen_resolution_value</td><td>string</td><td>—</td><td>screen_resolution=custom 时使用，格式 <code>宽|高</code>，可选：<code>1920|1080</code> / <code>2560|1440</code> / <code>3840|2160</code> / <code>1366|768</code> / <code>1440|900</code> / <code>1536|864</code> / <code>1280|720</code> / <code>2560|1080</code> 等</td></tr>
+          <tr><td>font</td><td>string | number</td><td><code>0</code></td><td><code>disabled</code> 保存 0；<code>random</code> 生成 -2～2 整数；也可直接传此范围整数。随机可能得到 0</td></tr>
+          <tr><td>canvas</td><td>string | number</td><td><code>0</code></td><td><code>disabled</code> 保存 0；<code>random</code> 生成 0～1 数值（两位小数）；也可直接传 0～1 数值。后端不强制小数位数</td></tr>
+          <tr><td>audio</td><td>string | integer</td><td><code>0</code></td><td>音频随机种子：<code>disabled</code> 保存 0；<code>random</code> 生成 1～2147483647 的整数；也可直接传 0～2147483647 整数。0 表示关闭</td></tr>
+          <tr><td>client_rects</td><td>string | number</td><td><code>0</code></td><td><code>disabled</code> 保存 0；<code>random</code> 生成 0～0.00001 数值（六位小数）；也可直接传有限数值。后端不限制为此随机生成范围</td></tr>
+          <tr><td>speech_voices</td><td>boolean | object[] | null</td><td><code>null</code></td><td>true 从后端配置生成语音对象数组，false/null 关闭；也可传语音对象数组。数据库保存数组或 null，启动返回数组或 []；未配置语音资源时开启结果也可能为空</td></tr>
+          <tr><td>media_devices</td><td>string | object[] | null</td><td><code>null</code></td><td><code>disabled</code>/null 关闭；<code>random</code> 生成3个设备对象（audioinput/videoinput/audiooutput），每项含 deviceId、kind、label、groupId；也可直接传数组</td></tr>
+          <tr><td>local_port_access</td><td>string</td><td><code>all</code></td><td><code>none</code> 禁止全部本机端口；<code>all</code> 不限制；或英文逗号分隔的允许端口（1～65535，去重后最长500字符）</td></tr>
+          <tr><td>do_not_track</td><td>integer</td><td><code>1</code></td><td>Do Not Track：<code>1</code> 开启（默认）&nbsp;|&nbsp; <code>0</code> 关闭</td></tr>
+          <tr><td>cpu_cores</td><td>string</td><td><code>real</code></td><td><code>real</code> 清除自定义值，或正整数字符串；保存为 hardware_info.cpu_cores。UI硬件预设为推荐组合，并非后端枚举范围</td></tr>
+          <tr><td>memory_gb</td><td>string</td><td><code>real</code></td><td><code>real</code> 清除自定义值，或正整数字符串（GB）；保存为 hardware_info.memory_gb，修改单项保留其他硬件信息</td></tr>
+          <tr><td>tls_disable</td><td>string</td><td><code>""</code></td><td>空字符串表示关闭；非空时按 <code>cipher=套件名[,套件名];ext=扩展名[,扩展名]</code> 禁用 ClientHello 中的项目，两组均可单独使用。示例：<code>cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA;ext=compress_certificate</code>。建议使用 <code>compress_certificate</code>、<code>signed_certificate_timestamp</code>、<code>trust_anchors</code>；<code>encrypted_client_hello</code> 只在原本启用 ECH 时有变化，<code>GREASE</code> 不影响 JA4。</td></tr>
+          <tr><td>font_list</td><td>string | string[] | null</td><td><code>null</code></td><td>random 生成字体列表；disabled/null 关闭；也可传字体名称数组。保存为字符串数组或 null</td></tr>
         </table>
-        <p style="margin-top:8px">WebGL图像使用，与 WebGL元数据（厂商 / 渲染器）及 WebGPU 配置互不替代。<code>webgl_image_seed</code> 类型为字符串：<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 为有效种子；新建时未传默认随机；写入时传 <code>"random"</code> 请求服务端生成。种子持久保存，每次启动沿用；详情和内核指纹返回实际十进制字符串，不返回 <code>"random"</code>。</p>
-        <h3>请求示例（服务端生成 WebGL图像）</h3>
-        <pre>{ "name": "账号01", "webgl_image_seed": "random" }</pre>
+        <h3>请求示例</h3>
+        <pre><span class="cmt"># 最简调用（版本默认最新，UA 自动生成；WebGL图像默认由服务端随机生成并保存）</span>
+curl -X POST <span class="str">http://127.0.0.1:9001/open/env/create</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"name": "账号01"}'</span>
+
+<span class="cmt"># 使用自定义手动代理</span>
+curl -X POST <span class="str">http://127.0.0.1:9001/open/env/create</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{
+    "name": "账号-自定义代理",
+    "proxy_mode": "custom",
+    "custom_proxy": {
+      "input_type": "manual",
+      "type": "http",
+      "addr": "127.0.0.1",
+      "port": 7890,
+      "username": "user",
+      "password": "pass"
+    }
+  }'</span>
+
+<span class="cmt"># 使用代理 API 提取（每次打开环境前提取）</span>
+curl -X POST <span class="str">http://127.0.0.1:9001/open/env/create</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{
+    "name": "账号-API代理",
+    "proxy_mode": "custom",
+    "custom_proxy": {
+      "input_type": "api",
+      "type": "http",
+      "api_url": "https://proxy.example.com/get"
+    }
+  }'</span>
+
+<span class="cmt"># 完整指纹示例</span>
+curl -X POST <span class="str">http://127.0.0.1:9001/open/env/create</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{
+    "name": "账号02",
+    "platform": "Win32",
+    "browser_kernel": "chrome",
+    "browser_version": "155.0.8059.82",
+    "proxy_ip_code": "PROXY_CODE",
+    "webrtc": "disabled",
+    "webgl_image_seed": "random",
+    "font": "random",
+    "canvas": "random",
+    "audio": "random",
+    "client_rects": "random",
+    "speech_voices": true,
+    "media_devices": "random",
+    "font_list": "random",
+    "webgl": "custom",
+    "webgl_vendor": "Google Inc. (NVIDIA)",
+    "webgl_renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4070 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "webgpu": "basegl",
+    "timezone": "custom",
+    "timezone_value": "Asia/Shanghai",
+    "geo_location": "custom",
+    "longitude": "116.3",
+    "latitude": "39.9",
+    "language": "custom",
+    "languages": ["zh-CN", "en-US"],
+    "ui_language": "language",
+    "screen_resolution": "real",
+    "enable_tabs": true,
+    "tabs": "https://example.com\nhttps://example.org",
+    "local_port_access": "all",
+    "tls_disable": "",
+    "do_not_track": 1,
+    "cpu_cores": "8",
+    "memory_gb": "16"
+  }'</span></pre>
         <h3>响应示例</h3>
         <pre>{ <span class="key">"success"</span>: <span class="kw">true</span>, <span class="key">"data"</span>: { <span class="key">"code"</span>: <span class="str">"新环境的唯一标识"</span> } }</pre>
       </div>
@@ -471,28 +577,68 @@ python -m admin.client --config browser-config-client.json</pre>
         <span class="badge badge-get">GET</span>
         <span class="event-name">/open/env/detail</span>
         <span class="event-cn">环境详情（编辑回填）</span>
-        <span class="badge badge-store">服务</span>
       </div>
       <div class="event-body">
-        <p>返回单个环境的完整字段 + 扁平指纹，供编辑表单回填。<code>data.fingerprint.webgl_image_seed</code> 为保存的十进制种子字符串，关闭时为 <code>"0"</code>。</p>
+        <p>按环境 code 查询环境设置和保存的指纹配置，供编辑表单回填。需要客户端已登录；只能查询当前账号有权访问的环境。</p>
         <h3>Query 参数</h3>
         <table class="param-table">
           <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
-          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
+          <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>创建返回的环境唯一标识（md5），最长100字符</td></tr>
         </table>
-        <h3>响应示例</h3>
+        <h3>请求示例</h3>
+        <pre>curl -G http://127.0.0.1:9001/open/env/detail \
+  --data-urlencode 'code=ENV_CODE'</pre>
+        <h3>响应说明</h3>
+        <p>环境配置位于 data；原始指纹位于 data.fingerprint，类型与保存值一致。平台、内核、版本和 UA 分别为 fingerprint.platform、fingerprint.browser_kernel、fingerprint.browser_version、fingerprint.user_agent。code 是 md5 的别名；响应仅包含明确列出的环境设置和指纹字段。</p>
+        <p>enable_tabs、tabs、cookie_auto_update、group_id 等位于 data；代理字段包括 proxy_mode、proxy_ip_id、custom_proxy_type、custom_proxy_addr、custom_proxy_port 和 proxy_input_type。Cookie 内容、代理认证用户名/密码、proxy_api_url 及完整 proxy 对象不在此响应中。webgl_image_seed 为十进制字符串（关闭为 "0"），audio 为整数；不转换成中文摘要或内核启动字符串。此接口读取已保存配置，不重新生成随机值。</p>
+        <h3>响应示例（节选）</h3>
         <pre>{
-  <span class="key">"success"</span>: <span class="kw">true</span>,
-  <span class="key">"data"</span>: {
-  <span class="key">"code"</span>: <span class="str">"..."</span>, <span class="key">"name"</span>: <span class="str">"..."</span>, <span class="key">"platform"</span>: <span class="str">"Win32"</span>,
-  <span class="key">"browser_kernel"</span>: <span class="str">"chrome"</span>,
-  <span class="key">"browser_version"</span>: <span class="str">"147.0.7727.102"</span>, <span class="key">"user_agent"</span>: <span class="str">"..."</span>,
-  <span class="key">"proxy_code"</span>: <span class="kw">null</span>, <span class="key">"open_home_page"</span>: <span class="kw">false</span>,
-  <span class="key">"enable_tabs"</span>: <span class="kw">false</span>, <span class="key">"tabs"</span>: <span class="str">""</span>, <span class="key">"sync_user_info"</span>: <span class="kw">false</span>,
-  <span class="key">"cookie"</span>: <span class="str">""</span>, <span class="key">"launch_args"</span>: <span class="str">""</span>, <span class="key">"remark"</span>: <span class="str">""</span>,
-  <span class="key">"fingerprint"</span>: { <span class="key">"webgl_image_seed"</span>: <span class="str">"123456789"</span>, <span class="cmt">/* 其余扁平指纹：webgl_type, webgl_value, timezone_type, ... */</span> }
+  "success": true,
+  "data": {
+    "id": 173,
+    "code": "add376cd3bfac2ff4cd4990d35c174d3",
+    "md5": "add376cd3bfac2ff4cd4990d35c174d3",
+    "name": "账号01",
+    "proxy_mode": "no_proxy",
+    "proxy_ip_id": null,
+    "open_home_page": false,
+    "enable_tabs": true,
+    "tabs": "https://example.com\nhttps://example.org",
+    "sync_user_info": false,
+    "cookie_auto_update": false,
+    "launch_args": "",
+    "remark": "",
+    "tag_ids": [],
+    "group_id": null,
+    "fingerprint": {
+      "id": 176,
+      "platform": "Win32",
+      "browser_kernel": "chrome",
+      "browser_version": "155.0.8059.82",
+      "native_fp_protection": 0,
+      "user_agent": "Mozilla/5.0 ...",
+      "webrtc": "ip",
+      "webgl_type": "real",
+      "webgl_value": "",
+      "webgpu_type": "basegl",
+      "webgpu_value": "",
+      "webgl_image_seed": "2046344806",
+      "audio": 108472345,
+      "font": 1,
+      "canvas": 0.49,
+      "client_rects": 7e-06,
+      "speech_voices": [],
+      "media_devices": [],
+      "font_list": [],
+      "local_port_access": "all",
+      "do_not_track": 1,
+      "tls_disable": ""
+    }
   }
 }</pre>
+        <h3>失败响应示例</h3>
+        <pre>{ "success": false, "error": "环境不存在" }</pre>
+        <p>code 缺失、未登录、无权限或环境不存在时返回 success=false；错误说明见 error。</p>
       </div>
     </div>
 
@@ -511,7 +657,7 @@ python -m admin.client --config browser-config-client.json</pre>
           <tr><td>code</td><td>string</td><td><span class="required">必填</span></td><td>环境唯一标识</td></tr>
           <tr><td>browser_kernel</td><td>string</td><td><span class="optional">可选</span></td><td><code>chrome</code>（Chromium）或 <code>firefox</code>；变更内核时需选择该内核支持的版本</td></tr>
           <tr><td>browser_version</td><td>string</td><td><span class="optional">可选</span></td><td>所选内核的完整版本号</td></tr>
-          <tr><td>基础字段 + 指纹字段（同 <a href="#env-create">新增环境</a>）</td><td>—</td><td><span class="optional">可选</span></td><td>需要修改的字段；传入的指纹字段会合并进已存指纹。修改 platform / browser_version 且未显式传 user_agent 时自动重新生成 UA</td></tr>
+          <tr><td>基础字段 + 指纹字段（同 <a href="#env-create">新增环境</a>）</td><td>—</td><td><span class="optional">可选</span></td><td>需要修改的顶层字段；未提交字段保持不变。传入的指纹字段会合并进已存指纹。修改 platform / browser_version 且未显式传 user_agent 时自动重新生成 UA</td></tr>
         </table>
         <h3>响应示例</h3>
         <pre>{ <span class="key">"success"</span>: <span class="kw">true</span> }</pre>
@@ -533,7 +679,7 @@ python -m admin.client --config browser-config-client.json</pre>
         <span class="event-cn">刷新指纹</span>
         <span class="badge badge-store">服务</span>
       </div>
-      <div class="event-body">
+      <div class="event-body"><p>随机噪声、字体和媒体设备；开启语音；保留独立设置及非custom GPU模式；basegl 的值随 custom WebGL 配套更新。</p>
         <p style="margin-bottom:12px">WebGL图像保留开关状态：已开启时由服务端重新生成并保存种子；关闭或历史未设置时保持 <code>"0"</code>。响应 <code>data.webgl_image_seed</code> 为保存后的十进制字符串，后续启动沿用。该接口只需传 <code>code</code>；如需开启或关闭 WebGL图像，请使用 <a href="#env-update">修改环境</a>。</p>
         <table class="param-table">
           <tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>
@@ -774,7 +920,7 @@ python -m admin.client --config browser-config-client.json</pre>
         <p>密文 = <code>base64( SIGN[keysize/8] + IV[16] + AES-256-CBC(PKCS7(json)) )</code>。其中 <code>SIGN = RSASSA-PKCS1-v1_5( 私钥, SHA-256( IV+密文 ) )</code>（2048-bit = 256 字节）。AES 密钥恒用 <strong>version=2.0</strong> 的 token 派生密钥。</p>
         <p>内核侧：base64 解码 → 前 256 字节为签名、其余为 <code>IV+密文</code> → 用<strong>内置公钥</strong> <code>SHA-256</code> <strong>验签</strong>（失败即拒绝，不解密）→ 用 token 派生 AES key 解出 16 字节 IV 与密文 → AES-CBC 得 JSON。</p>
         <p>方向：服务端持<strong>私钥签名</strong>，内核仅内置<strong>公钥验签</strong>，<strong>私钥永不下发</strong>。SDK 与 backend 各自独立密钥对（PEM 随仓库提供：SDK <code>sdk/keys/</code>、backend <code>app/config/keys/</code>；只把对应 <code>rsa_public.pem</code> 编入内核）。</p>
-        <p>WebGL图像使用，与 WebGL元数据（厂商 / 渲染器）及 WebGPU 配置互不替代。<code>webgl_image_seed</code> 类型为字符串：<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 为有效种子；新建时未传默认随机；写入时传 <code>"random"</code> 请求服务端生成。种子持久保存，每次启动沿用；详情和内核指纹返回实际十进制字符串，不返回 <code>"random"</code>。此字段位于明文指纹 JSON 顶层，AES / RSA 加密使用同一结构。</p>
+        <p>WebGL图像使用独立种子，与 WebGL元数据（厂商 / 渲染器）及 WebGPU 配置互不替代。<code>webgl_image_seed</code> 类型为字符串：<code>"0"</code> 关闭；<code>"1"</code>～<code>"4294967295"</code> 为有效种子；新建时未传默认随机；写入时传 <code>"random"</code> 请求服务端生成。种子持久保存，每次启动沿用；详情和内核指纹返回实际十进制字符串，不返回 <code>"random"</code>。此字段位于明文指纹 JSON 顶层，AES / RSA 加密使用同一结构。</p>
         <h3>明文结构（节选）</h3>
         <pre>{
   <span class="key">"platform"</span>: <span class="str">"Win32"</span>,
