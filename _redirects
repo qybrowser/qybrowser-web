@@ -1,0 +1,6 @@
+
+/customer /customer/help/ 302
+/customer/ /customer/help/ 302
+/customer/help /customer/help/ 301
+/customer/manual.css /customer/help/manual.css 302
+/customer/images/* /customer/help/images/:splat 302
